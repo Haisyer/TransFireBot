@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<LangVersion>9</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DoDo.Open.Sdk" Version="1.2.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
+		<ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
+	</ItemGroup>
+
+</Project>
