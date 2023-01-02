@@ -48,7 +48,7 @@ namespace SysBot.Pokemon.Dodo
         {
             var channelId = Settings.ChannelId;
             if (string.IsNullOrWhiteSpace(channelId)) return;
-            SendChannelMessage("大小姐尿尿统统闪开", channelId);
+            SendChannelMessage("欢迎使用传火机器人！", channelId);
             Task.Delay(1_000).ConfigureAwait(false);
             if (typeof(T) == typeof(PK8))
             {
