@@ -306,22 +306,59 @@ namespace SysBot.Pokemon
                     break;
                 }
             }
-            //个头大小并添加证章
-            if (typeof(T) == typeof(PK9) && zh.Contains("大个子"))
+            //体型大小并添加证章
+            if (typeof(T) == typeof(PK9) && zh.Contains("体型"))
             {
-                result += $"\n.WeightScalar=255 \n.HeightScalar=255 \n.Scale=255 \n.RibbonMarkJumbo=True ";
-                zh = zh.Replace("大个子", "");
+                if (zh.Contains("XXXL"))//255
+                {
+                    result += $"\n.Scale=255\n.RibbonMarkJumbo=True";
+                    zh = zh.Replace("XXXL", "");
+                }
+                else if (zh.Contains("XXL"))//242-254
+                {
+                    result += $"\n.Scale=$242,254";
+                    zh = zh.Replace("XXL", "");
+                }
+                else if (zh.Contains("XL"))//196-241
+                {
+                    result += $"\n.Scale=$196,241";
+                    zh = zh.Replace("XL", "");
+                }
+                else if (zh.Contains("L"))//161-195
+                {
+                    result += $"\n.Scale=$161,195";
+                    zh = zh.Replace("L", "");
+                }
+                else if (zh.Contains("AV"))//100-160
+                {
+                    result += $"\n.Scale=$100,160";
+                    zh = zh.Replace("AV", "");
+                }
+                else if (zh.Contains("S"))//61-99
+                {
+                    result += $"\n.Scale=$61,99";
+                    zh = zh.Replace("S", "");
+                }
+                else if (zh.Contains("XS"))//31-60
+                {
+                    result += $"\n.Scale=$31,60";
+                    zh = zh.Replace("XS", "");
+                }
+                else if (zh.Contains("XXS"))//1-30
+                {
+                    result += $"\n.Scale=$1,30";
+                    zh = zh.Replace("XXS", "");
+                }
+                else if (zh.Contains("XXXS"))//0
+                {
+                    result += $"\n.Scale=0\n.RibbonMarkMini=True";
+                    zh = zh.Replace("XXXS", "");
+                }
             }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("小不点"))
-            {
-                result += $"\n.WeightScalar=0 \n.HeightScalar=0 \n.Scale=0 \n.RibbonMarkMini=True";
-                zh = zh.Replace("小不点", "");
-            }
-
             //补充后天获得的全奖章
             if (typeof(T) == typeof(PK9) && zh.Contains("全奖章"))
             {
-                result += "\n.Ribbons=$suggestAll \n.RibbonMarkPartner=True \n.RibbonMarkGourmand=True";
+                result += "\n.Ribbons=$suggestAll\n.RibbonMarkPartner=True\n.RibbonMarkGourmand=True";
                 zh = zh.Replace("全奖章", "");
             }
 
