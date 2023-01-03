@@ -55,12 +55,12 @@ namespace SysBot.Pokemon
             {
                 result += $"-Paldea-Fire";
                 zh = zh.Replace("帕底亚的样子（火）形态", "");
-            } 
+            }
             else if (zh.Contains("帕底亚的样子（水）形态"))
             {
                 result += $"-Paldea-Water";
                 zh = zh.Replace("帕底亚的样子（水）形态", "");
-            } 
+            }
             else
             {
                 for (int i = 0; i < GameStringsZh.forms.Length; i++)
@@ -72,7 +72,6 @@ namespace SysBot.Pokemon
                     break;
                 }
             }
-            
 
             // 添加性别
             if (zh.Contains("公"))
@@ -295,7 +294,7 @@ namespace SysBot.Pokemon
                 }
             }
 
-            // 添加太晶属性
+            // 添加太晶属性（可用性未知）
             if (typeof(T) == typeof(PK9))
             {
                 for (int i = 0; i < GameStringsZh.Types.Count; i++)
@@ -307,60 +306,86 @@ namespace SysBot.Pokemon
                     break;
                 }
             }
+            //异国
+            if (zh.Contains("异国"))
+            {
+                result += $"\nLanguage:Japanese";
+                zh = zh.Replace("异国", "");
+            }
+
+            //个头大小并添加证章
+            if (typeof(T) == typeof(PK9) && zh.Contains("大个子"))
+            {
+                result += $"\n.WeightScalar=255 \n.HeightScalar=255 \n.Scale=255 \n.RibbonMarkJumbo=True ";
+                zh = zh.Replace("大个子", "");
+            }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("小不点"))
+            {
+                result += $"\n.WeightScalar=0 \n.HeightScalar=0 \n.Scale=0 \n.RibbonMarkMini=True";
+                zh = zh.Replace("小不点", "");
+            }
+
+            //补充后天获得的全奖章
+            if (typeof(T) == typeof(PK9) && zh.Contains("全奖章"))
+            {
+                result += "\n.Ribbons=$suggestAll \n.RibbonMarkPartner=True \n.RibbonMarkGourmand=True";
+                zh = zh.Replace("全奖章", "");
+            }
+
+            //为悖论种添加证章
+            if (typeof(T) == typeof(PK9) && zh.Contains("未知之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
+            {
+                result += "\n.RibbonMarkRare=True";
+            }
+            if (typeof(T) == typeof(PK9) && zh.Contains("命运之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
+            {
+                result += "\n.RibbonMarkDestiny=True";
+            }
+            
+
+            //添加自定证章（功能未知）
+            //if (zh.Contains("证章"))
+            //{
+            //    for (int i = 0; i < GameStringsZh.ribbons.Length; i++)
+            //    {
+            //        if (GameStringsZh.ribbons[i].Length == 0) continue;
+            //        if (!zh.Contains(GameStringsZh.ribbons[i] + "证章")) continue;
+            //        result += $"\n{GameStringsEn.ribbons[i]}=True";
+            //     zh = zh.Replace(GameStringsZh.ribbons[i] + "证章", "");
+            //     break;
+            //    }
+            //}
 
             //添加全回忆技能
-            if (typeof(T) == typeof(PA8) || typeof(T) == typeof(PK9) && zh.Contains("全技能"))
+            if (typeof(T) == typeof(PK9) && zh.Contains("全技能"))
             {
                 result += "\n.RelearnMoves=$suggestAll";
                 zh = zh.Replace("全技能", "");
             }
-            else if (typeof(T) == typeof(PA8) || typeof(T) == typeof(PK9) && zh.Contains("全招式"))
+            else if (typeof(T) == typeof(PK9) && zh.Contains("全招式"))
             {
                 result += "\n.RelearnMoves=$suggestAll";
                 zh = zh.Replace("全招式", "");
             }
-            else if (typeof(T) == typeof(PA8) || typeof(T) == typeof(PK9) && zh.Contains("ALLTR"))
+            else if (typeof(T) == typeof(PK9) && zh.Contains("ALLTR"))
             {
                 result += "\n.RelearnMoves=$suggestAll";
                 zh = zh.Replace("ALLTR", "");
             }
-
-            // 添加体型
-            if (Regex.IsMatch(zh, "\\d{1,3}身高"))
+            if (typeof(T) == typeof(PA8) && zh.Contains("全技能"))
             {
-                string value = Regex.Match(zh, "(\\d{1,3})身高").Groups?[1]?.Value ?? "";
-                result += $"\n.HeightScalar= {value}";
-                zh = Regex.Replace(zh, "\\d{1,3}身高", "");
+                result += "\n.MoveMastery=$suggestAll";
+                zh = zh.Replace("全技能", "");
             }
-            else if (Regex.IsMatch(zh, "\\d{1,3}HeightScalar"))
+            else if (typeof(T) == typeof(PA8) && zh.Contains("全招式"))
             {
-                string value = Regex.Match(zh, "(\\d{1,3})HeightScalar").Groups?[1]?.Value ?? "";
-                result += $"\n.HeightScalar= {value}";
-                zh = Regex.Replace(zh, "\\d{1,3}HeightScalar", "");
+                result += "\n.MoveMastery=$suggestAll";
+                zh = zh.Replace("全招式", "");
             }
-            if (Regex.IsMatch(zh, "\\d{1,3}体重"))
+            else if (typeof(T) == typeof(PA8) && zh.Contains("ALLMOVE"))
             {
-                string value = Regex.Match(zh, "(\\d{1,3})体重").Groups?[1]?.Value ?? "";
-                result += $"\n.WeightScalar= {value}";
-                zh = Regex.Replace(zh, "\\d{1,3}体重", "");
-            }
-            else if (Regex.IsMatch(zh, "\\d{1,3}WeightScalar"))
-            {
-                string value = Regex.Match(zh, "(\\d{1,3})WeightScalar").Groups?[1]?.Value ?? "";
-                result += $"\n.WeightScalar= {value}";
-                zh = Regex.Replace(zh, "\\d{1,3}WeightScalar", "");
-            }
-            if (Regex.IsMatch(zh, "\\d{1,3}大小"))
-            {
-                string value = Regex.Match(zh, "(\\d{1,3})大小").Groups?[1]?.Value ?? "";
-                result += $"\n.Scale= {value}";
-                zh = Regex.Replace(zh, "\\d{1,3}大小", "");
-            }
-            else if (Regex.IsMatch(zh, "\\d{1,3}Scale"))
-            {
-                string value = Regex.Match(zh, "(\\d{1,3})Scale").Groups?[1]?.Value ?? "";
-                result += $"\n.Scale= {value}";
-                zh = Regex.Replace(zh, "\\d{1,3}WeScale", "");
+                result += "\n.MoveMastery=$suggestAll";
+                zh = zh.Replace("ALLMOVE", "");
             }
 
             // 添加技能
