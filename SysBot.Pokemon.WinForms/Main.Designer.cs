@@ -77,7 +77,7 @@ namespace SysBot.Pokemon.WinForms
             this.Tab_Bots.Name = "Tab_Bots";
             this.Tab_Bots.Size = new System.Drawing.Size(601, 351);
             this.Tab_Bots.TabIndex = 0;
-            this.Tab_Bots.Text = "Bots";
+            this.Tab_Bots.Text = "机器人";
             this.Tab_Bots.UseVisualStyleBackColor = true;
             // 
             // CB_Protocol
@@ -163,7 +163,7 @@ namespace SysBot.Pokemon.WinForms
             this.Tab_Hub.Padding = new System.Windows.Forms.Padding(4);
             this.Tab_Hub.Size = new System.Drawing.Size(601, 351);
             this.Tab_Hub.TabIndex = 2;
-            this.Tab_Hub.Text = "Hub";
+            this.Tab_Hub.Text = "菜单";
             this.Tab_Hub.UseVisualStyleBackColor = true;
             // 
             // PG_Hub
@@ -184,7 +184,7 @@ namespace SysBot.Pokemon.WinForms
             this.Tab_Logs.Name = "Tab_Logs";
             this.Tab_Logs.Size = new System.Drawing.Size(601, 351);
             this.Tab_Logs.TabIndex = 1;
-            this.Tab_Logs.Text = "Logs";
+            this.Tab_Logs.Text = "日志";
             this.Tab_Logs.UseVisualStyleBackColor = true;
             // 
             // RTB_Logs
