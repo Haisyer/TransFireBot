@@ -186,7 +186,7 @@ namespace SysBot.Pokemon
             }
 
             // 添加个体值
-            if (zh.ToUpper().Contains("6V"))
+            if (zh.ToUpper().Contains("6V"))//默认
             {
                 result += "\nIVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
                 zh = zh.Replace("6V", "");
@@ -196,15 +196,30 @@ namespace SysBot.Pokemon
                 result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
                 zh = zh.Replace("5V0A", "");
             }
+            else if (zh.ToUpper().Contains("5V0攻"))
+            {
+                result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
+                zh = zh.Replace("5V0攻", "");
+            }
             else if (zh.ToUpper().Contains("5V0S"))
             {
                 result += "\nIVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
                 zh = zh.Replace("5V0S", "");
             }
+            else if (zh.ToUpper().Contains("5V0速"))
+            {
+                result += "\nIVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
+                zh = zh.Replace("5V0速", "");
+            }
             else if (zh.ToUpper().Contains("4V0A0S"))
             {
                 result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
                 zh = zh.Replace("4V0A0S", "");
+            }
+            else if (zh.ToUpper().Contains("4V0攻0速"))
+            {
+                result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
+                zh = zh.Replace("4V0攻0速", "");
             }
 
             // 添加努力值
@@ -294,7 +309,7 @@ namespace SysBot.Pokemon
                 }
             }
 
-            // 添加太晶属性（可用性未知）
+            // 添加太晶属性
             if (typeof(T) == typeof(PK9))
             {
                 for (int i = 0; i < GameStringsZh.Types.Count; i++)
@@ -306,6 +321,7 @@ namespace SysBot.Pokemon
                     break;
                 }
             }
+
             //体型大小并添加证章
             if (typeof(T) == typeof(PK9) && zh.Contains("体型"))
             {
@@ -361,93 +377,58 @@ namespace SysBot.Pokemon
                 result += "\n.Ribbons=$suggestAll\n.RibbonMarkPartner=True\n.RibbonMarkGourmand=True";
                 zh = zh.Replace("全奖章", "");
             }
-
-            //为悖论种添加证章
-            if (typeof(T) == typeof(PK9) && zh.Contains("未知之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
-            {
-                result += "\n.RibbonMarkRare=True";
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("命运之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
-            {
-                result += "\n.RibbonMarkDestiny=True";
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("暴雪之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
-            {
-                result += "\n.RibbonMarkBlizzard=True";
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("阴云之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
-            {
-                result += "\n.RibbonMarkCloudy=True";
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("正午之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
-            {
-                result += "\n.RibbonMarkLunchtime=True";
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("浓雾之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) 
-            { 
-                result += "\n.RibbonMarkMisty=True"; 
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("降雨之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) 
-            {
-                result += "\n.RibbonMarkRainy=True"; 
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("沙尘之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkSandstorm=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("午夜之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkSleepyTime=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("降雪之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkSnowy=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("落雷之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkStormy=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("干燥之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkDry=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("黄昏之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkDusk=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("拂晓之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkDawn=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("上钩之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkFishing=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("咖喱之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkCurry=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("无虑之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkAbsentMinded=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("愤怒之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkAngry=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("冷静之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkCalmness=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("领袖之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkCharismatic=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("狡猾之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkCrafty=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("期待之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkExcited=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("本能之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkFerocious=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("动摇之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkFlustered=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("木讷之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkHumble=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("理性之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkIntellectual=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("热情之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkIntense=True"; }
-            // else if (typeof(T) == typeof(PK9) && zh.Contains("捡拾之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkItemfinder=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("紧张之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkJittery=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("幸福之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkJoyful=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("优雅之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkKindly=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("激动之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkPeeved=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("自信之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkPrideful=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("昂扬之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkPumpedUp=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("未知之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkRare=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("淘气之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkRowdy=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("凶悍之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkScowling=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("不振之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkSlump=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("微笑之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkSmiley=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("悲伤之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkTeary=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("不纯之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkThorny=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("偶遇之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkUncommon=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("自卑之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkUnsure=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("爽快之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkUpbeat=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("活力之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkVigor=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("倦怠之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkZeroEnergy=True"; }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("疏忽之证") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007)) { result += "\n.RibbonMarkZonedOut=True"; }
+            //为野生宝可梦添加证章
+            if (typeof(T) == typeof(PK9) && zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("小个子之证")) { result += "\n.Scale=255\n.RibbonMarkJumbo=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("大个子之证")) { result += "\n.Scale=0\n.RibbonMarkMini=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("命运之证")) { result += "\n.RibbonMarkDestiny=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("暴雪之证")) { result += "\n.RibbonMarkBlizzard=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("阴云之证")) { result += "\n.RibbonMarkCloudy=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("正午之证")) { result += "\n.RibbonMarkLunchtime=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("浓雾之证")) { result += "\n.RibbonMarkMisty=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("降雨之证")) { result += "\n.RibbonMarkRainy=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("沙尘之证")) { result += "\n.RibbonMarkSandstorm=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("午夜之证")) { result += "\n.RibbonMarkSleepyTime=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("降雪之证")) { result += "\n.RibbonMarkSnowy=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("落雷之证")) { result += "\n.RibbonMarkStormy=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("干燥之证")) { result += "\n.RibbonMarkDry=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("黄昏之证")) { result += "\n.RibbonMarkDusk=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("拂晓之证")) { result += "\n.RibbonMarkDawn=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("上钩之证")) { result += "\n.RibbonMarkFishing=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("咖喱之证")) { result += "\n.RibbonMarkCurry=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("无虑之证")) { result += "\n.RibbonMarkAbsentMinded=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("愤怒之证")) { result += "\n.RibbonMarkAngry=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("冷静之证")) { result += "\n.RibbonMarkCalmness=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("领袖之证")) { result += "\n.RibbonMarkCharismatic=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("狡猾之证")) { result += "\n.RibbonMarkCrafty=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("期待之证")) { result += "\n.RibbonMarkExcited=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("本能之证")) { result += "\n.RibbonMarkFerocious=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("动摇之证")) { result += "\n.RibbonMarkFlustered=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("木讷之证")) { result += "\n.RibbonMarkHumble=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("理性之证")) { result += "\n.RibbonMarkIntellectual=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("热情之证")) { result += "\n.RibbonMarkIntense=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("捡拾之证")) { result += "\n.RibbonMarkItemfinder=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("紧张之证")) { result += "\n.RibbonMarkJittery=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("幸福之证")) { result += "\n.RibbonMarkJoyful=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("优雅之证")) { result += "\n.RibbonMarkKindly=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("激动之证")) { result += "\n.RibbonMarkPeeved=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("自信之证")) { result += "\n.RibbonMarkPrideful=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("昂扬之证")) { result += "\n.RibbonMarkPumpedUp=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("淘气之证")) { result += "\n.RibbonMarkRowdy=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("凶悍之证")) { result += "\n.RibbonMarkScowling=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("不振之证")) { result += "\n.RibbonMarkSlump=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("微笑之证")) { result += "\n.RibbonMarkSmiley=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("悲伤之证")) { result += "\n.RibbonMarkTeary=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("不纯之证")) { result += "\n.RibbonMarkThorny=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("偶遇之证")) { result += "\n.RibbonMarkUncommon=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("自卑之证")) { result += "\n.RibbonMarkUnsure=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("爽快之证")) { result += "\n.RibbonMarkUpbeat=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("活力之证")) { result += "\n.RibbonMarkVigor=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("倦怠之证")) { result += "\n.RibbonMarkZeroEnergy=True"; }
+            else if (typeof(T) == typeof(PK9) && zh.Contains("疏忽之证")) { result += "\n.RibbonMarkZonedOut=True"; }
             
-
-
-            //添加自定证章（功能未完成）
-            // if (zh.Contains("证章") && (candidateSpecieNo is 984 or 985 or 986 or 987 or 988 or 989 or 990 or 991 or 992 or 993 or 994 or 995 or 1005 or 1007))
-            // {
-            //     for (int i = 0; i < GameStringsZh.ribbons.Length; i++)
-            //     {
-            //         if (GameStringsZh.ribbons[i].Length == 0) continue;
-            //         if (!zh.Contains(GameStringsZh.ribbons[i] + "证章")) continue;
-            //         result += $"\n{GameStringsEn.ribbons[i]}=True";
-            //     zh = zh.Replace(GameStringsZh.ribbons[i] + "证章", "");
-            //     break;
-            //     }
-            // }
-
-             //添加全回忆技能
+            //添加全回忆技能
             if (typeof(T) == typeof(PK9) && zh.Contains("全技能"))
             {
                 result += "\n.RelearnMoves=$suggestAll";
@@ -478,7 +459,6 @@ namespace SysBot.Pokemon
                 result += "\n.MoveMastery=$suggestAll";
                 zh = zh.Replace("ALLMOVE", "");
             }
-
 
             // 添加技能
             zh += "-";
