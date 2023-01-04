@@ -323,7 +323,7 @@ namespace SysBot.Pokemon
             }
 
             //体型大小并添加证章
-            if (typeof(T) == typeof(PK9) && zh.Contains("体型") && !(candidateSpecieNo is 999 or 998 or 996 or 995 or 994 or 997))
+            if (typeof(T) == typeof(PK9) && zh.Contains("体型"))
             {
                 if (zh.Contains("XXXL"))//255
                 {
@@ -381,7 +381,7 @@ namespace SysBot.Pokemon
             //if (typeof(T) == typeof(PK9) && zh.Contains("野生"))（此条为其他大佬加入野生宝可梦功能时启用）
             if (typeof(T) == typeof(PK9))
             {
-                if (zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
+                if(zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
                 else if (zh.Contains("小个子之证")) { result += "\n.Scale=255\n.RibbonMarkJumbo=True"; }
                 else if (zh.Contains("大个子之证")) { result += "\n.Scale=0\n.RibbonMarkMini=True"; }
                 else if (zh.Contains("命运之证")) { result += "\n.RibbonMarkDestiny=True"; }
@@ -433,37 +433,34 @@ namespace SysBot.Pokemon
             }
 
             //添加全回忆技能
-            if (typeof(T) == typeof(PK9) && zh.Contains("全技能"))
+            if (typeof(T) == typeof(PK9) || typeof(T) == typeof(PK8))
             {
-                result += "\n.RelearnMoves=$suggestAll";
-                zh = zh.Replace("全技能", "");
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("全招式"))
-            {
-                result += "\n.RelearnMoves=$suggestAll";
-                zh = zh.Replace("全招式", "");
-            }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("ALLTR"))
-            {
-                result += "\n.RelearnMoves=$suggestAll";
-                zh = zh.Replace("ALLTR", "");
-            }
-            if (typeof(T) == typeof(PA8) && zh.Contains("全技能"))
-            {
-                result += "\n.MoveMastery=$suggestAll";
-                zh = zh.Replace("全技能", "");
-            }
-            else if (typeof(T) == typeof(PA8) && zh.Contains("全招式"))
-            {
-                result += "\n.MoveMastery=$suggestAll";
-                zh = zh.Replace("全招式", "");
-            }
-            else if (typeof(T) == typeof(PA8) && zh.Contains("ALLMOVE"))
-            {
-                result += "\n.MoveMastery=$suggestAll";
-                zh = zh.Replace("ALLMOVE", "");
-            }
+                if(zh.Contains("全技能"))
+                {
+                    result += "\n.RelearnMoves=$suggestAll";
+                    zh = zh.Replace("全技能", "");
 
+                }
+                else if(zh.Contains("全招式"))
+                {
+                    result += "\n.RelearnMoves=$suggestAll";
+                    zh = zh.Replace("全招式", "");
+                }
+            }
+            if (typeof(T) == typeof(PA8))
+            {
+                if (zh.Contains("全技能") || zh.Contains("全招式"))
+                {
+                    result += "\n.MoveMastery=$suggestAll";
+                    zh = zh.Replace("全技能", "");
+                }
+                else if(zh.Contains("全招式"))
+                {
+                    result += "\n.MoveMastery=$suggestAll";
+                    zh = zh.Replace("全招式", "");
+                }
+            }
+            
             // 添加技能
             zh += "-";
             for (int moveCount = 0; moveCount < 4; moveCount++)
