@@ -15,7 +15,7 @@ namespace SysBot.Pokemon
         [Category(Distribute), Description("当启用时，空闲的派送交换机器人将随机从DistributeFolder分发PKM文件\nWhen enabled, idle LinkTrade bots will randomly distribute PKM files from the DistributeFolder.")]
         public bool DistributeWhileIdle { get; set; } = true;
 
-        [Category(Distribute), Description("当启用时，空闲的派送交换机器人将随机从DistributeFolder分发PKM文件\nWhen enabled, the DistributionFolder will yield randomly rather than in the same sequence.")]
+        [Category(Distribute), Description("启用后，DistributionFolder将随机产生，而不是按照相同的顺序产生。\nWhen enabled, the DistributionFolder will yield randomly rather than in the same sequence.")]
         public bool Shuffled { get; set; }
 
         [Category(Distribute), Description("当设置为None以外的值时，除了匹配昵称外，随机交易还需要这个物种\nWhen set to something other than None, the Random Trades will require this species in addition to the nickname match.")]
@@ -24,7 +24,7 @@ namespace SysBot.Pokemon
         [Category(Distribute), Description("当设置为true时，随机的Ledy nickname-swap交易将退出，而不是从交易池中随机交易一个实体\nWhen set to true, Random Ledy nickname-swap trades will quit rather than trade a random entity from the pool.")]
         public bool LedyQuitIfNoMatch { get; set; }
 
-        [Category(Distribute), Description("派送交换连接密码\nDistribution Trade Link Code.")]
+        [Category(Distribute), Description("派送交换连接密码(0-99999999)\nDistribution Trade Link Code.")]
         public int TradeCode { get; set; } = 7196;
 
         [Category(Distribute), Description("派送交换连接密码使用最小值和最大值范围，而不是固定的贸易代码\nDistribution Trade Link Code uses the Min and Max range rather than the fixed trade code.")]

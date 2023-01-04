@@ -17,7 +17,7 @@ namespace SysBot.Pokemon
         [Category(FeatureToggle), Description("切换用户是否可以加入队列\nToggles if users can join the queue.")]
         public bool CanQueue { get; set; } = true;
 
-        [Category(FeatureToggle), Description("如果队列中已经有这么多用户，则禁止添加用户\nPrevents adding users if there are this many users in the queue already.")]
+        [Category(FeatureToggle), Description("如果队列中已经有该数量的用户，则禁止添加用户\nPrevents adding users if there are this many users in the queue already.")]
         public int MaxQueueCount { get; set; } = 999;
 
         [Category(FeatureToggle), Description("允许用户在交易时取消排队\nAllows users to dequeue while being traded.")]
@@ -31,16 +31,16 @@ namespace SysBot.Pokemon
 
         // Queue Toggle
 
-        [Category(QueueToggle), Description("阈值模式:将导致队列打开的用户数\nThreshold Mode: Count of users that will cause the queue to open.")]
+        [Category(QueueToggle), Description("Threshold模式:将导致队列打开的用户数\nThreshold Mode: Count of users that will cause the queue to open.")]
         public int ThresholdUnlock { get; set; } = 0;
 
-        [Category(QueueToggle), Description("阈值模式:将导致队列关闭的用户数\nThreshold Mode: Count of users that will cause the queue to close.")]
+        [Category(QueueToggle), Description("Threshold模式:将导致队列关闭的用户数\nThreshold Mode: Count of users that will cause the queue to close.")]
         public int ThresholdLock { get; set; } = 30;
 
-        [Category(QueueToggle), Description("预定模式:在队列锁定之前，被打开的秒数\nScheduled Mode: Seconds of being open before the queue locks.")]
+        [Category(QueueToggle), Description("Scheduled模式:在队列锁定之前，被打开的秒数\nScheduled Mode: Seconds of being open before the queue locks.")]
         public int IntervalOpenFor { get; set; } = 5 * 60;
 
-        [Category(QueueToggle), Description("预定模式:在队列解锁前被关闭的秒数\nScheduled Mode: Seconds of being closed before the queue unlocks.")]
+        [Category(QueueToggle), Description("Scheduled模式:在队列解锁前被关闭的秒数\nScheduled Mode: Seconds of being closed before the queue unlocks.")]
         public int IntervalCloseFor { get; set; } = 15 * 60;
 
         // Flex Users
@@ -62,16 +62,16 @@ namespace SysBot.Pokemon
         [Category(TimeBias), Description("决定是否应将重量加入或乘以总重量\nDetermines whether the weight should be added or multiplied to the total weight.")]
         public FlexBiasMode YieldMultWait { get; set; } = FlexBiasMode.Multiply;
 
-        [Category(TimeBias), Description("检查用户加入交换Trade队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Trade queue, and increases the queue's weight accordingly.")]
+        [Category(TimeBias), Description("检查用户加入Trade队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Trade queue, and increases the queue's weight accordingly.")]
         public int YieldMultWaitTrade { get; set; } = 1;
 
-        [Category(TimeBias), Description("检查用户加入种子检查Seed Check队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Seed Check queue, and increases the queue's weight accordingly.")]
+        [Category(TimeBias), Description("检查用户加入Seed Check队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Seed Check queue, and increases the queue's weight accordingly.")]
         public int YieldMultWaitSeedCheck { get; set; } = 1;
 
-        [Category(TimeBias), Description("检查用户加入克隆队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Clone queue, and increases the queue's weight accordingly.")]
+        [Category(TimeBias), Description("检查用户加入Clone队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Clone queue, and increases the queue's weight accordingly.")]
         public int YieldMultWaitClone { get; set; } = 1;
 
-        [Category(TimeBias), Description("检查用户加入转储队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Dump queue, and increases the queue's weight accordingly.")]
+        [Category(TimeBias), Description("检查用户加入Dump队列后经过的时间，并相应增加队列的权重\nChecks time elapsed since the user joined the Dump queue, and increases the queue's weight accordingly.")]
         public int YieldMultWaitDump { get; set; } = 1;
 
         [Category(TimeBias), Description("将队列中的用户数量相乘，以估计到用户被处理需要多少时间\nMultiplies the amount of users in queue to give an estimate of how much time it will take until the user is processed.")]

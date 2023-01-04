@@ -323,7 +323,7 @@ namespace SysBot.Pokemon
             }
 
             //体型大小并添加证章
-            if (typeof(T) == typeof(PK9) && zh.Contains("体型"))
+            if (typeof(T) == typeof(PK9) && zh.Contains("体型") && !(candidateSpecieNo is 999 or 998 or 996 or 995 or 994 or 997))
             {
                 if (zh.Contains("XXXL"))//255
                 {
@@ -432,7 +432,7 @@ namespace SysBot.Pokemon
                 else if (zh.Contains("疏忽之证")) { result += "\n.RibbonMarkZonedOut=True"; }
             }
             
-            //添加全回忆技能
+            //添加全回忆技能(不支持BDSP)
             if (typeof(T) == typeof(PK9) || typeof(T) == typeof(PK8))
             {
                 if(zh.Contains("全技能"))
