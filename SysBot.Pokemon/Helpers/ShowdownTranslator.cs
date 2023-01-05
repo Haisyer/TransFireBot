@@ -11,6 +11,7 @@ namespace SysBot.Pokemon
         {
             string result = "";
 
+
             // 添加宝可梦
             int candidateSpecieNo = 0;
             int candidateSpecieStringLength = 0;
@@ -50,8 +51,8 @@ namespace SysBot.Pokemon
                 zh = Regex.Replace(zh, "[A-Z?!？！]形态", "");
             }
 
-            // 识别地区形态
-            if (zh.Contains("帕底亚的样子（火）形态"))
+            // 识别肯泰罗地区形态
+            if (typeof(T) == typeof(PK9) && zh.Contains("帕底亚的样子（火）形态"))
             {
                 result += $"-Paldea-Fire";
                 zh = zh.Replace("帕底亚的样子（火）形态", "");
@@ -60,6 +61,32 @@ namespace SysBot.Pokemon
             {
                 result += $"-Paldea-Water";
                 zh = zh.Replace("帕底亚的样子（水）形态", "");
+            }
+            // 识别洛托姆形态
+            else if (zh.Contains("加热形态"))
+            {
+                result += $"-Heat";
+                zh = zh.Replace("加热形态", "");
+            }
+            else if (zh.Contains("清洗形态"))
+            {
+                result += $"-Wash";
+                zh = zh.Replace("清洗形态", "");
+            }
+            else if (zh.Contains("结冰形态"))
+            {
+                result += $"-Frost";
+                zh = zh.Replace("结冰形态", "");
+            }
+            else if (zh.Contains("旋转形态"))
+            {
+                result += $"-Fan";
+                zh = zh.Replace("旋转形态", "");
+            }
+            else if (zh.Contains("切割形态"))
+            {
+                result += $"-Mow";
+                zh = zh.Replace("切割形态", "");
             }
             else
             {
@@ -325,7 +352,7 @@ namespace SysBot.Pokemon
             //体型大小并添加证章
             if (typeof(T) == typeof(PK9) && zh.Contains("体型") && !(candidateSpecieNo is 999 or 998 or 996 or 995 or 994 or 997))
             {
-                if (zh.Contains("XXXL"))//255
+                if (zh.Contains("XXXL") || zh.Contains("最大"))//255
                 {
                     result += $"\n.Scale=255\n.RibbonMarkJumbo=True";
                     zh = zh.Replace("XXXL", "");
@@ -365,7 +392,7 @@ namespace SysBot.Pokemon
                     result += $"\n.Scale=$1,30";
                     zh = zh.Replace("XXS", "");
                 }
-                else if (zh.Contains("XXXS"))//0
+                else if (zh.Contains("XXXS") || zh.Contains("最小"))//0
                 {
                     result += $"\n.Scale=0\n.RibbonMarkMini=True";
                     zh = zh.Replace("XXXS", "");
