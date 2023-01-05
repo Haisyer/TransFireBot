@@ -57,7 +57,7 @@ namespace SysBot.Pokemon
                 result += $"-Paldea-Fire";
                 zh = zh.Replace("帕底亚的样子（火）形态", "");
             }
-            else if (zh.Contains("帕底亚的样子（水）形态"))
+            else if (typeof(T) == typeof(PK9) && zh.Contains("帕底亚的样子（水）形态"))
             {
                 result += $"-Paldea-Water";
                 zh = zh.Replace("帕底亚的样子（水）形态", "");
@@ -215,37 +215,37 @@ namespace SysBot.Pokemon
             // 添加个体值
             if (zh.ToUpper().Contains("6V"))//默认
             {
-                result += "\nIVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
+                result += "\n.IVs=31";
                 zh = zh.Replace("6V", "");
             }
             else if (zh.ToUpper().Contains("5V0A"))
             {
-                result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
+                result += "\n.IVs=31\n.IV_ATK=0";
                 zh = zh.Replace("5V0A", "");
             }
             else if (zh.ToUpper().Contains("5V0攻"))
             {
-                result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
+                result += "\n.IVs=31\n.IV_ATK=0";
                 zh = zh.Replace("5V0攻", "");
             }
             else if (zh.ToUpper().Contains("5V0S"))
             {
-                result += "\nIVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
+                result += "\n.IVs=31\n.IV_SPE=0";
                 zh = zh.Replace("5V0S", "");
             }
             else if (zh.ToUpper().Contains("5V0速"))
             {
-                result += "\nIVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
+                result += "\n.IVs=31\n.IV_SPE=0";
                 zh = zh.Replace("5V0速", "");
             }
             else if (zh.ToUpper().Contains("4V0A0S"))
             {
-                result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
+                result += "\n.IVs=31\n.IV_ATK=0\n.IV_SPE=0";
                 zh = zh.Replace("4V0A0S", "");
             }
             else if (zh.ToUpper().Contains("4V0攻0速"))
             {
-                result += "\nIVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 0 Spe";
+                result += "\n.IVs=31\n.IV_ATK=0\n.IV_SPE=0";
                 zh = zh.Replace("4V0攻0速", "");
             }
 
