@@ -67,7 +67,7 @@ namespace SysBot.Pokemon
             {
                 await InitializeHardware(Hub.Config.Trade, token).ConfigureAwait(false);
 
-                Log("Identifying trainer data of the host console.");
+                Log("识别主机控制台的训练家数据Identifying trainer data of the host console.");
                 var sav = await IdentifyTrainer(token).ConfigureAwait(false);
                 RecentTrainerCache.SetRecentTrainer(sav);
 
@@ -120,7 +120,7 @@ namespace SysBot.Pokemon
             while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.Idle)
             {
                 if (waitCounter == 0)
-                    Log("No task assigned. Waiting for new task assignment.");
+                    Log("没有分配任务。正在等待新的任务分配No task assigned. Waiting for new task assignment.");
                 waitCounter++;
                 if (waitCounter % 10 == 0 && Hub.Config.AntiIdle)
                     await Click(B, 1_000, token).ConfigureAwait(false);
