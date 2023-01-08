@@ -373,7 +373,7 @@ namespace SysBot.Pokemon
             {
                 if (zh.Contains("XXXL") || zh.Contains("最大"))//255
                 {
-                    result += $"\n.Scale=255\n.RibbonMarkJumbo=True";
+                    result += $"\n.Scale=255";
                     zh = zh.Replace("XXXL", "");
                 }
                 else if (zh.Contains("XXL"))//242-254
@@ -413,7 +413,7 @@ namespace SysBot.Pokemon
                 }
                 else if (zh.Contains("XXXS") || zh.Contains("最小"))//0
                 {
-                    result += $"\n.Scale=0\n.RibbonMarkMini=True";
+                    result += $"\n.Scale=0";
                     zh = zh.Replace("XXXS", "");
                 }
             }
