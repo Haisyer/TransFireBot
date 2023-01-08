@@ -190,7 +190,7 @@ namespace SysBot.Pokemon.WinForms
             Tab_Logs.Select();
 
             if (Bots.Count == 0)
-                WinFormsUtil.Alert("No bots configured, but all supporting services have been started.");
+                WinFormsUtil.Alert("没有配置机器人，但所有支持服务都已启动\nNo bots configured, but all supporting services have been started.");
         }
 
         private void SendAll(BotControlCommand cmd)
@@ -198,7 +198,7 @@ namespace SysBot.Pokemon.WinForms
             foreach (var c in FLP_Bots.Controls.OfType<BotController>())
                 c.SendCommand(cmd, false);
 
-            EchoUtil.Echo($"All bots have been issued a command to {cmd}.");
+            EchoUtil.Echo($"所有的机器人都已被下达命令{cmd}\nAll bots have been issued a command to {cmd}.");
         }
 
         private void B_Stop_Click(object sender, EventArgs e)
@@ -216,12 +216,12 @@ namespace SysBot.Pokemon.WinForms
             {
                 if (env.IsRunning)
                 {
-                    WinFormsUtil.Alert("Commanding all bots to Idle.", "Press Stop (without a modifier key) to hard-stop and unlock control, or press Stop with the modifier key again to resume.");
+                    WinFormsUtil.Alert("命令所有机器人闲置.", "Press Stop (without a modifier key) to hard-stop and unlock control, or press Stop with the modifier key again to resume.");
                     cmd = BotControlCommand.Idle;
                 }
                 else
                 {
-                    WinFormsUtil.Alert("Commanding all bots to resume their original task.", "Press Stop (without a modifier key) to hard-stop and unlock control.");
+                    WinFormsUtil.Alert("命令所有机器人恢复原来的任务.", "Press Stop (without a modifier key) to hard-stop and unlock control.");
                     cmd = BotControlCommand.Resume;
                 }
             }
@@ -233,7 +233,7 @@ namespace SysBot.Pokemon.WinForms
             var cfg = CreateNewBotConfig();
             if (!AddBot(cfg))
             {
-                WinFormsUtil.Alert("Unable to add bot; ensure details are valid and not duplicate with an already existing bot.");
+                WinFormsUtil.Alert("无法添加机器人;确保详细是有效的，并且不会与现有的机器人重复\nUnable to add bot; ensure details are valid and not duplicate with an already existing bot.");
                 return;
             }
             System.Media.SystemSounds.Asterisk.Play();
@@ -250,7 +250,7 @@ namespace SysBot.Pokemon.WinForms
             PokeRoutineExecutorBase newBot;
             try
             {
-                Console.WriteLine($"Current Mode ({Config.Mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
+                Console.WriteLine($"当前（{Config.Mode}）模式,不支持（{cfg.CurrentRoutineType}）机器人\nCurrent Mode ({Config.Mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
                 newBot = RunningEnvironment.CreateBotFromConfig(cfg);
             }
             catch

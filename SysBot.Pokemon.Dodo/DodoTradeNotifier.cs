@@ -21,7 +21,7 @@ namespace SysBot.Pokemon.Dodo
             Code = code;
             Username = username;
             ChannelId = channelId;
-            LogUtil.LogText($"Created trade details for {Username} - {Code}");
+            LogUtil.LogText($"创建交易细节: {Username} - {Code}");
         }
 
         public Action<PokeRoutineExecutor<T>> OnFinish { private get; set; }
@@ -34,9 +34,9 @@ namespace SysBot.Pokemon.Dodo
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);
-            var line = $"@{info.Trainer.TrainerName}: Trade canceled, {msg}";
+            var line = $"交换已取消, 取消原因:{msg}";
             LogUtil.LogText(line);
-            DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, "交换取消", ChannelId);
+            DodoBot<T>.SendChannelAtMessage(info.Trainer.ID,line, ChannelId);
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
@@ -44,35 +44,35 @@ namespace SysBot.Pokemon.Dodo
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
             var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0
-                ? $"Trade finished. Enjoy your {(Species) tradedToUser}!"
-                : "Trade finished!");
+                ? $"交易完成。享受您的 {(Species) tradedToUser}!"
+                : "交易完成!");
             LogUtil.LogText(message);
-            DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, "交换完成", ChannelId);
+            DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, message, ChannelId);
         }
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
             var msg =
-                $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready.";
-            msg += $" Your trade code is: {info.Code:0000 0000}";
+                $"正在初始化与{info.Trainer.TrainerName}(ID: {info.ID})的交易{receive}";
+            msg += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
-            var text = $"\n派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:初始化\n请准备好";
+            var text = $"ID: {info.ID}\n正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:初始化\n请准备好\n";
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, text, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(),
-                $"派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:{info.Code:0000 0000}");
+                $"正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n您的密码:{info.Code:0000 0000}\n{routine.InGameName}正在派送");
         }
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             var name = Info.TrainerName;
             var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
-            var message = $"I'm waiting for you{trainer}! My IGN is {routine.InGameName}.";
-            message += $" Your trade code is: {info.Code:0000 0000}";
+            var message = $"正在等待{trainer}!,机器人IGN为{routine.InGameName}.";
+            message += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(message);
-            var text = $"派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:搜索中\n";
+            var text = $"ID: {info.ID}\n我正在等你{trainer}\n我的游戏ID为{routine.InGameName}\n正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:搜索中\n";
             DodoBot<T>.SendChannelMessage(text, ChannelId);
-            //DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"{info.Code:0000 0000}");
+            DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你{trainer}\n密码:{info.Code:0000 0000}\n请速来领取");
         }
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeSummary message)
@@ -85,12 +85,12 @@ namespace SysBot.Pokemon.Dodo
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
-            var msg = $"Details for {result.FileName}: " + message;
+            var msg = $"{result.FileName}的详细信息: " + message;
             LogUtil.LogText(msg);
             if (result.Species != 0 && info.Type == PokeTradeType.Dump)
             {
                 var text =
-                    $"species:{result.Species}\npid:{result.PID}\nec:{result.EncryptionConstant}\nIVs:{string.Join(",", result.IVs)}";
+                    $"宝可梦:{result.Species}\nPID:{result.PID}\nEC:{result.EncryptionConstant}\n个体值:{string.Join(",", result.IVs)}\n表ID:{result.TID}\n里ID:{result.SID}\n闪光:{result.IsShiny}";
                 DodoBot<T>.SendChannelMessage(text, ChannelId);
             }
         }

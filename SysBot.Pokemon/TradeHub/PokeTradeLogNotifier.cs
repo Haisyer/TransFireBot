@@ -9,23 +9,23 @@ namespace SysBot.Pokemon
     {
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            LogUtil.LogInfo($"Starting trade loop for {info.Trainer.TrainerName}, sending {GameInfo.GetStrings(1).Species[info.TradeData.Species]}", routine.Connection.Label);
+            LogUtil.LogInfo($"开始{info.Trainer.TrainerName}的交换循环, 发送{GameInfo.GetStrings(1).Species[info.TradeData.Species]}", routine.Connection.Label);
         }
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            LogUtil.LogInfo($"Searching for trade with {info.Trainer.TrainerName}, sending {GameInfo.GetStrings(1).Species[info.TradeData.Species]}", routine.Connection.Label);
+            LogUtil.LogInfo($"搜索与 {info.Trainer.TrainerName}的交换, 发送 {GameInfo.GetStrings(1).Species[info.TradeData.Species]}", routine.Connection.Label);
         }
 
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
-            LogUtil.LogInfo($"Canceling trade with {info.Trainer.TrainerName}, because {msg}.", routine.Connection.Label);
+            LogUtil.LogInfo($"因为{msg},取消交换 {info.Trainer.TrainerName}", routine.Connection.Label);
             OnFinish?.Invoke(routine);
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
         {
-            LogUtil.LogInfo($"Finished trading {info.Trainer.TrainerName} {GameInfo.GetStrings(1).Species[info.TradeData.Species]} for {GameInfo.GetStrings(1).Species[result.Species]}", routine.Connection.Label);
+            LogUtil.LogInfo($"完成了{info.Trainer.TrainerName} {GameInfo.GetStrings(1).Species[info.TradeData.Species]}的{GameInfo.GetStrings(1).Species[result.Species]}交换", routine.Connection.Label);
             OnFinish?.Invoke(routine);
         }
 
@@ -44,7 +44,7 @@ namespace SysBot.Pokemon
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
-            LogUtil.LogInfo($"Notifying {info.Trainer.TrainerName} about their {GameInfo.GetStrings(1).Species[result.Species]}", routine.Connection.Label);
+            LogUtil.LogInfo($"通知{info.Trainer.TrainerName}关于他们的{GameInfo.GetStrings(1).Species[result.Species]}", routine.Connection.Label);
             LogUtil.LogInfo(message, routine.Connection.Label);
         }
 

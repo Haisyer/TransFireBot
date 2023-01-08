@@ -11,8 +11,8 @@ namespace SysBot.Pokemon
     {
         public void CalculateAndNotify(T pkm, PokeTradeDetail<T> detail, SeedCheckSettings settings, PokeRoutineExecutor<T> bot)
         {
-            const string msg = "Seed searching implementation not found. " +
-                               "Please let the person hosting the bot know that they need to provide the required Z3 files.";
+            const string msg = "未找到SEED搜索implementation. " +
+                               "请告知机器人管理员,需要提供Z3文件";
             detail.SendNotification(bot, msg);
         }
     }
