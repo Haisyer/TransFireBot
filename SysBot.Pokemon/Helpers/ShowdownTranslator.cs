@@ -34,7 +34,7 @@ namespace SysBot.Pokemon
                     else if (candidateSpecieNo == 32) result = "(Nidoran-M)";
 
                     // 特殊性别差异
-                    // 29-尼多兰F，32-尼多朗M，678-超能妙喵F，876-爱管侍F，902-幽尾玄鱼F, 916-飘香豚
+                    // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
                     else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
 
                     // 识别肯泰罗地区形态
@@ -71,7 +71,7 @@ namespace SysBot.Pokemon
                     zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
 
                     // 特殊性别差异
-                    // 29-尼多兰F，32-尼多朗M，678-超能妙喵F，876-爱管侍F，902-幽尾玄鱼F, 916-飘香豚
+                    // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
                     if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += "-F";
                 }
                 else
@@ -101,7 +101,33 @@ namespace SysBot.Pokemon
                         break;
                     }
                 }
-            }
+                // 识别洛托姆形态
+                if (zh.Contains("加热形态"))
+                {
+                        result += $"-Heat";
+                        zh = zh.Replace("加热形态", "");
+                    }
+                else if (zh.Contains("清洗形态"))
+                {
+                        result += $"-Wash";
+                        zh = zh.Replace("清洗形态", "");
+                    }
+                else if (zh.Contains("结冰形态"))
+                {
+                        result += $"-Frost";
+                        zh = zh.Replace("结冰形态", "");
+                    }
+                else if (zh.Contains("旋转形态"))
+                {
+                        result += $"-Fan";
+                        zh = zh.Replace("旋转形态", "");
+                    }
+                else if (zh.Contains("切割形态"))
+                {
+                        result += $"-Mow";
+                        zh = zh.Replace("切割形态", "");
+                    }
+                }
             // 识别未知图腾
             if (Regex.IsMatch(zh, "[A-Z?!？！]形态"))
             {
@@ -212,15 +238,22 @@ namespace SysBot.Pokemon
             }
 
             // 添加特性
-            for (int i = 1; i < GameStringsZh.Ability.Count; i++)
+            if (zh.Contains("梦特"))
             {
-                if (GameStringsZh.Ability[i].Length == 0) continue;
-                if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
-                result += $"\nAbility: {GameStringsEn.Ability[i]}";
-                zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
-                break;
+                result += "\n.AbilityNumber=4";
+                zh = zh.Replace("梦特", "");
             }
-
+            else
+            {
+                for (int i = 1; i < GameStringsZh.Ability.Count; i++)
+                {
+                    if (GameStringsZh.Ability[i].Length == 0) continue;
+                    if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
+                    result += $"\nAbility: {GameStringsEn.Ability[i]}";
+                    zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
+                    break;
+                }
+            }
             // 添加性格
             for (int i = 0; i < GameStringsZh.Natures.Count; i++)
             {

@@ -67,12 +67,12 @@ namespace SysBot.Pokemon.Dodo
         {
             var name = Info.TrainerName;
             var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
-            var message = $"正在等待{trainer}!,机器人IGN为{routine.InGameName}.";
+            var message = $"正在等待{name}!,机器人IGN为{routine.InGameName}.";
             message += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(message);
-            var text = $"ID: {info.ID}\n我正在等你{trainer}\n我的游戏ID为{routine.InGameName}\n正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:搜索中\n";
+            var text = $"我正在等你,{name}ID: {info.ID}\n我的游戏ID为{routine.InGameName}\n正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:搜索中\n";
             DodoBot<T>.SendChannelMessage(text, ChannelId);
-            DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你{trainer}\n密码:{info.Code:0000 0000}\n请速来领取");
+            DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你,{name}\n密码:{info.Code:0000 0000}\n请速来领取");
         }
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeSummary message)
