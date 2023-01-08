@@ -1029,7 +1029,7 @@ namespace SysBot.Pokemon
         {
             if (toSend.Species == (ushort)Species.Ditto)
             {
-                Log($"Do nothing to trade Pokemon, since pokemon is Ditto");
+                Log($"发送百变怪，不进行自id操作");
                 return false;
             }
             var cln = (PK9)toSend.Clone();
@@ -1038,8 +1038,41 @@ namespace SysBot.Pokemon
             cln.TrainerSID7 = (int)Math.Abs(tradePartner.DisplaySID);
             cln.Language = tradePartner.Language;
             cln.OT_Name = tradePartner.OT;
-            cln.Version = tradePartner.Game;
-            cln.ClearNickname();
+            if (toSend.IsEgg == false)
+            {
+                if (toSend.Species == 998)
+                {
+                    cln.Version = 50;
+                    Log($"故勒顿，强制修改版本为朱");
+
+                }
+                else if (toSend.Species == 999)
+                {
+                    cln.Version = 51;
+                    Log($"密勒顿，强制修改版本为紫");
+                }
+                else
+                {
+                    cln.Version = tradePartner.Game;
+                }
+                cln.ClearNickname();
+            }
+            else
+            {
+                cln.IsNicknamed = true;
+                cln.Nickname = tradePartner.Language switch
+                {
+                    1 => "タマゴ",
+                    3 => "Œuf",
+                    4 => "Uovo",
+                    5 => "Ei",
+                    7 => "Huevo",
+                    8 => "알",
+                    9 or 10 => "蛋",
+                    _ => "Egg",
+                };
+                Log($"是蛋,修改昵称");
+            }
 
             if (toSend.IsShiny)
                 cln.SetShiny();
@@ -1049,12 +1082,12 @@ namespace SysBot.Pokemon
             var tradeSV = new LegalityAnalysis(cln);
             if (tradeSV.Valid)
             {
-                Log($"Pokemon is valid, use trade partnerInfo");
+                Log($"自id后合法，使用自id");
                 await SetBoxPokemonAbsolute(BoxStartOffset, cln, token, sav).ConfigureAwait(false);
             }
             else
             {
-                Log($"Pokemon not valid, do nothing to trade Pokemon");
+                Log($"自id后不合法，使用默认id");
             }
 
             return tradeSV.Valid;
