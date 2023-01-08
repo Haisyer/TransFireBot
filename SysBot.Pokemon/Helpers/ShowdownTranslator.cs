@@ -15,7 +15,7 @@ namespace SysBot.Pokemon
             // 添加宝可梦
             int candidateSpecieNo = 0;
             int candidateSpecieStringLength = 0;
-            for (int i = 0; i < GameStringsZh.Species.Count; i++)
+            for (int i = 1; i < GameStringsZh.Species.Count; i++)
             {
                 if (zh.Contains(GameStringsZh.Species[i]) && GameStringsZh.Species[i].Length > candidateSpecieStringLength)
                 {
@@ -52,41 +52,15 @@ namespace SysBot.Pokemon
             }
 
             // 识别肯泰罗地区形态
-            if (typeof(T) == typeof(PK9) && zh.Contains("帕底亚的样子（火）形态"))
+            if (zh.Contains("帕底亚的样子（火）形态"))
             {
                 result += $"-Paldea-Fire";
                 zh = zh.Replace("帕底亚的样子（火）形态", "");
             }
-            else if (typeof(T) == typeof(PK9) && zh.Contains("帕底亚的样子（水）形态"))
+            else if (zh.Contains("帕底亚的样子（水）形态"))
             {
                 result += $"-Paldea-Water";
                 zh = zh.Replace("帕底亚的样子（水）形态", "");
-            }
-            // 识别洛托姆形态
-            else if (zh.Contains("加热形态"))
-            {
-                result += $"-Heat";
-                zh = zh.Replace("加热形态", "");
-            }
-            else if (zh.Contains("清洗形态"))
-            {
-                result += $"-Wash";
-                zh = zh.Replace("清洗形态", "");
-            }
-            else if (zh.Contains("结冰形态"))
-            {
-                result += $"-Frost";
-                zh = zh.Replace("结冰形态", "");
-            }
-            else if (zh.Contains("旋转形态"))
-            {
-                result += $"-Fan";
-                zh = zh.Replace("旋转形态", "");
-            }
-            else if (zh.Contains("切割形态"))
-            {
-                result += $"-Mow";
-                zh = zh.Replace("切割形态", "");
             }
             else
             {
@@ -115,7 +89,7 @@ namespace SysBot.Pokemon
             // 添加持有物
             if (zh.Contains("持有"))
             {
-                for (int i = 0; i < GameStringsZh.Item.Count; i++)
+                for (int i = 1; i < GameStringsZh.Item.Count; i++)
                 {
                     if (GameStringsZh.Item[i].Length == 0) continue;
                     if (!zh.Contains("持有" + GameStringsZh.Item[i])) continue;
@@ -126,7 +100,7 @@ namespace SysBot.Pokemon
             }
             else if (zh.Contains("携带"))
             {
-                for (int i = 0; i < GameStringsZh.Item.Count; i++)
+                for (int i = 1; i < GameStringsZh.Item.Count; i++)
                 {
                     if (GameStringsZh.Item[i].Length == 0) continue;
                     if (!zh.Contains("携带" + GameStringsZh.Item[i])) continue;
@@ -181,7 +155,7 @@ namespace SysBot.Pokemon
             }
 
             // 添加球种
-            for (int i = 0; i < GameStringsZh.balllist.Length; i++)
+            for (int i = 1; i < GameStringsZh.balllist.Length; i++)
             {
                 if (GameStringsZh.balllist[i].Length == 0) continue;
                 if (!zh.Contains(GameStringsZh.balllist[i])) continue;
@@ -193,7 +167,7 @@ namespace SysBot.Pokemon
             }
 
             // 添加特性
-            for (int i = 0; i < GameStringsZh.Ability.Count; i++)
+            for (int i = 1; i < GameStringsZh.Ability.Count; i++)
             {
                 if (GameStringsZh.Ability[i].Length == 0) continue;
                 if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
