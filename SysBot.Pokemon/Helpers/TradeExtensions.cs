@@ -143,8 +143,8 @@ namespace SysBot.Pokemon
                 _ => 60002, //PK8
             };
 
-            pk.MetDate = DateTime.Parse("2020/10/20");
-            pk.EggMetDate = pk.MetDate;
+          
+          
             pk.HeldItem = 0;
             pk.CurrentLevel = 1;
             pk.EXP = 0;
@@ -204,10 +204,10 @@ namespace SysBot.Pokemon
                 pk9.TeraTypeOverride = (MoveType)19;
             }
 
-            pk = TrashBytes(pk);
+         // pk = TrashBytes(pk);
             var la = new LegalityAnalysis(pk);
             var enc = la.EncounterMatch;
-            pk.CurrentFriendship = enc is EncounterStatic s ? s.EggCycles : pk.PersonalInfo.HatchCycles;
+          
 
             pk.RelearnMoves = (ushort[])enc.GetSuggestedRelearn(pk);
             pk.SetSuggestedMoves();
@@ -288,9 +288,6 @@ namespace SysBot.Pokemon
         public static PKM TrashBytes(PKM pkm, LegalityAnalysis? la = null)
         {
             var pkMet = (T)pkm.Clone();
-            if (pkMet.Version is not (int)GameVersion.GO)
-                pkMet.MetDate = DateTime.Parse("2020/10/20");
-
             var analysis = new LegalityAnalysis(pkMet);
             var pkTrash = (T)pkMet.Clone();
             if (analysis.Valid)
