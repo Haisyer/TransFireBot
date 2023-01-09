@@ -11,7 +11,7 @@ Uses [Mirai.Net](https://github.com/SinoAHpx/Mirai.Net) as a dependency via Nuge
 
 ## Usage
 - Build SysBot.Pokemon.WinForms
-- Setup your switch **with CFW** by this [wiki](https://github.com/kwsch/SysBot.NET/wiki/Bot-Startup-Details)
+- Setup your switch ***with CFW*** by this [wiki](https://github.com/kwsch/SysBot.NET/wiki/Bot-Startup-Details)
 - Download [MCL](https://github.com/iTXTech/mirai-console-loader) and add mirai plugin [mirai-api-http](https://github.com/project-mirai/mirai-api-http)
 - Config mirai-api-http by [this](https://github.com/project-mirai/mirai-api-http/blob/master/README.md)
 - Start [MCL](https://github.com/iTXTech/mirai-console-loader) and check if it works

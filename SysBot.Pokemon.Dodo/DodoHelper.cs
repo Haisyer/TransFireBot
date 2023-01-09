@@ -132,14 +132,14 @@ namespace SysBot.Pokemon.Dodo
 
             var position = DodoBot<T>.Info.CheckPosition(userId, type);
             //msg = $"@{name}: Added to the {type} queue, unique ID: {detail.ID}. Current Position: {position.Position}";
-            msg = $" @{name}:你已经在{type}队列,识别码:{detail.ID},你在第{position.Position}位";
+            msg = $" <@!{userId}>:你已经在***{type}***队列,识别码:***{detail.ID}***,你在第***{position.Position}***位";
 
             var botct = DodoBot<T>.Info.Hub.Bots.Count;
             if (position.Position > botct)
             {
                 var eta = DodoBot<T>.Info.Hub.Config.Queues.EstimateDelay(position.Position, botct);
                 //msg += $". Estimated: {eta:F1} minutes.";
-                msg += $", 需等待约{eta:F1}分钟";
+                msg += $", 需等待约***{eta:F1}***分钟";
             }
 
             return true;

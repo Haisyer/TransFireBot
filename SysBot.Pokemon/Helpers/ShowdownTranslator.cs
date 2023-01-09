@@ -408,15 +408,15 @@ namespace SysBot.Pokemon
                 result += $"\n.Scale={value}";
                 zh = Regex.Replace(zh, "\\d{1,3}大小", "");
             }
-            else if(zh.Contains("体型最大"))
+            else if(zh.Contains("最大体型"))
             {
                 result += "\n.Scale=255";
-                zh = zh.Replace("体型最大", "");
+                zh = zh.Replace("最大体型", "");
             }
-            else if (zh.Contains("体型最小"))
+            else if (zh.Contains("最小体型"))
             {
                 result += "\n.Scale=0";
-                zh = zh.Replace("体型最小", "");
+                zh = zh.Replace("最小体型", "");
             }
 
             //补充后天获得的全奖章

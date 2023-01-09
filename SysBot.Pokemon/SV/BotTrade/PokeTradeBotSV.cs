@@ -755,7 +755,7 @@ namespace SysBot.Pokemon
                 var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose : $"File {ctr}";
                 // Extra information for shiny eggs, because of people dumping to skip hatching.
                 var eggstring = pk.IsEgg ? "Egg " : string.Empty;
-                msg += pk.IsShiny ? $"\n**这个宝可梦 {eggstring}是闪的,恭喜您!**" : string.Empty;
+                msg += pk.IsShiny ? $"\n***这个宝可梦 {eggstring}是闪的,恭喜您!***" : string.Empty;
                 detail.SendNotification(this, pk, msg);
             }
 
@@ -814,14 +814,14 @@ namespace SysBot.Pokemon
             if (Hub.Config.Legality.ResetHOMETracker)
                 clone.Tracker = 0;
 
-            poke.SendNotification(this, $"**克隆了你的{GameInfo.GetStrings(1).Species[clone.Species]}!**\n现在按B取消你的交换申请，给我一只你不需要的宝可梦。");
+            poke.SendNotification(this, $"***克隆了你的{GameInfo.GetStrings(1).Species[clone.Species]}!***\n现在按B取消你的交换申请，给我一只你不需要的宝可梦。");
             Log($"Cloned a {GameInfo.GetStrings(1).Species[clone.Species]}. Waiting for user to change their Pokémon...");
 
             // Separate this out from WaitForPokemonChanged since we compare to old EC from original read.
             var partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
             if (!partnerFound)
             {
-                poke.SendNotification(this, "**嘿，快换，不然我就走了!!!**");
+                poke.SendNotification(this, "***嘿，快换，不然我就走了!!!***");
                 // They get one more chance.
                 partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
             }

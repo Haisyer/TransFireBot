@@ -43,11 +43,14 @@ namespace SysBot.Pokemon.Dodo
         {
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
-            var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0
-                ? $"交易完成。享受您的 {(Species) tradedToUser}!"
+            var message = $"{info.Trainer.TrainerName}: " + (tradedToUser != 0
+                ? $"交易完成。享受您的{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}({(Species) tradedToUser})!"
                 : "交易完成!");
+            var text =
+                   $"\n宝可梦:***{result.Species}***\nPID:***{result.PID}***\nEC:***{result.EncryptionConstant}***\n个体值:***{string.Join(",", result.IVs)}***\n表ID:***{result.DisplayTID}***\n里ID:***{result.DisplaySID}***\n初训家名:***{result.OT_Name}***\n初训家性别:***{result.OT_Gender}***";
             LogUtil.LogText(message);
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, message, ChannelId);
+            DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(),text);
         }
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
@@ -57,7 +60,7 @@ namespace SysBot.Pokemon.Dodo
                 $"正在初始化与{info.Trainer.TrainerName}(ID: {info.ID})的交易{receive}";
             msg += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
-            var text = $"ID: {info.ID}\n正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:初始化\n请准备好\n";
+            var text = $"队列号:***{info.ID}***\n正在派送:***{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}***\n密码:见私信\n状态:初始化\n请准备好\n";
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, text, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(),
                 $"正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n您的密码:{info.Code:0000 0000}\n{routine.InGameName}正在派送");
@@ -70,7 +73,7 @@ namespace SysBot.Pokemon.Dodo
             var message = $"正在等待{name}!,机器人IGN为{routine.InGameName}.";
             message += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(message);
-            var text = $"我正在等你,{name}ID: {info.ID}\n我的游戏ID为{routine.InGameName}\n正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n密码:见私信\n状态:搜索中\n";
+            var text = $"我正在等你,{name},第{info.ID}号\n我的游戏ID为{routine.InGameName}\n正在派送:***{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}***\n密码:***见私信***\n状态:搜索中\n";
             DodoBot<T>.SendChannelMessage(text, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你,{name}\n密码:{info.Code:0000 0000}\n请速来领取");
         }
@@ -90,7 +93,7 @@ namespace SysBot.Pokemon.Dodo
             if (result.Species != 0 && info.Type == PokeTradeType.Dump)
             {
                 var text =
-                    $"宝可梦:{result.Species}\nPID:{result.PID}\nEC:{result.EncryptionConstant}\n个体值:{string.Join(",", result.IVs)}\n表ID:{result.TID}\n里ID:{result.SID}\n闪光:{result.IsShiny}";
+                    $"宝可梦:***{result.Species}***\nPID:***{result.PID}***\nEC:***{result.EncryptionConstant}***\n个体值:***{string.Join(",", result.IVs)}***\n表ID:***{result.DisplayTID}***\n里ID:***{result.DisplaySID}***\n闪光:***{result.IsShiny}***";
                 DodoBot<T>.SendChannelMessage(text, ChannelId);
             }
         }

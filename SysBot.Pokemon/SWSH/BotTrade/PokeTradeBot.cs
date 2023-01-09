@@ -641,7 +641,7 @@ namespace SysBot.Pokemon
             if (Hub.Config.Legality.ResetHOMETracker)
                 clone.Tracker = 0;
 
-            poke.SendNotification(this, $"**Cloned your {GameInfo.GetStrings(1).Species[clone.Species]}!**\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
+            poke.SendNotification(this, $"***Cloned your {GameInfo.GetStrings(1).Species[clone.Species]}!***\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
             Log($"Cloned a {(Species)clone.Species}. Waiting for user to change their Pokémon...");
 
             // Separate this out from WaitForPokemonChanged since we compare to old EC from original read.
@@ -649,7 +649,7 @@ namespace SysBot.Pokemon
 
             if (!partnerFound)
             {
-                poke.SendNotification(this, "**HEY CHANGE IT NOW OR I AM LEAVING!!!**");
+                poke.SendNotification(this, "***HEY CHANGE IT NOW OR I AM LEAVING!!!***");
                 // They get one more chance.
                 partnerFound = await ReadUntilChanged(LinkTradePartnerPokemonOffset, oldEC, 15_000, 0_200, false, token).ConfigureAwait(false);
             }
@@ -754,7 +754,7 @@ namespace SysBot.Pokemon
                 var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose : $"File {ctr}";
                 // Extra information for shiny eggs, because of people dumping to skip hatching.
                 var eggstring = pk.IsEgg ? "Egg " : string.Empty;
-                msg += pk.IsShiny ? $"\n**This Pokémon {eggstring}is shiny!**" : string.Empty;
+                msg += pk.IsShiny ? $"\n***This Pokémon {eggstring}is shiny!***" : string.Empty;
                 detail.SendNotification(this, pk, msg);
             }
 

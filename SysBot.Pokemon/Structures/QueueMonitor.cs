@@ -32,7 +32,7 @@ namespace SysBot.Pokemon
                 secWaited = 0;
                 var state = queues.GetCanQueue()
                     ? "Users are now able to join the trade queue."
-                    : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                    : "Changed queue settings: ***Users CANNOT join the queue until it is turned back on.***";
                 EchoUtil.Echo(state);
             }
         }

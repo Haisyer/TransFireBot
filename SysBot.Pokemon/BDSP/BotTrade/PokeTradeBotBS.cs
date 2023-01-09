@@ -673,7 +673,7 @@ namespace SysBot.Pokemon
                 var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose : $"File {ctr}";
                 // Extra information for shiny eggs, because of people dumping to skip hatching.
                 var eggstring = pk.IsEgg ? "Egg " : string.Empty;
-                msg += pk.IsShiny ? $"\n**This Pokémon {eggstring}is shiny!**" : string.Empty;
+                msg += pk.IsShiny ? $"\n***This Pokémon {eggstring}is shiny!***" : string.Empty;
                 detail.SendNotification(this, pk, msg);
             }
 

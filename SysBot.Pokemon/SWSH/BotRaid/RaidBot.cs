@@ -133,14 +133,14 @@ namespace SysBot.Pokemon
             }
 
             if (addFriends && !string.IsNullOrEmpty(Settings.FriendCode))
-                EchoUtil.Echo($"Send a friend request to Friend Code **{Settings.FriendCode}** to join in! Friends will be added after this raid.");
+                EchoUtil.Echo($"Send a friend request to Friend Code ***{Settings.FriendCode}*** to join in! Friends will be added after this raid.");
 
             // Invite others, confirm Pokémon and wait
             await Click(A, 7_000 + Hub.Config.Timings.ExtraTimeOpenRaid, token).ConfigureAwait(false);
             await Click(DUP, 1_000, token).ConfigureAwait(false);
             await Click(A, 1_000, token).ConfigureAwait(false);
 
-            var linkcodemsg = code < 0 ? "no Link Code" : $"code **{code:0000 0000}**";
+            var linkcodemsg = code < 0 ? "no Link Code" : $"code ***{code:0000 0000}***";
 
             string raiddescmsg = string.IsNullOrEmpty(Settings.RaidDescription) ? ((Species)raidBossSpecies).ToString() : Settings.RaidDescription;
             EchoUtil.Echo($"Raid lobby for {raiddescmsg} is open with {linkcodemsg}.");
