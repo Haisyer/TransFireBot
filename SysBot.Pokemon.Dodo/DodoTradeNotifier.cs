@@ -47,10 +47,17 @@ namespace SysBot.Pokemon.Dodo
                 ? $"交易完成。享受您的{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}({(Species) tradedToUser})!"
                 : "交易完成!");
             var text =
-                   $"\n宝可梦:***{result.Species}***\nPID:***{result.PID}***\nEC:***{result.EncryptionConstant}***\n个体值:***{string.Join(",", result.IVs)}***\n表ID:***{result.DisplayTID}***\n里ID:***{result.DisplaySID}***\n初训家名:***{result.OT_Name}***\n初训家性别:***{result.OT_Gender}***";
+                 $"我收到精灵的种类:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
+                 $"PID:{result.PID:X}\n" +
+                 $"加密常数:{result.EncryptionConstant:X}\n" +
+                 $"训练家姓名:{result.OT_Name}\n" +
+                 $"训练家性别:{(result.OT_Gender == 0 ? "男" : "女")}\n" +
+                 $"训练家表ID:{result.TrainerID7}\n" +
+                 $"训练家里ID:{result.TrainerSID7}"; 
             LogUtil.LogText(message);
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, message, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(),text);
+             
         }
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
@@ -96,6 +103,7 @@ namespace SysBot.Pokemon.Dodo
                     $"宝可梦:***{result.Species}***\nPID:***{result.PID}***\nEC:***{result.EncryptionConstant}***\n个体值:***{string.Join(",", result.IVs)}***\n表ID:***{result.DisplayTID}***\n里ID:***{result.DisplaySID}***\n闪光:***{result.IsShiny}***";
                 DodoBot<T>.SendChannelMessage(text, ChannelId);
             }
+           
         }
     }
 }
