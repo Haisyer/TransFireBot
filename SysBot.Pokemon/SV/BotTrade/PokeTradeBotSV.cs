@@ -72,7 +72,7 @@ namespace SysBot.Pokemon
             {
                 await InitializeHardware(Hub.Config.Trade, token).ConfigureAwait(false);
 
-                Log("识别主机控制台的训练家数据。");
+                Log("识别主机的训练家数据。");
                 var sav = await IdentifyTrainer(token).ConfigureAwait(false);
                 OT = sav.OT;
                 DisplaySID = sav.DisplaySID;
@@ -92,7 +92,7 @@ namespace SysBot.Pokemon
                 Log(e.Message);
             }
 
-            Log($"结束{nameof(PokeTradeBotSV)} 循环");
+            Log($"结束{nameof(PokeTradeBotSV)}循环");
             await HardStop().ConfigureAwait(false);
         }
 
@@ -302,7 +302,7 @@ namespace SysBot.Pokemon
             {
                 if (!await RecoverToPortal(token).ConfigureAwait(false))
                 {
-                    Log("无法恢复到宝可站.");
+                    Log("无法返回到宝可站.");
                     await RecoverToOverworld(token).ConfigureAwait(false);
                 }
                 return PokeTradeResult.NoTrainerFound;
@@ -320,7 +320,7 @@ namespace SysBot.Pokemon
                     await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
                     if (!await RecoverToPortal(token).ConfigureAwait(false))
                     {
-                        Log("无法恢复到portal.");
+                        Log("无法返回到宝可站.");
                         await RecoverToOverworld(token).ConfigureAwait(false);
                     }
                     return PokeTradeResult.RecoverOpenBox;
@@ -396,7 +396,7 @@ namespace SysBot.Pokemon
             // Pokémon in b1s1 is same as the one they were supposed to receive (was never sent).
             if (SearchUtil.HashByDetails(received) == SearchUtil.HashByDetails(toSend) && received.Checksum == toSend.Checksum)
             {
-                Log("用户没有完成交易.");
+                Log("{没有完成交易.");
                 await ExitTradeToPortal(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
             }
@@ -582,7 +582,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(0_500, token).ConfigureAwait(false);
                 if (++attempts > 20)
                 {
-                    Log("加载Poké Portal失败.");
+                    Log("加载宝可站失败.");
                     return false;
                 }
             }
@@ -596,7 +596,7 @@ namespace SysBot.Pokemon
                 await Click(B, 2_000 + Hub.Config.Timings.ExtraTimeLoadPortal, token).ConfigureAwait(false);
             }
 
-            Log("调整门户中的光标Adjusting the cursor in the Portal.");
+            Log("正在移动界面的光标Adjusting the cursor in the Portal.");
             // Move down to Link Trade.
             await Click(DDOWN, 0_300, token).ConfigureAwait(false);
             await Click(DDOWN, 0_300, token).ConfigureAwait(false);
@@ -631,7 +631,7 @@ namespace SysBot.Pokemon
                 return;
 
             if (unexpected)
-                Log("意外行为，正在恢复到宝可站。");
+                Log("异常行为，正在返回到宝可站。");
 
             // Ensure we're not in the box first.
             // Takes a long time for the Portal to load up, so once we exit the box, wait 5 seconds.
@@ -696,7 +696,7 @@ namespace SysBot.Pokemon
         // These don't change per session and we access them frequently, so set these each time we start.
         private async Task InitializeSessionOffsets(CancellationToken token)
         {
-            Log("缓存会话偏移量Caching session offsets...");
+            Log("正在缓存会话偏移量Caching session offsets...");
             BoxStartOffset = await SwitchConnection.PointerAll(Offsets.BoxStartPokemonPointer, token).ConfigureAwait(false);
             OverworldOffset = await SwitchConnection.PointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
             PortalOffset = await SwitchConnection.PointerAll(Offsets.PortalBoxStatusPointer, token).ConfigureAwait(false);
@@ -749,13 +749,13 @@ namespace SysBot.Pokemon
 
                 var la = new LegalityAnalysis(pk);
                 var verbose = $"```{la.Report(true)}```";
-                Log($"Shown Pokémon is: {(la.Valid ? "Valid" : "Invalid")}.");
+                Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
 
                 ctr++;
                 var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose : $"File {ctr}";
                 // Extra information for shiny eggs, because of people dumping to skip hatching.
                 var eggstring = pk.IsEgg ? "Egg " : string.Empty;
-                msg += pk.IsShiny ? $"\n**This Pokémon {eggstring}is shiny!**" : string.Empty;
+                msg += pk.IsShiny ? $"\n***这个宝可梦 {eggstring}是闪的,恭喜您!***" : string.Empty;
                 detail.SendNotification(this, pk, msg);
             }
 
@@ -798,13 +798,13 @@ namespace SysBot.Pokemon
             var la = new LegalityAnalysis(offered);
             if (!la.Valid)
             {
-                Log($"Clone request (from {poke.Trainer.TrainerName}) has detected an invalid Pokémon: {GameInfo.GetStrings(1).Species[offered.Species]}.");
+                Log($"Clone请求 (来自{poke.Trainer.TrainerName})的不合法宝可梦:{GameInfo.GetStrings(1).Species[offered.Species]}.");
                 if (DumpSetting.Dump)
                     DumpPokemon(DumpSetting.DumpFolder, "hacked", offered);
 
                 var report = la.Report();
                 Log(report);
-                poke.SendNotification(this, "根据PKHeX的合法性检查，这个Pokémon是不合法的。我不能克隆这个。退出交易。");
+                poke.SendNotification(this, "根据PKHeX的合法性检查，这个Pokémon是不合法的。我不能Clone这个。退出交易。");
                 poke.SendNotification(this, report);
 
                 return (offered, PokeTradeResult.IllegalTrade);
@@ -814,14 +814,14 @@ namespace SysBot.Pokemon
             if (Hub.Config.Legality.ResetHOMETracker)
                 clone.Tracker = 0;
 
-            poke.SendNotification(this, $"**Cloned your {GameInfo.GetStrings(1).Species[clone.Species]}!**\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
+            poke.SendNotification(this, $"***克隆了你的{GameInfo.GetStrings(1).Species[clone.Species]}!***\n现在按B取消你的交换申请，给我一只你不需要的宝可梦。");
             Log($"Cloned a {GameInfo.GetStrings(1).Species[clone.Species]}. Waiting for user to change their Pokémon...");
 
             // Separate this out from WaitForPokemonChanged since we compare to old EC from original read.
             var partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
             if (!partnerFound)
             {
-                poke.SendNotification(this, "**嘿，快换，不然我就走了!!!**");
+                poke.SendNotification(this, "***嘿，快换，不然我就走了!!!***");
                 // They get one more chance.
                 partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
             }
@@ -829,7 +829,7 @@ namespace SysBot.Pokemon
             var pk2 = await ReadUntilPresent(TradePartnerOfferedOffset, 25_000, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
             if (!partnerFound || pk2 is null || SearchUtil.HashByDetails(pk2) == SearchUtil.HashByDetails(offered))
             {
-                Log("Trade partner did not change their Pokémon.");
+                Log("交换对象没有切换他的神奇宝贝。");
                 return (offered, PokeTradeResult.TrainerTooSlow);
             }
 
@@ -848,7 +848,7 @@ namespace SysBot.Pokemon
             {
                 if (trade.Type == LedyResponseType.AbuseDetected)
                 {
-                    var msg = $"Found {partner.TrainerName} has been detected for abusing Ledy trades.";
+                    var msg = $"发现{partner.TrainerName}因滥用Ledy交易而被检测到。.";
                     if (AbuseSettings.EchoNintendoOnlineIDLedy)
                         msg += $"\nID: {partner.TrainerOnlineID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.LedyAbuseEchoMention))
@@ -861,7 +861,7 @@ namespace SysBot.Pokemon
                 toSend = trade.Receive;
                 poke.TradeData = toSend;
 
-                poke.SendNotification(this, "注入请求Pokémon.");
+                poke.SendNotification(this, "写入请求的Pokémon.");
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
             }
             else if (config.LedyQuitIfNoMatch)
@@ -893,7 +893,7 @@ namespace SysBot.Pokemon
             }
 
             FailedBarrier++;
-            Log($"Barrier sync timed out after {timeoutAfter} seconds. Continuing.");
+            Log($"Barrier同步在 {timeoutAfter}秒后超时. Continuing.");
         }
 
         /// <summary>
@@ -910,12 +910,12 @@ namespace SysBot.Pokemon
             if (shouldWait)
             {
                 Hub.BotSync.Barrier.AddParticipant();
-                Log($"Joined the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
+                Log($"加入Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
             }
             else
             {
                 Hub.BotSync.Barrier.RemoveParticipant();
-                Log($"Left the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
+                Log($"离开Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
             }
         }
 
@@ -931,13 +931,13 @@ namespace SysBot.Pokemon
             if (cooldown != null)
             {
                 var delta = DateTime.Now - cooldown.Time;
-                Log($"Last saw {user.TrainerName} {delta.TotalMinutes:F1} minutes ago (OT: {TrainerName}).");
+                Log($"在 {delta.TotalMinutes:F1}分钟前连接过{user.TrainerName}(OT: {TrainerName}).");
 
                 var cd = AbuseSettings.TradeCooldown;
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
                 {
-                    poke.Notifier.SendNotification(this, poke, "You have ignored the trade cooldown set by the bot owner. The owner has been notified.");
-                    var msg = $"Found {user.TrainerName}{useridmsg} ignoring the {cd} minute trade cooldown. Last encountered {delta.TotalMinutes:F1} minutes ago.";
+                    poke.Notifier.SendNotification(this, poke, "你无视了管理员设置的交易冷却CD。已通知管理员.");
+                    var msg = $"发现{user.TrainerName}{useridmsg}无视{cd}分钟交易冷却时间.在 {delta.TotalMinutes:F1} 分钟前连接过.";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
@@ -956,13 +956,13 @@ namespace SysBot.Pokemon
                     {
                         if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                         {
-                            AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "in-game block for sending to multiple in-game players") });
-                            Log($"Added {TrainerNID} to the BannedIDs list.");
+                            AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "给多个游戏存档发送游戏数据in-game block for sending to multiple in-game players") });
+                            Log($"已经将{TrainerNID}加入黑名单.");
                         }
                         quit = true;
                     }
 
-                    var msg = $"Found {user.TrainerName}{useridmsg} sending to multiple in-game players. Previous OT: {previousEncounter.Name}, Current OT: {TrainerName}";
+                    var msg = $"发现{user.TrainerName}{useridmsg}使用多个游戏存档交换. 上一个角色OT: {previousEncounter.Name}, 当前角色OT: {TrainerName}";
                     if (AbuseSettings.EchoNintendoOnlineIDMultiRecipients)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiRecipientEchoMention))
@@ -987,12 +987,12 @@ namespace SysBot.Pokemon
                     if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                     {
                         AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "in-game block for multiple accounts") });
-                        Log($"Added {TrainerNID} to the BannedIDs list.");
+                        Log($"已经将{TrainerNID}加入黑名单.");
                     }
                     quit = true;
                 }
 
-                var msg = $"Found {user.TrainerName}{useridmsg} using multiple accounts.\nPreviously encountered {previous.Name} ({previous.RemoteID}) {delta.TotalMinutes:F1} minutes ago on OT: {TrainerName}.";
+                var msg = $"发现{user.TrainerName}{useridmsg}使用多个账户\n {delta.TotalMinutes:F1}分钟前识别到{previous.Name} ({previous.RemoteID})OT: {TrainerName}.";
                 if (AbuseSettings.EchoNintendoOnlineIDMulti)
                     msg += $"\nID: {TrainerNID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiAbuseEchoMention))
@@ -1006,9 +1006,9 @@ namespace SysBot.Pokemon
             var entry = AbuseSettings.BannedIDs.List.Find(z => z.ID == TrainerNID);
             if (entry != null)
             {
-                var msg = $"{user.TrainerName}{useridmsg} is a banned user, and was encountered in-game using OT: {TrainerName}.";
+                var msg = $"{user.TrainerName}{useridmsg}是一个黑名单的用户，并且在游戏中使用OT: {TrainerName}.";
                 if (!string.IsNullOrWhiteSpace(entry.Comment))
-                    msg += $"\nUser was banned for: {entry.Comment}";
+                    msg += $"\n用户因以下原因被禁: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
                 EchoUtil.Echo(msg);
@@ -1022,7 +1022,7 @@ namespace SysBot.Pokemon
         {
             ID = id,
             Name = name,
-            Comment = $"Added automatically on {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
+            Comment = $"自动添加在 {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
         };
 
         private async Task<bool> SetBoxPkmWithSwappedIDDetailsSV(PK9 toSend, TradeMyStatus tradePartner, SAV9SV sav, CancellationToken token)

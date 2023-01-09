@@ -153,7 +153,7 @@ namespace SysBot.Pokemon
             {
                 PB8 => 65535,
                 PK9 => 0,
-                _ => 30002, //PK8
+                _ => 30002, //PK9 30023野餐 30002连接交换
             };
 
             pk.CurrentHandler = 0;

@@ -114,7 +114,7 @@ namespace SysBot.Pokemon
 
             var pool = Hub.Ledy.Pool;
             if (!pool.Reload(Hub.Config.Folder.DistributeFolder))
-                LogUtil.LogError("没有可以空的交换队列分配的文件\nNothing to distribute for Empty Trade Queues!", "Hub");
+                LogUtil.LogError("没有东西可以分发给空的派送队列\nNothing to distribute for Empty Trade Queues!", "Hub");
         }
 
         public PokeRoutineExecutorBase CreateBotFromConfig(PokeBotState cfg) => Factory.CreateBot(Hub, cfg);

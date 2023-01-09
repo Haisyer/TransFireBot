@@ -20,7 +20,7 @@ namespace SysBot.Pokemon
         [Category(OpenGame), Description("在标题屏幕上点击A之前要等待的额外时间（毫秒)\nExtra time in milliseconds to wait before clicking A in title screen.")]
         public int ExtraTimeLoadGame { get; set; } = 5000;
 
-        [Category(OpenGame), Description("[BDSP]在标题屏幕之后，等待overworld加载的额外时间（毫秒）\n[BDSP] Extra time in milliseconds to wait for the overworld to load after the title screen.")]
+        [Category(OpenGame), Description("[BDSP]在标题屏幕之后，等待主世界加载的额外时间（毫秒）\n[BDSP] Extra time in milliseconds to wait for the overworld to load after the title screen.")]
         public int ExtraTimeLoadOverworld { get; set; } = 3000;
 
         // Closing the game.
@@ -50,7 +50,7 @@ namespace SysBot.Pokemon
         [Category(Misc), Description("[SWSH/SV] 点击 \"+\"连接到Y-Comm（SWSH）或 \"L \"连接到在线（SV）后的额外等待时间（毫秒）\n[SWSH/SV] Extra time in milliseconds to wait after clicking + to connect to Y-Comm (SWSH) or L to connect online (SV).")]
         public int ExtraTimeConnectOnline { get; set; } = 0;
 
-        [Category(Misc), Description("[BDSP]在离开联机室后，等待overworld加载的额外时间，以毫秒计\n[BDSP] Extra time in milliseconds to wait for the overworld to load after leaving the Union Room.")]
+        [Category(Misc), Description("[BDSP]在离开联机室后，等待主世界加载的额外时间，以毫秒计\n[BDSP] Extra time in milliseconds to wait for the overworld to load after leaving the Union Room.")]
         public int ExtraTimeLeaveUnionRoom { get; set; } = 1000;
 
         [Category(Misc), Description("[BDSP]在每个交易循环开始时等待Y菜单加载的额外时间，以毫秒计\n[BDSP] Extra time in milliseconds to wait for the Y Menu to load at the start of each trade loop.")]

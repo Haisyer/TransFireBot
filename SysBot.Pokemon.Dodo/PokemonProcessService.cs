@@ -14,7 +14,7 @@ namespace SysBot.Pokemon.Dodo
     {
         private readonly OpenApiService _openApiService;
         private static readonly string LogIdentity = "DodoBot";
-        private static readonly string Welcome = "@我并尝试对我说：\n4V0A0S闪光母治愈球智挥猩太晶妖精悠闲性格努力值252生命116防御132特防8速度心灵感应特性携带特性膏药-精神强念-号令-戏法空间-挑衅\n或者使用PS代码\n或者上传pk文件\n取消排队\n当前位置";
+        private static readonly string Welcome = "@我并尝试对我说：\n4V0A0S闪光母治愈球智挥猩太晶妖精悠闲性格努力值252生命116防御132特防8速度心灵感应特性携带特性膏药-精神强念-号令-戏法空间-挑衅\n或者使用PS代码\n或者上传pk文件\n取消排队 或者 排队\n当前位置 或者 排队";
         private readonly string _channelId;
         private readonly string _botDodoId;
 
@@ -122,7 +122,20 @@ namespace SysBot.Pokemon.Dodo
                 DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), $" {GetClearTradeMessage(result)}",
                     eventBody.ChannelId);
             }
+            else if (content.Contains("排队"))
+            {
+                var result = DodoBot<TP>.Info.ClearTrade(ulong.Parse(eventBody.DodoId));
+                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), $" {GetClearTradeMessage(result)}",
+                    eventBody.ChannelId);
+            }
             else if (content.Contains("当前位置"))
+            {
+                var result = DodoBot<TP>.Info.CheckPosition(ulong.Parse(eventBody.DodoId));
+                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId),
+                    $" {GetQueueCheckResultMessage(result)}",
+                    eventBody.ChannelId);
+            }
+            else if (content.Contains("位置"))
             {
                 var result = DodoBot<TP>.Info.CheckPosition(ulong.Parse(eventBody.DodoId));
                 DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId),
@@ -139,10 +152,10 @@ namespace SysBot.Pokemon.Dodo
         {
             if (!result.InQueue || result.Detail is null)
                 return "你目前不在队列里";
-            var msg = $"你在第{result.Position}位";
+            var msg = $"你在第***{result.Position}位***";
             var pk = result.Detail.Trade.TradeData;
             if (pk.Species != 0)
-                msg += $"，交换宝可梦：{ShowdownTranslator<TP>.GameStringsZh.Species[result.Detail.Trade.TradeData.Species]}";
+                msg += $"，交换宝可梦：***{ShowdownTranslator<TP>.GameStringsZh.Species[result.Detail.Trade.TradeData.Species]}***";
             return msg;
         }
 

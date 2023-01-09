@@ -34,7 +34,7 @@ namespace SysBot.Pokemon
                     else if (candidateSpecieNo == 32) result = "(Nidoran-M)";
 
                     // 特殊性别差异
-                    // 29-尼多兰F，32-尼多朗M，678-超能妙喵F，876-爱管侍F，902-幽尾玄鱼F, 916-飘香豚
+                    // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
                     else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
 
                     // 识别肯泰罗地区形态
@@ -71,7 +71,7 @@ namespace SysBot.Pokemon
                     zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
 
                     // 特殊性别差异
-                    // 29-尼多兰F，32-尼多朗M，678-超能妙喵F，876-爱管侍F，902-幽尾玄鱼F, 916-飘香豚
+                    // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
                     if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += "-F";
                 }
                 else
@@ -101,7 +101,33 @@ namespace SysBot.Pokemon
                         break;
                     }
                 }
-            }
+                // 识别洛托姆形态
+                if (zh.Contains("加热形态"))
+                {
+                        result += $"-Heat";
+                        zh = zh.Replace("加热形态", "");
+                    }
+                else if (zh.Contains("清洗形态"))
+                {
+                        result += $"-Wash";
+                        zh = zh.Replace("清洗形态", "");
+                    }
+                else if (zh.Contains("结冰形态"))
+                {
+                        result += $"-Frost";
+                        zh = zh.Replace("结冰形态", "");
+                    }
+                else if (zh.Contains("旋转形态"))
+                {
+                        result += $"-Fan";
+                        zh = zh.Replace("旋转形态", "");
+                    }
+                else if (zh.Contains("切割形态"))
+                {
+                        result += $"-Mow";
+                        zh = zh.Replace("切割形态", "");
+                    }
+                }
             // 识别未知图腾
             if (Regex.IsMatch(zh, "[A-Z?!？！]形态"))
             {
@@ -159,7 +185,7 @@ namespace SysBot.Pokemon
             if (Regex.IsMatch(zh, "\\d{1,3}级"))
             {
                 string level = Regex.Match(zh, "(\\d{1,3})级").Groups?[1]?.Value ?? "100";
-                result += $"\nLevel: {level}";
+                result += $"\n.CurrentLevel={level}";
                 zh = Regex.Replace(zh, "\\d{1,3}级", "");
             }
 
@@ -212,15 +238,22 @@ namespace SysBot.Pokemon
             }
 
             // 添加特性
-            for (int i = 1; i < GameStringsZh.Ability.Count; i++)
+            if (zh.Contains("梦特"))
             {
-                if (GameStringsZh.Ability[i].Length == 0) continue;
-                if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
-                result += $"\nAbility: {GameStringsEn.Ability[i]}";
-                zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
-                break;
+                result += "\n.AbilityNumber=4";
+                zh = zh.Replace("梦特", "");
             }
-
+            else
+            {
+                for (int i = 1; i < GameStringsZh.Ability.Count; i++)
+                {
+                    if (GameStringsZh.Ability[i].Length == 0) continue;
+                    if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
+                    result += $"\nAbility: {GameStringsEn.Ability[i]}";
+                    zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
+                    break;
+                }
+            }
             // 添加性格
             for (int i = 0; i < GameStringsZh.Natures.Count; i++)
             {
@@ -369,54 +402,23 @@ namespace SysBot.Pokemon
             }
 
             //体型大小并添加证章
-            if (typeof(T) == typeof(PK9) && zh.Contains("体型"))
+            if (Regex.IsMatch(zh, "\\d{1,3}大小"))
             {
-                if (zh.Contains("XXXL") || zh.Contains("最大"))//255
-                {
-                    result += $"\n.Scale=255\n.RibbonMarkJumbo=True";
-                    zh = zh.Replace("XXXL", "");
-                }
-                else if (zh.Contains("XXL"))//242-254
-                {
-                    result += $"\n.Scale=$242,254";
-                    zh = zh.Replace("XXL", "");
-                }
-                else if (zh.Contains("XL"))//196-241
-                {
-                    result += $"\n.Scale=$196,241";
-                    zh = zh.Replace("XL", "");
-                }
-                else if (zh.Contains("L"))//161-195
-                {
-                    result += $"\n.Scale=$161,195";
-                    zh = zh.Replace("L", "");
-                }
-                else if (zh.Contains("AV"))//100-160
-                {
-                    result += $"\n.Scale=$100,160";
-                    zh = zh.Replace("AV", "");
-                }
-                else if (zh.Contains("S"))//61-99
-                {
-                    result += $"\n.Scale=$61,99";
-                    zh = zh.Replace("S", "");
-                }
-                else if (zh.Contains("XS"))//31-60
-                {
-                    result += $"\n.Scale=$31,60";
-                    zh = zh.Replace("XS", "");
-                }
-                else if (zh.Contains("XXS"))//1-30
-                {
-                    result += $"\n.Scale=$1,30";
-                    zh = zh.Replace("XXS", "");
-                }
-                else if (zh.Contains("XXXS") || zh.Contains("最小"))//0
-                {
-                    result += $"\n.Scale=0\n.RibbonMarkMini=True";
-                    zh = zh.Replace("XXXS", "");
-                }
+                string value = Regex.Match(zh, "(\\d{1,3})大小").Groups?[1]?.Value ?? "";
+                result += $"\n.Scale={value}";
+                zh = Regex.Replace(zh, "\\d{1,3}大小", "");
             }
+            else if(zh.Contains("最大体型"))
+            {
+                result += "\n.Scale=255";
+                zh = zh.Replace("最大体型", "");
+            }
+            else if (zh.Contains("最小体型"))
+            {
+                result += "\n.Scale=0";
+                zh = zh.Replace("最小体型", "");
+            }
+
             //补充后天获得的全奖章
             if (typeof(T) == typeof(PK9) && zh.Contains("全奖章"))
             {

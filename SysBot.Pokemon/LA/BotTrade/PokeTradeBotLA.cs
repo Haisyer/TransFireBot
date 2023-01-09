@@ -531,7 +531,7 @@ namespace SysBot.Pokemon
 
                 ctr++;
                 var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose: $"File {ctr}";
-                msg += pk.IsShiny ? "\n**This Pokémon is shiny!**" : string.Empty;
+                msg += pk.IsShiny ? "\n***This Pokémon is shiny!***" : string.Empty;
                 detail.SendNotification(this, pk, msg);
             }
 
@@ -587,13 +587,13 @@ namespace SysBot.Pokemon
             if (Hub.Config.Legality.ResetHOMETracker)
                 clone.Tracker = 0;
 
-            poke.SendNotification(this, $"**Cloned your {GameInfo.GetStrings(1).Species[clone.Species]}!**\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
+            poke.SendNotification(this, $"***Cloned your {GameInfo.GetStrings(1).Species[clone.Species]}!***\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
             Log($"Cloned a {(Species)clone.Species}. Waiting for user to change their Pokémon...");
 
             if (!await CheckCloneChangedOffer(token).ConfigureAwait(false))
             {
                 // They get one more chance.
-                poke.SendNotification(this, "**HEY CHANGE IT NOW OR I AM LEAVING!!!**");
+                poke.SendNotification(this, "***HEY CHANGE IT NOW OR I AM LEAVING!!!***");
                 if (!await CheckCloneChangedOffer(token).ConfigureAwait(false))
                 {
                     Log("Trade partner did not change their Pokémon.");

@@ -148,7 +148,7 @@ namespace SysBot.Pokemon
             {
                 var rstring = GetMarkName(r);
                 if (!string.IsNullOrEmpty(rstring))
-                    set += $"\nPokémon found to have **{GetMarkName(r)}**!\n发现有证章的神奇宝贝";
+                    set += $"\nPokémon found to have ***{GetMarkName(r)}***!\n发现有证章的神奇宝贝";
             }
             return set;
         }
