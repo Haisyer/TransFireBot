@@ -29,19 +29,17 @@ namespace SysBot.Pokemon
                 result += "Egg ";
                 if (candidateSpecieNo > 0)
                 {
-
                     if (candidateSpecieNo == 29) result = "(Nidoran-F)";
                     else if (candidateSpecieNo == 32) result = "(Nidoran-M)";
-
                     // 特殊性别差异
                     // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
-                    else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
-
+                    else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) 
+                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)"; 
                     // 识别肯泰罗地区形态
-                    else if (zh.Contains("帕底亚的样子（火）形态") && candidateSpecieNo is 128) result += $"({GameStringsEn.Species[candidateSpecieNo]}-Paldea-Fire)";
-
-                    else if (zh.Contains("帕底亚的样子（水）形态") && candidateSpecieNo is 128) result += $"({GameStringsEn.Species[candidateSpecieNo]}-Paldea-Water)";
-
+                    else if (zh.Contains("帕底亚的样子（火）形态") && candidateSpecieNo is 128) 
+                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-Paldea-Fire)";
+                    else if (zh.Contains("帕底亚的样子（水）形态") && candidateSpecieNo is 128) 
+                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-Paldea-Water)";
                     else if (zh.Contains("形态"))
                     {
                         for (int i = 0; i < GameStringsZh.forms.Length; i++)
@@ -66,20 +64,18 @@ namespace SysBot.Pokemon
                 {
                     if (candidateSpecieNo == 29) result = "Nidoran-F";
                     else if (candidateSpecieNo == 32) result = "Nidoran-M";
+                    else if (candidateSpecieNo == 946)  result = "Maushold";
                     else result += GameStringsEn.Species[candidateSpecieNo];
-
                     zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
-
-                    // 特殊性别差异
-                    // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
+                    // 特殊差异
+                    // 678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
                     if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += "-F";
                 }
                 else
                 {
                     return result;
                 }
-
-                // 识别肯泰罗地区形态
+                // 识别形态
                 if (zh.Contains("帕底亚的样子（火）形态"))
                 {
                     result += $"-Paldea-Fire";
@@ -89,6 +85,11 @@ namespace SysBot.Pokemon
                 {
                     result += $"-Paldea-Water";
                     zh = zh.Replace("帕底亚的样子（水）形态", "");
+                }
+                else if (zh.Contains("四只家庭形态"))
+                {
+                    result += $"-Four";
+                    zh = zh.Replace("四只家庭形态", "");
                 }
                 else
                 {
@@ -101,33 +102,8 @@ namespace SysBot.Pokemon
                         break;
                     }
                 }
-                // 识别洛托姆形态
-                if (zh.Contains("加热形态"))
-                {
-                        result += $"-Heat";
-                        zh = zh.Replace("加热形态", "");
-                    }
-                else if (zh.Contains("清洗形态"))
-                {
-                        result += $"-Wash";
-                        zh = zh.Replace("清洗形态", "");
-                    }
-                else if (zh.Contains("结冰形态"))
-                {
-                        result += $"-Frost";
-                        zh = zh.Replace("结冰形态", "");
-                    }
-                else if (zh.Contains("旋转形态"))
-                {
-                        result += $"-Fan";
-                        zh = zh.Replace("旋转形态", "");
-                    }
-                else if (zh.Contains("切割形态"))
-                {
-                        result += $"-Mow";
-                        zh = zh.Replace("切割形态", "");
-                    }
-                }
+            }
+
             // 识别未知图腾
             if (Regex.IsMatch(zh, "[A-Z?!？！]形态"))
             {
@@ -238,22 +214,15 @@ namespace SysBot.Pokemon
             }
 
             // 添加特性
-            if (zh.Contains("梦特"))
+            for (int i = 1; i < GameStringsZh.Ability.Count; i++)
             {
-                result += "\n.AbilityNumber=4";
-                zh = zh.Replace("梦特", "");
+                if (GameStringsZh.Ability[i].Length == 0) continue;
+                if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
+                result += $"\nAbility: {GameStringsEn.Ability[i]}";
+                zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
+                break;
             }
-            else
-            {
-                for (int i = 1; i < GameStringsZh.Ability.Count; i++)
-                {
-                    if (GameStringsZh.Ability[i].Length == 0) continue;
-                    if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
-                    result += $"\nAbility: {GameStringsEn.Ability[i]}";
-                    zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
-                    break;
-                }
-            }
+
             // 添加性格
             for (int i = 0; i < GameStringsZh.Natures.Count; i++)
             {
@@ -265,40 +234,73 @@ namespace SysBot.Pokemon
             }
 
             // 添加个体值
-            if (zh.ToUpper().Contains("6V"))//默认
+            if (zh.Contains("个体值"))
             {
-                result += "\n.IVs=31";
-                zh = zh.Replace("6V", "");
+                result += "\nIVs: ";
+                zh = zh.Replace("个体值", "");
+                if (Regex.IsMatch(zh, "\\d{1,2}生命"))
+                {
+                    string value = Regex.Match(zh, "(\\d{1,2})生命").Groups?[1]?.Value ?? "";
+                    result += $"{value} HP / ";
+                    zh = Regex.Replace(zh, "\\d{1,2}生命", "");
+                }                
+                if (Regex.IsMatch(zh, "\\d{1,2}攻击"))
+                {
+                    string value = Regex.Match(zh, "(\\d{1,2})攻击").Groups?[1]?.Value ?? "";
+                    result += $"{value} Atk / ";
+                    zh = Regex.Replace(zh, "\\d{1,2}攻击", "");
+                }                
+                if (Regex.IsMatch(zh, "\\d{1,2}防御"))
+                {
+                    string value = Regex.Match(zh, "(\\d{1,2})防御").Groups?[1]?.Value ?? "";
+                    result += $"{value} Def / ";
+                    zh = Regex.Replace(zh, "\\d{1,2}防御", "");
+                }                
+                if (Regex.IsMatch(zh, "\\d{1,2}特攻"))
+                {
+                    string value = Regex.Match(zh, "(\\d{1,2})特攻").Groups?[1]?.Value ?? "";
+                    result += $"{value} SpA / ";
+                    zh = Regex.Replace(zh, "\\d{1,2}特攻", "");
+                }                
+                if (Regex.IsMatch(zh, "\\d{1,2}特防"))
+                {
+                    string value = Regex.Match(zh, "(\\d{1,2})特防").Groups?[1]?.Value ?? "";
+                    result += $"{value} SpD / ";
+                    zh = Regex.Replace(zh, "\\d{1,2}特防", "");
+                }                
+                if (Regex.IsMatch(zh, "\\d{1,2}速度"))
+                {
+                    string value = Regex.Match(zh, "(\\d{1,2})速度").Groups?[1]?.Value ?? "";
+                    result += $"{value} Spe";
+                    zh = Regex.Replace(zh, "\\d{1,2}速度", "");
+                }                
+                if (result.EndsWith("/ "))
+                {
+                    result = result.Substring(0, result.Length - 2);
+                }
             }
-            else if (zh.ToUpper().Contains("5V0A"))
+            else
             {
-                result += "\n.IVs=31\n.IV_ATK=0";
-                zh = zh.Replace("5V0A", "");
-            }
-            else if (zh.ToUpper().Contains("5V0攻"))
-            {
-                result += "\n.IVs=31\n.IV_ATK=0";
-                zh = zh.Replace("5V0攻", "");
-            }
-            else if (zh.ToUpper().Contains("5V0S"))
-            {
-                result += "\n.IVs=31\n.IV_SPE=0";
-                zh = zh.Replace("5V0S", "");
-            }
-            else if (zh.ToUpper().Contains("5V0速"))
-            {
-                result += "\n.IVs=31\n.IV_SPE=0";
-                zh = zh.Replace("5V0速", "");
-            }
-            else if (zh.ToUpper().Contains("4V0A0S"))
-            {
-                result += "\n.IVs=31\n.IV_ATK=0\n.IV_SPE=0";
-                zh = zh.Replace("4V0A0S", "");
-            }
-            else if (zh.ToUpper().Contains("4V0攻0速"))
-            {
-                result += "\n.IVs=31\n.IV_ATK=0\n.IV_SPE=0";
-                zh = zh.Replace("4V0攻0速", "");
+                if (zh.ToUpper().Contains("6V"))//默认
+                {
+                    result += "\n.IVs=31";
+                    zh = zh.Replace("6V", "");
+                }                
+                else if (zh.ToUpper().Contains("5V0攻"))
+                {
+                    result += "\n.IVs=31\n.IV_ATK=0";
+                    zh = zh.Replace("5V0攻", "");
+                }
+                else if (zh.ToUpper().Contains("5V0速"))
+                {
+                    result += "\n.IVs=31\n.IV_SPE=0";
+                    zh = zh.Replace("5V0速", "");
+                }
+                else if (zh.ToUpper().Contains("4V0攻0速"))
+                {
+                    result += "\n.IVs=31\n.IV_ATK=0\n.IV_SPE=0";
+                    zh = zh.Replace("4V0攻0速", "");
+                }
             }
 
             // 添加努力值
@@ -312,75 +314,35 @@ namespace SysBot.Pokemon
                     result += $"{value} HP / ";
                     zh = Regex.Replace(zh, "\\d{1,3}生命", "");
                 }
-                else if (Regex.IsMatch(zh, "\\d{1,3}Hp"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})Hp").Groups?[1]?.Value ?? "";
-                    result += $"{value} HP / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}Hp", "");
-                }
-
                 if (Regex.IsMatch(zh, "\\d{1,3}攻击"))
                 {
                     string value = Regex.Match(zh, "(\\d{1,3})攻击").Groups?[1]?.Value ?? "";
                     result += $"{value} Atk / ";
                     zh = Regex.Replace(zh, "\\d{1,3}攻击", "");
                 }
-                else if (Regex.IsMatch(zh, "\\d{1,3}Atk"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})Atk").Groups?[1]?.Value ?? "";
-                    result += $"{value} Atk / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}Atk", "");
-                }
-
                 if (Regex.IsMatch(zh, "\\d{1,3}防御"))
                 {
                     string value = Regex.Match(zh, "(\\d{1,3})防御").Groups?[1]?.Value ?? "";
                     result += $"{value} Def / ";
                     zh = Regex.Replace(zh, "\\d{1,3}防御", "");
                 }
-                else if (Regex.IsMatch(zh, "\\d{1,3}Def"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})Def").Groups?[1]?.Value ?? "";
-                    result += $"{value} Def / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}Def", "");
-                }
-
                 if (Regex.IsMatch(zh, "\\d{1,3}特攻"))
                 {
                     string value = Regex.Match(zh, "(\\d{1,3})特攻").Groups?[1]?.Value ?? "";
                     result += $"{value} SpA / ";
                     zh = Regex.Replace(zh, "\\d{1,3}特攻", "");
                 }
-                else if (Regex.IsMatch(zh, "\\d{1,3}SpA"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})SpA").Groups?[1]?.Value ?? "";
-                    result += $"{value} SpA / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}SpA", "");
-                }
-
                 if (Regex.IsMatch(zh, "\\d{1,3}特防"))
                 {
                     string value = Regex.Match(zh, "(\\d{1,3})特防").Groups?[1]?.Value ?? "";
                     result += $"{value} SpD / ";
                     zh = Regex.Replace(zh, "\\d{1,3}特防", "");
                 }
-                else if (Regex.IsMatch(zh, "\\d{1,3}SpD"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})SpD").Groups?[1]?.Value ?? "";
-                    result += $"{value} SpD / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}SpD", "");
-                }
                 if (Regex.IsMatch(zh, "\\d{1,3}速度"))
                 {
                     string value = Regex.Match(zh, "(\\d{1,3})速度").Groups?[1]?.Value ?? "";
                     result += $"{value} Spe";
                     zh = Regex.Replace(zh, "\\d{1,3}速度", "");
-                }
-                else if (Regex.IsMatch(zh, "\\d{1,3}Spe"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})Spe").Groups?[1]?.Value ?? "";
-                    result += $"{value} Spe";
-                    zh = Regex.Replace(zh, "\\d{1,3}Spe", "");
                 }
                 if (result.EndsWith("/ "))
                 {
