@@ -104,7 +104,7 @@ namespace SysBot.Pokemon.Dodo
                 DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
                 return;
             } 
-            else if (content.Trim().StartsWith("dump"))
+            else if (content.Trim().StartsWith("检测"))
             {
                 DodoHelper<TP>.StartDump(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
                 return;

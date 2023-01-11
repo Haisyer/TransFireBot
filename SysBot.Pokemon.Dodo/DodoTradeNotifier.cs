@@ -100,7 +100,15 @@ namespace SysBot.Pokemon.Dodo
             if (result.Species != 0 && info.Type == PokeTradeType.Dump)
             {
                 var text =
-                    $"宝可梦:***{result.Species}***\nPID:***{result.PID}***\nEC:***{result.EncryptionConstant}***\n个体值:***{string.Join(",", result.IVs)}***\n表ID:***{result.DisplayTID}***\n里ID:***{result.DisplaySID}***\n闪光:***{result.IsShiny}***";
+                    $"\n宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
+                    $"蛋:{(result.IsEgg ? "是" : "否")}\n"+
+                    $"PID:{result.PID:X}\n" +
+                    $"EC:{result.EncryptionConstant:X}\n" +
+                    $"个体值:{string.Join(",", result.IVs)}\n" +
+                    $"训练家姓名:{result.OT_Name}\n" +
+                    $"表ID:{result.DisplayTID}\n" +
+                    $"里ID:{result.DisplaySID}\n" +
+                    $"闪光:{(result.IsShiny ? "是" : "否")}";
                 DodoBot<T>.SendChannelMessage(text, ChannelId);
             }
            
