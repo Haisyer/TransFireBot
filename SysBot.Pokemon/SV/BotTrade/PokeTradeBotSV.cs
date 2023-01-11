@@ -753,7 +753,7 @@ namespace SysBot.Pokemon
                 Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
 
                 ctr++;
-                var msg = $"第{n}只";
+                var msg = $"检测第{n}只";
                 detail.SendNotification(this, pk, msg);
                 n++;
             }

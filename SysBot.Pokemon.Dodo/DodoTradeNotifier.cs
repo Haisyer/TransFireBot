@@ -97,20 +97,40 @@ namespace SysBot.Pokemon.Dodo
         {
             var msg = $"{result.FileName}的详细信息: " + message;
             LogUtil.LogText(msg);
-            String IVstring = "";
-            if (result.IV_ATK == 0)
-                IVstring = "(0攻)";
-            if (result.IV_SPE == 0)
-                IVstring += "(0速)";
-            if (result.IVs[0] + result.IVs[1] + result.IVs[2] + result.IVs[3] + result.IVs[4] + result.IVs[5] == 186)
-                IVstring = "(6V)";
-            if (result.Species != 0 && info.Type == PokeTradeType.Dump)
+            string IVstring = "";
+            string Abilitystring ;
+            string GenderString ;
+            if (message.Contains("检测"))
             {
-                var text = message +
-                    $"宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
-                    $"个体值:{result.IV_HP},{result.IV_ATK},{result.IV_DEF},{result.IV_SPA},{result.IV_SPD},{result.IV_SPE}" + IVstring + "\n"+
-                    $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
-                DodoBot<T>.SendChannelMessage(text, ChannelId);
+                if (result.IV_ATK == 0)
+                    IVstring = "(0攻)";
+                if (result.IV_SPE == 0)
+                    IVstring += "(0速)";
+                if (result.IVs[0] + result.IVs[1] + result.IVs[2] + result.IVs[3] + result.IVs[4] + result.IVs[5] == 186)
+                    IVstring = "(6V)";
+                Abilitystring = result.AbilityNumber switch
+                {
+                    1 => "特性一",
+                    2 => "特性二",
+                    4 => "梦特",
+                    _ => "错误",
+                };
+                GenderString = result.Gender switch
+                {
+                    0 => "公",
+                    1 => "母",
+                    2 => "无性别",
+                    _ => "错误",
+                };
+                if (result.Species != 0 && info.Type == PokeTradeType.Dump)
+                {
+                    var text = message +
+                        $"宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}({GenderString})\n" +
+                        $"个体值:{result.IV_HP},{result.IV_ATK},{result.IV_DEF},{result.IV_SPA},{result.IV_SPD},{result.IV_SPE}" + IVstring + "\n" +
+                        $"特性:{Abilitystring}\n" +
+                        $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
+                    DodoBot<T>.SendChannelMessage(text, ChannelId);
+                }
             }
            
         }
