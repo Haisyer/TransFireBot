@@ -725,6 +725,7 @@ namespace SysBot.Pokemon
 
             var pkprev = new PK9();
             var bctr = 0;
+            var n = 1;
             while (ctr < Hub.Config.Trade.MaxDumpsPerTrade && DateTime.Now - start < time)
             {
                 if (!await IsInBox(PortalOffset, token).ConfigureAwait(false))
@@ -752,11 +753,9 @@ namespace SysBot.Pokemon
                 Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
 
                 ctr++;
-                var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose : $"File {ctr}";
-                // Extra information for shiny eggs, because of people dumping to skip hatching.
-                var eggstring = pk.IsEgg ? "Egg " : string.Empty;
-                msg += pk.IsShiny ? $"\n***这个宝可梦 {eggstring}是闪的,恭喜您!***" : string.Empty;
+                var msg = $"第{n}只";
                 detail.SendNotification(this, pk, msg);
+                n++;
             }
 
             Log($"Ended Dump loop after processing {ctr} Pokémon.");
