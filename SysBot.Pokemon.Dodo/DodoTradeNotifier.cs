@@ -101,14 +101,8 @@ namespace SysBot.Pokemon.Dodo
             {
                 var text =
                     $"\n宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
-                    $"蛋:{(result.IsEgg ? "是" : "否")}\n"+
-                    $"PID:{result.PID:X}\n" +
-                    $"EC:{result.EncryptionConstant:X}\n" +
                     $"个体值:{string.Join(",", result.IVs)}\n" +
-                    $"训练家姓名:{result.OT_Name}\n" +
-                    $"表ID:{result.DisplayTID}\n" +
-                    $"里ID:{result.DisplaySID}\n" +
-                    $"闪光:{(result.IsShiny ? "是" : "否")}";
+                    $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
                 DodoBot<T>.SendChannelMessage(text, ChannelId);
             }
            
