@@ -63,8 +63,7 @@ namespace SysBot.Pokemon
                 if (candidateSpecieNo > 0)
                 {
                     if (candidateSpecieNo == 29) result = "Nidoran-F";
-                    else if (candidateSpecieNo == 32) result = "Nidoran-M";
-                    else if (candidateSpecieNo == 946)  result = "Maushold";
+                    else if (candidateSpecieNo == 32) result = "Nidoran-M";                    
                     else result += GameStringsEn.Species[candidateSpecieNo];
                     zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
                     // 特殊差异
@@ -112,14 +111,7 @@ namespace SysBot.Pokemon
                 else if (formsUnown == "！") formsUnown = "!";
                 result += $"-{formsUnown}";
                 zh = Regex.Replace(zh, "[A-Z?!？！]形态", "");
-            }
-
-            // 识别宝可梦来源
-            EncounterMovesetGenerator.PriorityList = zh.Contains("野生") ? 
-                new EncounterOrder[] 
-                { EncounterOrder.Slot, EncounterOrder.Static, EncounterOrder.Mystery, EncounterOrder.Trade, EncounterOrder.Egg, } : 
-                new EncounterOrder[] 
-                { EncounterOrder.Egg, EncounterOrder.Static, EncounterOrder.Trade, EncounterOrder.Slot, EncounterOrder.Mystery, };
+            }            
             
             // 添加性别
             if (zh.Contains("公"))
@@ -390,60 +382,58 @@ namespace SysBot.Pokemon
             //为野生宝可梦添加证章
             if (typeof(T) == typeof(PK9))
             {
-                if (zh.Contains("最强") || zh.Contains("最强之证")) { result += "\n.RibbonMarkMightiest=True"; }
-                else
-                {
-                    if (zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
-                    else if (zh.Contains("命运之证")) { result += "\n.RibbonMarkDestiny=True"; }
-                    else if (zh.Contains("暴雪之证")) { result += "\n.RibbonMarkBlizzard=True"; }
-                    else if (zh.Contains("阴云之证")) { result += "\n.RibbonMarkCloudy=True"; }
-                    else if (zh.Contains("正午之证")) { result += "\n.RibbonMarkLunchtime=True"; }
-                    else if (zh.Contains("浓雾之证")) { result += "\n.RibbonMarkMisty=True"; }
-                    else if (zh.Contains("降雨之证")) { result += "\n.RibbonMarkRainy=True"; }
-                    else if (zh.Contains("沙尘之证")) { result += "\n.RibbonMarkSandstorm=True"; }
-                    else if (zh.Contains("午夜之证")) { result += "\n.RibbonMarkSleepyTime=True"; }
-                    else if (zh.Contains("降雪之证")) { result += "\n.RibbonMarkSnowy=True"; }
-                    else if (zh.Contains("落雷之证")) { result += "\n.RibbonMarkStormy=True"; }
-                    else if (zh.Contains("干燥之证")) { result += "\n.RibbonMarkDry=True"; }
-                    else if (zh.Contains("黄昏之证")) { result += "\n.RibbonMarkDusk=True"; }
-                    else if (zh.Contains("拂晓之证")) { result += "\n.RibbonMarkDawn=True"; }
-                    else if (zh.Contains("上钩之证")) { result += "\n.RibbonMarkFishing=True"; }
-                    else if (zh.Contains("咖喱之证")) { result += "\n.RibbonMarkCurry=True"; }
-                    else if (zh.Contains("无虑之证")) { result += "\n.RibbonMarkAbsentMinded=True"; }
-                    else if (zh.Contains("愤怒之证")) { result += "\n.RibbonMarkAngry=True"; }
-                    else if (zh.Contains("冷静之证")) { result += "\n.RibbonMarkCalmness=True"; }
-                    else if (zh.Contains("领袖之证")) { result += "\n.RibbonMarkCharismatic=True"; }
-                    else if (zh.Contains("狡猾之证")) { result += "\n.RibbonMarkCrafty=True"; }
-                    else if (zh.Contains("期待之证")) { result += "\n.RibbonMarkExcited=True"; }
-                    else if (zh.Contains("本能之证")) { result += "\n.RibbonMarkFerocious=True"; }
-                    else if (zh.Contains("动摇之证")) { result += "\n.RibbonMarkFlustered=True"; }
-                    else if (zh.Contains("木讷之证")) { result += "\n.RibbonMarkHumble=True"; }
-                    else if (zh.Contains("理性之证")) { result += "\n.RibbonMarkIntellectual=True"; }
-                    else if (zh.Contains("热情之证")) { result += "\n.RibbonMarkIntense=True"; }
-                    else if (zh.Contains("捡拾之证")) { result += "\n.RibbonMarkItemfinder=True"; }
-                    else if (zh.Contains("紧张之证")) { result += "\n.RibbonMarkJittery=True"; }
-                    else if (zh.Contains("幸福之证")) { result += "\n.RibbonMarkJoyful=True"; }
-                    else if (zh.Contains("优雅之证")) { result += "\n.RibbonMarkKindly=True"; }
-                    else if (zh.Contains("激动之证")) { result += "\n.RibbonMarkPeeved=True"; }
-                    else if (zh.Contains("自信之证")) { result += "\n.RibbonMarkPrideful=True"; }
-                    else if (zh.Contains("昂扬之证")) { result += "\n.RibbonMarkPumpedUp=True"; }
-                    else if (zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
-                    else if (zh.Contains("淘气之证")) { result += "\n.RibbonMarkRowdy=True"; }
-                    else if (zh.Contains("凶悍之证")) { result += "\n.RibbonMarkScowling=True"; }
-                    else if (zh.Contains("不振之证")) { result += "\n.RibbonMarkSlump=True"; }
-                    else if (zh.Contains("微笑之证")) { result += "\n.RibbonMarkSmiley=True"; }
-                    else if (zh.Contains("悲伤之证")) { result += "\n.RibbonMarkTeary=True"; }
-                    else if (zh.Contains("不纯之证")) { result += "\n.RibbonMarkThorny=True"; }
-                    else if (zh.Contains("偶遇之证")) { result += "\n.RibbonMarkUncommon=True"; }
-                    else if (zh.Contains("自卑之证")) { result += "\n.RibbonMarkUnsure=True"; }
-                    else if (zh.Contains("爽快之证")) { result += "\n.RibbonMarkUpbeat=True"; }
-                    else if (zh.Contains("活力之证")) { result += "\n.RibbonMarkVigor=True"; }
-                    else if (zh.Contains("倦怠之证")) { result += "\n.RibbonMarkZeroEnergy=True"; }
-                    else if (zh.Contains("疏忽之证")) { result += "\n.RibbonMarkZonedOut=True"; }
-                    else if (zh.Contains("宝主之证")) { result += "\n.RibbonMarkTitan=True"; }
-                    if (zh.Contains("大个子之证")) { result += "\n.Scale=255\n.RibbonMarkJumbo=True"; }
-                    else if (zh.Contains("小个子之证")) { result += "\n.Scale=0\n.RibbonMarkMini=True"; }
-                }
+                if (zh.Contains("最强之证")) { result += "\n.RibbonMarkMightiest=True"; }
+                else if (zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
+                else if (zh.Contains("命运之证")) { result += "\n.RibbonMarkDestiny=True"; }
+                else if (zh.Contains("暴雪之证")) { result += "\n.RibbonMarkBlizzard=True"; }
+                else if (zh.Contains("阴云之证")) { result += "\n.RibbonMarkCloudy=True"; }
+                else if (zh.Contains("正午之证")) { result += "\n.RibbonMarkLunchtime=True"; }
+                else if (zh.Contains("浓雾之证")) { result += "\n.RibbonMarkMisty=True"; }
+                else if (zh.Contains("降雨之证")) { result += "\n.RibbonMarkRainy=True"; }
+                else if (zh.Contains("沙尘之证")) { result += "\n.RibbonMarkSandstorm=True"; }
+                else if (zh.Contains("午夜之证")) { result += "\n.RibbonMarkSleepyTime=True"; }
+                else if (zh.Contains("降雪之证")) { result += "\n.RibbonMarkSnowy=True"; }
+                else if (zh.Contains("落雷之证")) { result += "\n.RibbonMarkStormy=True"; }
+                else if (zh.Contains("干燥之证")) { result += "\n.RibbonMarkDry=True"; }
+                else if (zh.Contains("黄昏之证")) { result += "\n.RibbonMarkDusk=True"; }
+                else if (zh.Contains("拂晓之证")) { result += "\n.RibbonMarkDawn=True"; }
+                else if (zh.Contains("上钩之证")) { result += "\n.RibbonMarkFishing=True"; }
+                else if (zh.Contains("咖喱之证")) { result += "\n.RibbonMarkCurry=True"; }
+                else if (zh.Contains("无虑之证")) { result += "\n.RibbonMarkAbsentMinded=True"; }
+                else if (zh.Contains("愤怒之证")) { result += "\n.RibbonMarkAngry=True"; }
+                else if (zh.Contains("冷静之证")) { result += "\n.RibbonMarkCalmness=True"; }
+                else if (zh.Contains("领袖之证")) { result += "\n.RibbonMarkCharismatic=True"; }
+                else if (zh.Contains("狡猾之证")) { result += "\n.RibbonMarkCrafty=True"; }
+                else if (zh.Contains("期待之证")) { result += "\n.RibbonMarkExcited=True"; }
+                else if (zh.Contains("本能之证")) { result += "\n.RibbonMarkFerocious=True"; }
+                else if (zh.Contains("动摇之证")) { result += "\n.RibbonMarkFlustered=True"; }
+                else if (zh.Contains("木讷之证")) { result += "\n.RibbonMarkHumble=True"; }
+                else if (zh.Contains("理性之证")) { result += "\n.RibbonMarkIntellectual=True"; }
+                else if (zh.Contains("热情之证")) { result += "\n.RibbonMarkIntense=True"; }
+                else if (zh.Contains("捡拾之证")) { result += "\n.RibbonMarkItemfinder=True"; }
+                else if (zh.Contains("紧张之证")) { result += "\n.RibbonMarkJittery=True"; }
+                else if (zh.Contains("幸福之证")) { result += "\n.RibbonMarkJoyful=True"; }
+                else if (zh.Contains("优雅之证")) { result += "\n.RibbonMarkKindly=True"; }
+                else if (zh.Contains("激动之证")) { result += "\n.RibbonMarkPeeved=True"; }
+                else if (zh.Contains("自信之证")) { result += "\n.RibbonMarkPrideful=True"; }
+                else if (zh.Contains("昂扬之证")) { result += "\n.RibbonMarkPumpedUp=True"; }
+                else if (zh.Contains("未知之证")) { result += "\n.RibbonMarkRare=True"; }
+                else if (zh.Contains("淘气之证")) { result += "\n.RibbonMarkRowdy=True"; }
+                else if (zh.Contains("凶悍之证")) { result += "\n.RibbonMarkScowling=True"; }
+                else if (zh.Contains("不振之证")) { result += "\n.RibbonMarkSlump=True"; }
+                else if (zh.Contains("微笑之证")) { result += "\n.RibbonMarkSmiley=True"; }
+                else if (zh.Contains("悲伤之证")) { result += "\n.RibbonMarkTeary=True"; }
+                else if (zh.Contains("不纯之证")) { result += "\n.RibbonMarkThorny=True"; }
+                else if (zh.Contains("偶遇之证")) { result += "\n.RibbonMarkUncommon=True"; }
+                else if (zh.Contains("自卑之证")) { result += "\n.RibbonMarkUnsure=True"; }
+                else if (zh.Contains("爽快之证")) { result += "\n.RibbonMarkUpbeat=True"; }
+                else if (zh.Contains("活力之证")) { result += "\n.RibbonMarkVigor=True"; }
+                else if (zh.Contains("倦怠之证")) { result += "\n.RibbonMarkZeroEnergy=True"; }
+                else if (zh.Contains("疏忽之证")) { result += "\n.RibbonMarkZonedOut=True"; }
+                else if (zh.Contains("宝主之证")) { result += "\n.RibbonMarkTitan=True"; }
+                if (zh.Contains("大个子之证")) { result += "\n.Scale=255\n.RibbonMarkJumbo=True"; }
+                else if (zh.Contains("小个子之证")) { result += "\n.Scale=0\n.RibbonMarkMini=True"; }
+                
             }
             
             //添加全回忆技能(不支持BDSP)
