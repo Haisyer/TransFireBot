@@ -12,4 +12,5 @@ Uses [dodo-open-net](https://github.com/dodo-open/dodo-open-net) as a dependency
 
 ## Usage
 See https://docs.qq.com/doc/DSVVZZk9saUNTeHNn
+
 使用指导 https://docs.qq.com/doc/DVWdQdXJPWllabm5t
