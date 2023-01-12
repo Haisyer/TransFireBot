@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="IndexRange" Version="1.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="PKHeX.Core" Version="22.12.19" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
 
@@ -52,6 +52,12 @@
     </Reference>
     <Reference Include="PKHeX.Drawing.PokeSprite">
       <HintPath>deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PKHeX.Core">
+      <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -726,6 +726,7 @@ namespace SysBot.Pokemon
             var pkprev = new PK9();
             var bctr = 0;
             var n = 1;
+            Log("正在检测");
             while (ctr < Hub.Config.Trade.MaxDumpsPerTrade && DateTime.Now - start < time)
             {
                 if (!await IsInBox(PortalOffset, token).ConfigureAwait(false))
@@ -748,9 +749,9 @@ namespace SysBot.Pokemon
                     DumpPokemon(DumpSetting.DumpFolder, subfolder, pk); // received
                 }
 
-                var la = new LegalityAnalysis(pk);
-                var verbose = $"```{la.Report(true)}```";
-                Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
+            //    var la = new LegalityAnalysis(pk);
+            //    var verbose = $"```{la.Report(true)}```";
+            //    Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
 
                 ctr++;
                 var msg = $"检测第{n}只";

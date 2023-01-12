@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PKHeX.Core;
 using SysBot.Base;
+using System.IO;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -82,7 +83,7 @@ namespace SysBot.Pokemon.Dodo
                     msg = $"取消派送, <@!{username}>: 官方禁止该宝可梦交易!";
                     return false;
                 }
-
+               
                 if (pkm is T pk)
                 {
                     var valid = new LegalityAnalysis(pkm).Valid;

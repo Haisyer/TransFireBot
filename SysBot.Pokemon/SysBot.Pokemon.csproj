@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PKHeX.Core" Version="22.12.19" />
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
   </ItemGroup>
 
@@ -16,8 +15,23 @@
     <Folder Include="deps\" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="IndexRange">
+      <HintPath>deps\IndexRange.dll</HintPath>
+    </Reference>
+    <Reference Include="PKHeX.Core">
+      <HintPath>deps\PKHeX.Core.dll</HintPath>
+    </Reference>
     <Reference Include="PKHeX.Core.AutoMod">
       <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>deps\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>deps\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple">
+      <HintPath>deps\System.ValueTuple.dll</HintPath>
     </Reference>
   </ItemGroup>
 

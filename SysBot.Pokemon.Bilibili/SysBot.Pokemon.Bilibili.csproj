@@ -11,4 +11,13 @@
 		<ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="PKHeX.Core">
+	    <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="System.ValueTuple">
+	    <HintPath>..\SysBot.Pokemon\deps\System.ValueTuple.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>

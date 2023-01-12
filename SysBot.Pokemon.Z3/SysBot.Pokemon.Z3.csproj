@@ -8,8 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PKHeX.Core" Version="22.12.19" />
     <ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IndexRange">
+      <HintPath>..\SysBot.Pokemon\deps\IndexRange.dll</HintPath>
+    </Reference>
+    <Reference Include="PKHeX.Core">
+      <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Buffers">
+      <HintPath>..\SysBot.Pokemon\deps\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>..\SysBot.Pokemon\deps\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple">
+      <HintPath>..\SysBot.Pokemon\deps\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Choose>
