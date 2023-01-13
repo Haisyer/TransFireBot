@@ -37,6 +37,15 @@ namespace SysBot.Pokemon.Dodo
             var line = $"交换已取消, 取消原因:{msg}";
             LogUtil.LogText(line);
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID,line, ChannelId);
+            var n = DodoBot<T>.Info.Hub.Config.Queues.AlertNumber;
+            for (int i = 1; i <= n; i++)
+            {
+                var r = DodoBot<T>.Info.CheckIndex(i);
+                if (r != 0)
+                {
+                    DodoBot<T>.SendChannelAtMessage(r, $":注意{i}个以后该到你了！", ChannelId);
+                }
+            }
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
@@ -57,7 +66,15 @@ namespace SysBot.Pokemon.Dodo
             LogUtil.LogText(message);
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, message, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(),text);
-             
+            var n = DodoBot<T>.Info.Hub.Config.Queues.AlertNumber;
+            for (int i = 1; i <=n; i++)
+            {
+                var r = DodoBot<T>.Info.CheckIndex(i);
+                if (r != 0)
+                {
+                    DodoBot<T>.SendChannelAtMessage(r, $":注意{i}个以后该到你了！", ChannelId);
+                }
+            }
         }
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)

@@ -57,6 +57,9 @@ namespace SysBot.Pokemon
         [Category(UserBias), Description("根据队列中的用户数量，偏重于Dump队列的权重\nBiases the Dump Queue's weight based on how many users are in the queue.")]
         public int YieldMultCountDump { get; set; } = 100;
 
+        [Category(UserBias), Description("让第几个用户提前准备")]
+        public int AlertNumber { get; set; } = 3;
+
         // Flex Time
 
         [Category(TimeBias), Description("决定是否应将重量加入或乘以总重量\nDetermines whether the weight should be added or multiplied to the total weight.")]
