@@ -68,11 +68,18 @@ namespace SysBot.Pokemon
         {
             lock (_sync)
             {
-                var r = UsersInQueue[index];
-                if(r==null) 
+                if (index >= UsersInQueue.Count)
+                {
                     return 0;
+                }
                 else
-                    return r.UserID;
+                {
+                    var r = UsersInQueue[index];
+                    if (r == null)
+                        return 0;
+                    else
+                        return r.UserID;
+                }
             }
         }
         public string GetPositionString(ulong uid, PokeRoutineType type = PokeRoutineType.Idle)
