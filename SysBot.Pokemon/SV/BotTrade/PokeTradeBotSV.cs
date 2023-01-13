@@ -252,7 +252,7 @@ namespace SysBot.Pokemon
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
 
             // Assumes we're freshly in the Portal and the cursor is over Link Trade.
-            Log("选择链接交换.");
+            Log("选择连接交换.");
 
             await Click(A, 1_500, token).ConfigureAwait(false);
             // Make sure we clear any Link Codes if we're not in Distribution with fixed code, and it wasn't entered last round.
@@ -332,7 +332,7 @@ namespace SysBot.Pokemon
             var tradePartner = new TradePartnerSV(tradePartnerFullInfo);
             var trainerNID = await GetTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
             RecordUtil<PokeTradeBot>.Record($"启动\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-            Log($"找到连接交换对象: {tradePartner.TrainerName}-{tradePartner.TID7} (ID: {trainerNID})");
+            Log($"找到连接交换对象: {tradePartner.TrainerName}-{tradePartner.TID7}\n(任天堂网络ID: {trainerNID})");
 
             var partnerCheck = CheckPartnerReputation(poke, trainerNID, tradePartner.TrainerName);
             if (partnerCheck != PokeTradeResult.Success)
@@ -341,21 +341,17 @@ namespace SysBot.Pokemon
                 await ExitTradeToPortal(false, token).ConfigureAwait(false);
                 return partnerCheck;
             }
-
-            if (Hub.Config.Legality.UseTradePartnerInfo)
-            {
-                await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, token);
-            }
-
             poke.SendNotification(this, $"找到连接交换对象: {tradePartner.TrainerName}. 等待一个Pokémon...");
-
             if (poke.Type == PokeTradeType.Dump)
             {
                 var result = await ProcessDumpTradeAsync(poke, token).ConfigureAwait(false);
                 await ExitTradeToPortal(false, token).ConfigureAwait(false);
                 return result;
             }
-
+            if (Hub.Config.Legality.UseTradePartnerInfo)
+            {
+                await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, token);
+            }
             // Wait for user input...
             var offered = await ReadUntilPresent(TradePartnerOfferedOffset, 25_000, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
             var oldEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);
@@ -757,6 +753,7 @@ namespace SysBot.Pokemon
                 var msg = $"检测第{n}只";
                 detail.SendNotification(this, pk, msg);
                 n++;
+                TradeExtensions<PK9>.EggLogs(pk);
             }
 
             Log($"Ended Dump loop after processing {ctr} Pokémon.");

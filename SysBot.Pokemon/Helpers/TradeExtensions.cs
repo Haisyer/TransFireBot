@@ -276,12 +276,56 @@ namespace SysBot.Pokemon
                 File.WriteAllText(filepath, string.Join("\n", content));
             }
         }
+        public static void EggLogs(PKM pk, string filepath = "")
+        {
+            if (filepath == "")
+                filepath = "EggLog.txt";
+            if (!File.Exists(filepath))
+            {
+                var blank = "统计: 0 宝可梦总数, 0 蛋, 0 闪光\n_________________________________________________\n";
+                File.WriteAllText(filepath, blank);
+            }
 
+            lock (_syncLog)
+            {
+                var content = File.ReadAllText(filepath).Split('\n').ToList();
+                var splitTotal = content[0].Split(',');
+                content.RemoveRange(0, 3);
+                int pokeTotal = int.Parse(splitTotal[0].Split(' ')[1]) + 1;
+                int eggTotal = int.Parse(splitTotal[1].Split(' ')[1]) + (pk.IsEgg ? 1 : 0);
+                int starTotal = int.Parse(splitTotal[2].Split(' ')[1]) + (pk.IsShiny ? 1 : 0);
+                var form = FormOutput(pk.Species, pk.Form, out _);
+                var speciesName = $"{SpeciesName.GetSpeciesNameGeneration(pk.Species, pk.Language, 9)}{form}".Replace(" ", "");
+                var index = content.FindIndex(x => x.Split(':')[0].Equals(speciesName));
+                if (index == -1)
+                    content.Add($"{speciesName}: 1, {(pk.IsShiny ? 1 : 0)}★, {GetPercent(pokeTotal, 1)}%");
+                var length = index == -1 ? 1 : 0;
+                for (int i = 0; i < content.Count - length; i++)
+                {
+                    var sanitized = GetSanitizedEncounterLineArray(content[i]);
+                    if (i == index)
+                    {
+                        int speciesTotal = int.Parse(sanitized[1]) + 1;
+                        int stTotal = int.Parse(sanitized[2]) + (pk.IsShiny ? 1 : 0);
+                        content[i] = $"{speciesName}: {speciesTotal}, {stTotal}★, {GetPercent(pokeTotal, speciesTotal)}%";
+                    }
+                    else content[i] = $"{sanitized[0]} {sanitized[1]}, {sanitized[2]}★, {GetPercent(pokeTotal, int.Parse(sanitized[1]))}%";
+                }
+                content.Sort();
+                string totalsString =
+                    $"统计: {pokeTotal} 宝可梦总数, " +
+                    $"{eggTotal} 蛋 ({GetPercent(pokeTotal, eggTotal)}%), " +
+                    $"{starTotal} 闪光 ({GetPercent(pokeTotal, starTotal)}%), " +
+                    "\n_________________________________________________\n";
+                content.Insert(0, totalsString);
+                File.WriteAllText(filepath, string.Join("\n", content));
+            }
+        }
         private static string GetPercent(int total, int subtotal) => (100.0 * ((double)subtotal / total)).ToString("N2", NumberFormatInfo.InvariantInfo);
 
         private static string[] GetSanitizedEncounterLineArray(string content)
         {
-            var replace = new Dictionary<string, string> { { ",", "" }, { "★", "" }, { "■", "" }, { "🎀", "" }, { "%", "" } };
+            var replace = new Dictionary<string, string> { { ",", "" }, { "★", "" }, { "%", "" } };
             return replace.Aggregate(content, (old, cleaned) => old.Replace(cleaned.Key, cleaned.Value)).Split(' ');
         }
 
