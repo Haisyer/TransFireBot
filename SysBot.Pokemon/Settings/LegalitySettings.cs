@@ -55,6 +55,12 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("根据游戏RNG生成合法、非异色、8代、来自宝可梦巢穴的宝可梦。\nAllow XOROSHIRO when generating Gen 8 Raid Pokémon.")]
         public bool UseXOROSHIRO { get; set; } = true;
 
+        [Category(Generate), Description("是否为用户返回其中文指令生成的ShowDown代码,暂只有dodo可用")]
+        public bool ReturnShowdownSets { get; set; } = true;
+
+        [Category(Generate), Description("是否允许用户使用文件,暂只有dodo可用")]
+        public bool AllowUseFile { get; set; } = true;
+
         [Category(Generate), Description("增加对战版本，支持它(目前仅仅支持SWSH)使用过去的一代Pokémon在线对战游戏\nAdds Battle Version for games that support it (SWSH only) for using past-gen Pokémon in online competitive play.")]
         public bool SetBattleVersion { get; set; } = false;
 

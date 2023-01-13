@@ -332,7 +332,7 @@ namespace SysBot.Pokemon
             var tradePartner = new TradePartnerSV(tradePartnerFullInfo);
             var trainerNID = await GetTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
             RecordUtil<PokeTradeBot>.Record($"启动\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-            Log($"找到连接交换对象: {tradePartner.TrainerName}-{tradePartner.TID7}\n(任天堂网络ID: {trainerNID})");
+            Log($"找到连接交换对象: {tradePartner.TrainerName}-TID:{tradePartner.TID7}-SID;{tradePartner.SID7}(任天堂网络ID: {trainerNID})");
 
             var partnerCheck = CheckPartnerReputation(poke, trainerNID, tradePartner.TrainerName);
             if (partnerCheck != PokeTradeResult.Success)
@@ -812,7 +812,7 @@ namespace SysBot.Pokemon
                 clone.Tracker = 0;
 
             poke.SendNotification(this, $"***克隆了你的{GameInfo.GetStrings(1).Species[clone.Species]}!***\n现在按B取消你的交换申请，给我一只你不需要的宝可梦。");
-            Log($"Cloned a {GameInfo.GetStrings(1).Species[clone.Species]}. Waiting for user to change their Pokémon...");
+            Log($"克隆一个 {GameInfo.GetStrings(1).Species[clone.Species]}. 等待用户切换他们的Pokémom...");
 
             // Separate this out from WaitForPokemonChanged since we compare to old EC from original read.
             var partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
@@ -936,7 +936,7 @@ namespace SysBot.Pokemon
                     poke.Notifier.SendNotification(this, poke, "你无视了管理员设置的交易冷却CD。已通知管理员.");
                     var msg = $"发现{user.TrainerName}{useridmsg}无视{cd}分钟交易冷却时间.在 {delta.TotalMinutes:F1} 分钟前连接过.";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
-                        msg += $"\nID: {TrainerNID}";
+                        msg += $"\nNID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
                         msg = $"{AbuseSettings.CooldownAbuseEchoMention} {msg}";
                     EchoUtil.Echo(msg);
@@ -1008,6 +1008,7 @@ namespace SysBot.Pokemon
                     msg += $"\n用户因以下原因被禁: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
+                RecordUtil<PokeTradeBot>.Record($"{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}用户因以下原因被禁:{entry.Comment}");
                 EchoUtil.Echo(msg);
                 return PokeTradeResult.SuspiciousActivity;
             }
