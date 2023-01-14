@@ -1,7 +1,9 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -33,8 +35,9 @@ namespace SysBot.Pokemon.Dodo
 
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
+            string description = GetEnumDescription(msg);
             OnFinish?.Invoke(routine);
-            var line = $"交换已取消, 取消原因:{msg}";
+            var line = $"交换已取消, 取消原因:{description}";
             LogUtil.LogText(line);
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID,line, ChannelId);
             var n = DodoBot<T>.Info.Hub.Config.Queues.AlertNumber;
@@ -150,6 +153,18 @@ namespace SysBot.Pokemon.Dodo
                 }
             }
            
+        }
+        public static string GetEnumDescription(Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            DescriptionAttribute[] attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+            if (attributes != null && attributes.Any())
+            {
+                return attributes.First().Description;
+            }
+
+            return value.ToString();
         }
     }
 }
