@@ -48,23 +48,35 @@ namespace SysBot.Pokemon.Dodo
         {
             var channelId = Settings.ChannelId;
             if (string.IsNullOrWhiteSpace(channelId)) return;
-            SendChannelMessage("欢迎使用传火机器人！", channelId);
+            //SendChannelMessage("欢迎使用传火机器人！", channelId);
+            SendChannelMessageAll("欢迎使用传火机器人！", channelId);
+            var Msg = "";
+            if (!DodoBot<T>.Info.Hub.Config.Legality.AllowUseFile)
+            {
+                Msg = $"本频道不允许上传文件";
+            }
+            else
+            {
+                Msg = "本频道可以上传文件";
+            }
             Task.Delay(1_000).ConfigureAwait(false);
+            
+
             if (typeof(T) == typeof(PK8))
             {
-                SendChannelMessage("当前版本为剑盾,如需上传PK文件,请上传PK8文件", channelId);
+                SendChannelMessage($"当前版本为剑盾,{Msg}", channelId);
             }
             else if (typeof(T) == typeof(PB8))
             {
-                SendChannelMessage("当前版本为晶灿钻石明亮珍珠,如需上传PK文件,请上传PB8文件", channelId);
+                SendChannelMessage($"当前版本为晶灿钻石明亮珍珠,{Msg}", channelId);
             }
             else if (typeof(T) == typeof(PA8))
             {
-                SendChannelMessage("当前版本为阿尔宙斯如需上传PK文件,请上传PA8文件", channelId);
+                SendChannelMessage($"当前版本为阿尔宙斯,{Msg}", channelId);
             }
             else if (typeof(T) == typeof(PK9))
             {
-                SendChannelMessage("当前版本为朱紫,如需上传PK文件,请上传PK9文件", channelId);
+                SendChannelMessage($"当前版本为朱紫,{Msg}", channelId);
             }
         }
 
@@ -90,6 +102,19 @@ namespace SysBot.Pokemon.Dodo
                 MessageBody = new MessageBodyText
                 {
                     Content = $"<@!{atDodoId}> {message}"
+                }
+            });
+        }
+
+        public static void SendChannelMessageAll( string message, string channelId)
+        {
+            if (string.IsNullOrEmpty(message)) return;
+            OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyText>
+            {
+                ChannelId = channelId,
+                MessageBody = new MessageBodyText
+                {
+                    Content = $"<@online> {message}"
                 }
             });
         }

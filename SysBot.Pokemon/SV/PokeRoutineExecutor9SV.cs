@@ -81,7 +81,7 @@ namespace SysBot.Pokemon
             InitSaveData(sav);
 
             if (!IsValidTrainerData())
-                throw new Exception("训练器数据无效.请参考SysBot.NET维基，了解不良或无训练器数据的情况Trainer data is not valid. Refer to the SysBot.NET wiki for bad or no trainer data.");
+                throw new Exception("训练家数据无效.请参考SysBot.NET维基，了解不良或无训练家数据的情况Trainer data is not valid. Refer to the SysBot.NET wiki for bad or no trainer data.");
             if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
                 throw new Exception("文本速度应设置为快速。为了正确的操作，请修复这个问题Text speed should be set to FAST. Fix this for correct operation.");
 

@@ -55,9 +55,9 @@ namespace SysBot.Pokemon.Dodo
         {
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
-            var message = $"{info.Trainer.TrainerName}: " + (tradedToUser != 0
-                ? $"交易完成。享受您的{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}({(Species) tradedToUser})!"
-                : "交易完成!");
+            var message = $"与{info.Trainer.TrainerName}的交易: " + (tradedToUser != 0
+                ? $"完成。希望您能与您的{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}玩的愉快!"
+                : "完成!");
             var text =
                  $"我收到精灵的种类:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
                  $"PID:{result.PID:X}\n" +

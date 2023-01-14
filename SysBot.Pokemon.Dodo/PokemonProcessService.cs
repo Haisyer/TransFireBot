@@ -7,6 +7,8 @@ using DoDo.Open.Sdk.Models.Personals;
 using DoDo.Open.Sdk.Services;
 using PKHeX.Core;
 using SysBot.Base;
+using SysBot.Pokemon;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -14,7 +16,7 @@ namespace SysBot.Pokemon.Dodo
     {
         private readonly OpenApiService _openApiService;
         private static readonly string LogIdentity = "DodoBot";
-        private static readonly string Welcome = "@我并尝试对我说：\n4V0A0S闪光母治愈球智挥猩太晶妖精悠闲性格努力值252生命116防御132特防8速度心灵感应特性携带特性膏药-精神强念-号令-戏法空间-挑衅\n或者使用PS代码\n或者上传pk文件\n取消排队 或者 排队\n当前位置 或者 排队";
+        private static readonly string Welcome = "宝可梦机器人为您服务\n中文指令请看在线文件:https://docs.qq.com/doc/DVWdQdXJPWllabm5t?&u=1c5a2618155548239a9563e9f22a57c0\n或者使用PS代码\n或者上传pk文件\n取消排队请输入:排队\n当前位置请输入:位置";
         private readonly string _channelId;
         private readonly string _botDodoId;
 
@@ -76,18 +78,26 @@ namespace SysBot.Pokemon.Dodo
 
             if (eventBody.MessageBody is MessageBodyFile messageBodyFile)
             {
-                if (!ValidFileSize(messageBodyFile.Size ?? 0) || !ValidFileName(messageBodyFile.Name))
+                if (!DodoBot<TP>.Info.Hub.Config.Legality.AllowUseFile)
                 {
-                    DodoBot<TP>.SendChannelMessage("非法文件", eventBody.ChannelId);
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "本频道不允许上传文件", eventBody.ChannelId);
                     return;
                 }
-                var p = GetPKM(new WebClient().DownloadData(messageBodyFile.Url));
-                if (p is TP pkm)
+                else
                 {
-                    DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
-                }
+                    if (!ValidFileSize(messageBodyFile.Size ?? 0) || !ValidFileName(messageBodyFile.Name))
+                    {
+                        DodoBot<TP>.SendChannelMessage("非法文件", eventBody.ChannelId);
+                        return;
+                    }
+                    var p = GetPKM(new WebClient().DownloadData(messageBodyFile.Url));
+                    if (p is TP pkm)
+                    {
+                        DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                    }
 
-                return;
+                    return;
+                }
             }
 
             if (eventBody.MessageBody is not MessageBodyText messageBodyText) return;
@@ -109,30 +119,28 @@ namespace SysBot.Pokemon.Dodo
                 DodoHelper<TP>.StartDump(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
                 return;
             }
+            //可用于识别其他版本模板文本,不进入队列艾特提示本人,例如已经失效的XXXL文本
+            //if (content.Contains("蔡徐坤"))
+            //{
+            //    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "就你也敢直呼鸡哥的大名", eventBody.ChannelId);
+            //    return;
+            //}
 
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);
             if (!string.IsNullOrWhiteSpace(ps))
             {
                 LogUtil.LogInfo($"收到命令\n{ps}", LogIdentity);
                 DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                
+                if(DodoBot<TP>.Info.Hub.Config.Legality.ReturnShowdownSets == true)
+                {
+                    DodoBot<TP>.SendPersonalMessage(eventBody.DodoId, $"收到命令\n{ps}");
+                }
             }
-            else if (content.Contains("取消排队"))
+            else if (content.Contains("取消"))
             {
                 var result = DodoBot<TP>.Info.ClearTrade(ulong.Parse(eventBody.DodoId));
                 DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), $" {GetClearTradeMessage(result)}",
-                    eventBody.ChannelId);
-            }
-            else if (content.Contains("排队"))
-            {
-                var result = DodoBot<TP>.Info.ClearTrade(ulong.Parse(eventBody.DodoId));
-                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), $" {GetClearTradeMessage(result)}",
-                    eventBody.ChannelId);
-            }
-            else if (content.Contains("当前位置"))
-            {
-                var result = DodoBot<TP>.Info.CheckPosition(ulong.Parse(eventBody.DodoId));
-                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId),
-                    $" {GetQueueCheckResultMessage(result)}",
                     eventBody.ChannelId);
             }
             else if (content.Contains("位置"))

@@ -63,7 +63,7 @@ namespace SysBot.Pokemon
                 if (candidateSpecieNo > 0)
                 {
                     if (candidateSpecieNo == 29) result = "Nidoran-F";
-                    else if (candidateSpecieNo == 32) result = "Nidoran-M";                    
+                    else if (candidateSpecieNo == 32) result = "Nidoran-M";           
                     else result += GameStringsEn.Species[candidateSpecieNo];
                     zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
                     // 特殊差异
@@ -209,7 +209,16 @@ namespace SysBot.Pokemon
             for (int i = 1; i < GameStringsZh.Ability.Count; i++)
             {
                 if (GameStringsZh.Ability[i].Length == 0) continue;
-                if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
+                if (!zh.Contains(GameStringsZh.Ability[i] + "特性"))
+                {
+                    if (zh.Contains("梦特"))
+                    {
+                        result += $"\nAbility: Hidden";
+                        zh = zh.Replace("梦特", "");
+                    }
+                    else continue;
+                }
+                
                 result += $"\nAbility: {GameStringsEn.Ability[i]}";
                 zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
                 break;
@@ -280,17 +289,17 @@ namespace SysBot.Pokemon
                 }                
                 else if (zh.ToUpper().Contains("5V0攻"))
                 {
-                    result += "\n.IVs=31\n.IV_ATK=0";
+                    result += "\nIVs= 0 Atk ";
                     zh = zh.Replace("5V0攻", "");
                 }
                 else if (zh.ToUpper().Contains("5V0速"))
                 {
-                    result += "\n.IVs=31\n.IV_SPE=0";
+                    result += "\nIVs=0 Spe ";
                     zh = zh.Replace("5V0速", "");
                 }
                 else if (zh.ToUpper().Contains("4V0攻0速"))
                 {
-                    result += "\n.IVs=31\n.IV_ATK=0\n.IV_SPE=0";
+                    result += "\nIVs= 0 Spe / 0 Atk";
                     zh = zh.Replace("4V0攻0速", "");
                 }
             }
