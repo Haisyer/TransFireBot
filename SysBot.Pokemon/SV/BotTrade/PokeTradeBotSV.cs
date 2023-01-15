@@ -969,7 +969,7 @@ namespace SysBot.Pokemon
                 var cd = AbuseSettings.TradeCooldown;
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
                 {
-                    poke.Notifier.SendNotification(this, poke, "你无视了管理员设置的交易冷却CD。已通知管理员.");
+                    poke.Notifier.SendNotification(this, poke, $"{user.TrainerName}无视了管理员设置的交易冷却CD.");
                     var msg = $"发现{user.TrainerName}{useridmsg}无视{cd}分钟交易冷却时间.在 {delta.TotalMinutes:F1} 分钟前连接过.";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
                         msg += $"\nNID: {TrainerNID}";
@@ -1044,7 +1044,7 @@ namespace SysBot.Pokemon
                     msg += $"\n用户因以下原因被禁: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
-                RecordUtil<PokeTradeBot>.Record($"{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}用户因以下原因被禁:{entry.Comment}");
+                ReBannedList<PokeTradeBot>.ReBL($"连接到黑名单用户:{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}该用户因以下原因被禁:{entry.Comment}");
                 EchoUtil.Echo(msg);
                 return PokeTradeResult.SuspiciousActivity;
             }

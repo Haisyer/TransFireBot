@@ -122,6 +122,7 @@ namespace SysBot.Pokemon.Dodo
             }
             else if (content.Trim().StartsWith("批量"))
             {
+
                 if (DodoBot<TP>.Info.Hub.Config.Queues.MutiTrade)
                 {
                     var r = content.Split('量');
@@ -131,12 +132,12 @@ namespace SysBot.Pokemon.Dodo
                         string[] fileEntries = Directory.GetFiles(directory);
                         if (fileEntries.Length > 0)
                         {
-                            DodoBot<TP>.SendChannelMessage($"找到文件夹{r[1]}", eventBody.ChannelId);
+                            DodoBot<TP>.SendChannelMessage($"找到{r[1]}", eventBody.ChannelId);
                             DodoHelper<TP>.StartMutiTrade(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, r[1]);
                         }
                         else
                         {
-                            DodoBot<TP>.SendChannelMessage($"没找到文件夹{r[1]}", eventBody.ChannelId);
+                            DodoBot<TP>.SendChannelMessage($"未找到{r[1]}", eventBody.ChannelId);
                         }
                     }
 
