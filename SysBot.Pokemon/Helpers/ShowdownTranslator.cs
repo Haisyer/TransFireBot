@@ -209,16 +209,7 @@ namespace SysBot.Pokemon
             for (int i = 1; i < GameStringsZh.Ability.Count; i++)
             {
                 if (GameStringsZh.Ability[i].Length == 0) continue;
-                if (!zh.Contains(GameStringsZh.Ability[i] + "特性"))
-                {
-                    if (zh.Contains("梦特"))
-                    {
-                        result += $"\nAbility: Hidden";
-                        zh = zh.Replace("梦特", "");
-                    }
-                    else continue;
-                }
-                
+                if (!zh.Contains(GameStringsZh.Ability[i] + "特性")) continue;
                 result += $"\nAbility: {GameStringsEn.Ability[i]}";
                 zh = zh.Replace(GameStringsZh.Ability[i] + "特性", "");
                 break;

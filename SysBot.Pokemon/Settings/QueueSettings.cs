@@ -30,7 +30,7 @@ namespace SysBot.Pokemon
         public QueueOpening QueueToggleMode { get; set; } = QueueOpening.Threshold;
 
         [Category(FeatureToggle), Description("是否打开批量文件夹功能")]
-        public bool MutiTrade { get; set; } = true;
+        public bool MutiTrade { get; set; } = false;
 
 
         // Queue Toggle
