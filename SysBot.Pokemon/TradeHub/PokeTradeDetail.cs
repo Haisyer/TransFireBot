@@ -43,7 +43,10 @@ namespace SysBot.Pokemon
         /// <summary> Indicates if the trade data is currently being traded. </summary>
         public bool IsProcessing;
 
-        public PokeTradeDetail(TPoke pkm, PokeTradeTrainerInfo info, IPokeTradeNotifier<TPoke> notifier, PokeTradeType type, int code, bool favored = false)
+        /// <summary> 批量文件路径 </summary>
+        public string Path = "";
+
+        public PokeTradeDetail(TPoke pkm, PokeTradeTrainerInfo info, IPokeTradeNotifier<TPoke> notifier, PokeTradeType type, int code, bool favored = false,string path = "")
         {
             ID = Interlocked.Increment(ref CreatedCount) % 3000;
             Code = code;
@@ -53,6 +56,7 @@ namespace SysBot.Pokemon
             Type = type;
             Time = DateTime.Now;
             IsFavored = favored;
+            Path = path;
         }
 
         public void TradeInitialize(PokeRoutineExecutor<TPoke> routine) => Notifier.TradeInitialize(routine, this);

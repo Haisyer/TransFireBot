@@ -29,6 +29,10 @@ namespace SysBot.Pokemon
         [Category(FeatureToggle), Description("确定队列何时被打开和关闭\nDetermines when the queue is turned on and off.")]
         public QueueOpening QueueToggleMode { get; set; } = QueueOpening.Threshold;
 
+        [Category(FeatureToggle), Description("是否打开批量文件夹功能")]
+        public bool MutiTrade { get; set; } = true;
+
+
         // Queue Toggle
 
         [Category(QueueToggle), Description("Threshold模式:将导致队列打开的用户数\nThreshold Mode: Count of users that will cause the queue to open.")]

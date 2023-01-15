@@ -8,6 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Pokemon.PokeDataOffsetsSV;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace SysBot.Pokemon
 {
@@ -30,6 +33,8 @@ namespace SysBot.Pokemon
         /// <remarks>If null, will skip dumping.</remarks>
         private readonly IDumper DumpSetting;
 
+        private readonly string TradeF;
+
         /// <summary>
         /// Synchronized start for multiple bots.
         /// </summary>
@@ -46,6 +51,7 @@ namespace SysBot.Pokemon
             TradeSettings = hub.Config.Trade;
             AbuseSettings = hub.Config.TradeAbuse;
             DumpSetting = hub.Config.Folder;
+            TradeF = hub.Config.Folder.TradeFolder;
         }
 
         // Cached offsets that stay the same per session.
@@ -348,45 +354,75 @@ namespace SysBot.Pokemon
                 await ExitTradeToPortal(false, token).ConfigureAwait(false);
                 return result;
             }
-            if (Hub.Config.Legality.UseTradePartnerInfo)
+            int waittime = 25_000;
+            List<PK9> ls = new List<PK9>();
+            if (poke.Type == PokeTradeType.MutiTrade)
             {
-                await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, token);
-            }
-            // Wait for user input...
-            var offered = await ReadUntilPresent(TradePartnerOfferedOffset, 25_000, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
-            var oldEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);
-            if (offered == null || offered.Species < 1 || !offered.ChecksumValid)
-            {
-                Log("交易结束，因为没有提供有效的Pokémon.");
-                await ExitTradeToPortal(false, token).ConfigureAwait(false);
-                return PokeTradeResult.TrainerTooSlow;
-            }
+                waittime = 375_000;
+                string directory = Path.Combine(TradeF, poke.Path);
+                string[] fileEntries = Directory.GetFiles(directory);
+                Log($"{fileEntries.Length}");
+                foreach (string fileName in fileEntries)
+                {
+                    var data = File.ReadAllBytes(fileName);
 
-            PokeTradeResult update;
-            var trainer = new PartnerDataHolder(0, tradePartner.TrainerName, tradePartner.TID7);
-            (toSend, update) = await GetEntityToSend(sav, poke, offered, oldEC, toSend, trainer, token).ConfigureAwait(false);
-            if (update != PokeTradeResult.Success)
-            {
-                await ExitTradeToPortal(false, token).ConfigureAwait(false);
-                return update;
-            }
+                    var pkt = EntityFormat.GetFromBytes(data);
 
-            Log("确认交易.");
-            var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
-            if (tradeResult != PokeTradeResult.Success)
-            {
-                await ExitTradeToPortal(false, token).ConfigureAwait(false);
-                return tradeResult;
+                    pkt.RefreshChecksum();
+                    var pk2 = EntityConverter.ConvertToType(pkt, typeof(PK9), out _) as PK9;
+                    ls.Add(pk2);
+                }
             }
-
-            if (token.IsCancellationRequested)
+            else
             {
-                StartFromOverworld = true;
-                LastTradeDistributionFixed = false;
-                await ExitTradeToPortal(false, token).ConfigureAwait(false);
-                return PokeTradeResult.RoutineCancel;
+                ls.Add(poke.TradeData);
             }
+            PK9 offered = toSend;
+            int counting = 0;
+            foreach (var send in ls)
+            {
+                counting++;
+                toSend = send;
+                if (Hub.Config.Legality.UseTradePartnerInfo)
+                {
+                    await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, token);
+                }
+                Log("Wait for an offered Pokemon...");
+                // Wait for user input...
+                offered = await ReadUntilPresentMutiTrade(TradePartnerOfferedOffset, offered, counting, waittime, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
+                var oldEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);
+                if (offered == null || offered.Species < 1 || !offered.ChecksumValid)
+                {
+                    Log("交易结束，因为没有提供有效的Pokémon.");
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return PokeTradeResult.TrainerTooSlow;
+                }
 
+                PokeTradeResult update;
+                var trainer = new PartnerDataHolder(0, tradePartner.TrainerName, tradePartner.TID7);
+                (toSend, update) = await GetEntityToSend(sav, poke, offered, oldEC, toSend, trainer, token).ConfigureAwait(false);
+                if (update != PokeTradeResult.Success)
+                {
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return update;
+                }
+
+                Log("确认交易.");
+                var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
+                if (tradeResult != PokeTradeResult.Success)
+                {
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return tradeResult;
+                }
+
+                if (token.IsCancellationRequested)
+                {
+                    StartFromOverworld = true;
+                    LastTradeDistributionFixed = false;
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return PokeTradeResult.RoutineCancel;
+                }
+            }
             // Trade was Successful!
             var received = await ReadPokemon(BoxStartOffset, BoxFormatSlotSize, token).ConfigureAwait(false);
             // Pokémon in b1s1 is same as the one they were supposed to receive (was never sent).

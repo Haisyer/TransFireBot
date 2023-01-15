@@ -30,7 +30,13 @@ namespace SysBot.Pokemon.Dodo
                 PokeRoutineType.LinkTrade, out string message);
             DodoBot<T>.SendChannelMessage(message, channelId);
         }
-
+        public static void StartMutiTrade(string dodoId, string nickName, string channelId, string path)
+        {
+            var code = DodoBot<T>.Info.GetRandomTradeCode();
+            var __ = AddToTradeQueue(new T(), code, ulong.Parse(dodoId), nickName, channelId,
+                PokeRoutineType.MutiTrade, out string message, path);
+            DodoBot<T>.SendChannelMessage(message, channelId);
+        }
         public static void StartDump(string dodoId, string nickName, string channelId)
         {
             var code = DodoBot<T>.Info.GetRandomTradeCode();
@@ -114,13 +120,16 @@ namespace SysBot.Pokemon.Dodo
         }
 
         private static bool AddToTradeQueue(T pk, int code, ulong userId, string name, string channelId,
-            PokeRoutineType type, out string msg)
+            PokeRoutineType type, out string msg,string path="")
         {
             var trainer = new PokeTradeTrainerInfo(name, userId);
             var notifier = new DodoTradeNotifier<T>(pk, trainer, code, name, channelId);
-            var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed : (type == PokeRoutineType.Dump ? PokeTradeType.Dump : PokeTradeType.Specific);
+            var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed :
+                (type == PokeRoutineType.Dump ? PokeTradeType.Dump :
+                (type == PokeRoutineType.MutiTrade ? PokeTradeType.MutiTrade :
+                PokeTradeType.Specific));
             var detail =
-                new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, true);
+                 new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, true, path);
             var trade = new TradeEntry<T>(detail, userId, type, name);
 
             var added = DodoBot<T>.Info.AddToTradeQueue(trade, userId, false);

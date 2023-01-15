@@ -7,5 +7,6 @@
         Seed,
         Clone,
         Dump,
+        MutiTrade,
     }
 }

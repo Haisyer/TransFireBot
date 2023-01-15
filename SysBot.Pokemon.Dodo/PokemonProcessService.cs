@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using DoDo.Open.Sdk.Models.Bots;
 using DoDo.Open.Sdk.Models.Events;
@@ -117,6 +118,29 @@ namespace SysBot.Pokemon.Dodo
             else if (content.Trim().StartsWith("检测"))
             {
                 DodoHelper<TP>.StartDump(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                return;
+            }
+            else if (content.Trim().StartsWith("批量"))
+            {
+                if (DodoBot<TP>.Info.Hub.Config.Queues.MutiTrade)
+                {
+                    var r = content.Split('量');
+                    if (r.Length > 0)
+                    {
+                        string directory = Path.Combine(DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder, r[1]);
+                        string[] fileEntries = Directory.GetFiles(directory);
+                        if (fileEntries.Length > 0)
+                        {
+                            DodoBot<TP>.SendChannelMessage($"找到文件夹{r[1]}", eventBody.ChannelId);
+                            DodoHelper<TP>.StartMutiTrade(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, r[1]);
+                        }
+                        else
+                        {
+                            DodoBot<TP>.SendChannelMessage($"没找到文件夹{r[1]}", eventBody.ChannelId);
+                        }
+                    }
+
+                }
                 return;
             }
             //可用于识别其他版本模板文本,不进入队列艾特提示本人,例如已经失效的XXXL文本

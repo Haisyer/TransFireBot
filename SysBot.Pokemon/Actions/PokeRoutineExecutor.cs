@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SysBot.Pokemon
 {
@@ -45,7 +46,39 @@ namespace SysBot.Pokemon
             }
             return null;
         }
+        public async Task<T?> ReadUntilPresentMutiTrade(ulong offset, T lastOffered, int count, int waitms, int waitInterval, int size, CancellationToken token)
+        {
+            int msWaited = 0;
+            if (count == 1)
+            {
+                while (msWaited < waitms)
+                {
+                    var pk = await ReadPokemon(offset, size, token).ConfigureAwait(false);
+                    if (pk.Species != 0 && pk.ChecksumValid)
+                        return pk;
+                    await Task.Delay(waitInterval, token).ConfigureAwait(false);
+                    msWaited += waitInterval;
+                }
+                return null;
+            }
+            else
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+                var offered = await ReadPokemon(offset, size, token).ConfigureAwait(false);
+                do
+                {
+                    offered = await ReadPokemon(offset, size, token).ConfigureAwait(false);
+                    Log($"EC变了吗?={offered.EncryptionConstant:X}");
+                    if (offered.EncryptionConstant != lastOffered.EncryptionConstant)
 
+                        return offered;
+
+                    await Task.Delay(waitInterval, token).ConfigureAwait(false);
+                } while (sw.ElapsedMilliseconds < waitms);
+                return null;
+            }
+        }
         protected async Task<(bool, ulong)> ValidatePointerAll(IEnumerable<long> jumps, CancellationToken token)
         {
             var solved = await SwitchConnection.PointerAll(jumps, token).ConfigureAwait(false);
