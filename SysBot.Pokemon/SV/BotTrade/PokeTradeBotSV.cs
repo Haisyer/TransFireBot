@@ -1107,8 +1107,11 @@ namespace SysBot.Pokemon
                 };
                 Log($"是蛋,修改昵称");
             }
-
-            if (toSend.IsShiny)
+            if(toSend.Met_Location==Locations.TeraCavern9&&toSend.IsShiny)
+            {
+                cln.PID = (((uint)(cln.TID ^ cln.SID) ^ (cln.PID & 0xFFFF) ^ 1u) << 16) | (cln.PID & 0xFFFF);
+            }
+            else if (toSend.IsShiny)
                 cln.SetShiny();
 
             cln.RefreshChecksum();
