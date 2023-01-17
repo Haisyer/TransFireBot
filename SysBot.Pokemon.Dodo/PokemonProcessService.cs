@@ -5,11 +5,13 @@ using DoDo.Open.Sdk.Models.Bots;
 using DoDo.Open.Sdk.Models.Events;
 using DoDo.Open.Sdk.Models.Messages;
 using DoDo.Open.Sdk.Models.Personals;
+using DoDo.Open.Sdk.Models.Members;
 using DoDo.Open.Sdk.Services;
 using PKHeX.Core;
 using SysBot.Base;
 using SysBot.Pokemon;
 using static System.Net.Mime.MediaTypeNames;
+using System.Collections.Generic;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -20,6 +22,7 @@ namespace SysBot.Pokemon.Dodo
         private static readonly string Welcome = "宝可梦机器人为您服务\n中文指令请看在线文件:https://docs.qq.com/doc/DVWdQdXJPWllabm5t?&u=1c5a2618155548239a9563e9f22a57c0\n或者使用PS代码\n或者上传pk文件\n取消排队请输入:排队\n当前位置请输入:位置";
         private readonly string _channelId;
         private readonly string _botDodoId;
+        private uint Count = 0;
 
         public PokemonProcessService(OpenApiService openApiService, string channelId)
         {
@@ -76,7 +79,13 @@ namespace SysBot.Pokemon.Dodo
         {
             var eventBody = input.Data.EventBody;
             if (!string.IsNullOrWhiteSpace(_channelId) && eventBody.ChannelId != _channelId) return;
-
+            var Roleinput = new GetMemberRoleListInput()
+            {
+                DodoId = eventBody.DodoId,
+                IslandId = eventBody.IslandId,
+            };
+            var Roleoutput = DodoBot<TP>.OpenApiService.GetMemberRoleList(Roleinput);
+            bool RoleResult = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Queues.VipQueue);
             if (eventBody.MessageBody is MessageBodyFile messageBodyFile)
             {
                 if (!DodoBot<TP>.Info.Hub.Config.Legality.AllowUseFile)
@@ -92,9 +101,17 @@ namespace SysBot.Pokemon.Dodo
                         return;
                     }
                     var p = GetPKM(new WebClient().DownloadData(messageBodyFile.Url));
+                   
                     if (p is TP pkm)
                     {
-                        DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                        if (RoleResult)
+                        {
+                            DodoBot<TP>.SendChannelMessage($"你是vip,直接插队", eventBody.ChannelId);
+                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count);
+                            Count++;
+                        }
+                        else
+                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
                     }
 
                     return;
@@ -112,7 +129,17 @@ namespace SysBot.Pokemon.Dodo
             if (content.Trim().StartsWith("trade"))
             {
                 content = content.Replace("trade", "");
-                DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                if (RoleResult)
+                {
+                    DodoBot<TP>.SendChannelMessage($"你是vip,直接插队", eventBody.ChannelId);
+                    DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false,Count);
+                    Count++;
+                }
+                else
+                {
+                    DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                    
+                }
                 return;
             } 
             else if (content.Trim().StartsWith("检测"))
@@ -155,7 +182,17 @@ namespace SysBot.Pokemon.Dodo
             if (!string.IsNullOrWhiteSpace(ps))
             {
                 LogUtil.LogInfo($"收到命令\n{ps}", LogIdentity);
-                DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                if (RoleResult)
+                {
+                    DodoBot<TP>.SendChannelMessage($"你是vip,直接插队", eventBody.ChannelId);
+                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count );
+                    Count++;
+                }
+                else
+                {
+                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                   
+                }
                 
                 if(DodoBot<TP>.Info.Hub.Config.Legality.ReturnShowdownSets == true)
                 {

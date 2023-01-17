@@ -11,7 +11,7 @@ namespace SysBot.Pokemon.Dodo
 {
     public class DodoHelper<T> where T : PKM, new()
     {
-        public static void StartTrade(string ps, string dodoId, string nickName, string channelId)
+        public static void StartTrade(string ps, string dodoId, string nickName, string channelId,bool vip=false, uint priority = uint.MaxValue)
         {
             var _ = CheckAndGetPkm(ps, dodoId, out var msg, out var pkm);
             if (!_)
@@ -20,14 +20,14 @@ namespace SysBot.Pokemon.Dodo
                 return;
             }
 
-            StartTrade(pkm, dodoId, nickName, channelId);
+            StartTrade(pkm, dodoId, nickName, channelId,vip, priority);
         }
 
-        public static void StartTrade(T pkm, string dodoId, string nickName, string channelId)
+        public static void StartTrade(T pkm, string dodoId, string nickName, string channelId,bool vip=false,uint priority=uint.MaxValue)
         {
             var code = DodoBot<T>.Info.GetRandomTradeCode();
             var __ = AddToTradeQueue(pkm, code, ulong.Parse(dodoId), nickName, channelId,
-                PokeRoutineType.LinkTrade, out string message);
+                PokeRoutineType.LinkTrade, out string message,"",vip, priority);
             DodoBot<T>.SendChannelMessage(message, channelId);
         }
         public static void StartMutiTrade(string dodoId, string nickName, string channelId, string path)
@@ -120,7 +120,7 @@ namespace SysBot.Pokemon.Dodo
         }
 
         private static bool AddToTradeQueue(T pk, int code, ulong userId, string name, string channelId,
-            PokeRoutineType type, out string msg,string path="")
+            PokeRoutineType type, out string msg,string path="",bool vip=false,uint p= uint.MaxValue)
         {
             var trainer = new PokeTradeTrainerInfo(name, userId);
             var notifier = new DodoTradeNotifier<T>(pk, trainer, code, name, channelId);
@@ -129,10 +129,11 @@ namespace SysBot.Pokemon.Dodo
                 (type == PokeRoutineType.MutiTrade ? PokeTradeType.MutiTrade :
                 PokeTradeType.Specific));
             var detail =
-                 new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, true, path);
+                 new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, vip, path);
             var trade = new TradeEntry<T>(detail, userId, type, name);
 
-            var added = DodoBot<T>.Info.AddToTradeQueue(trade, userId, false);
+            var added = DodoBot<T>.Info.AddToTradeQueue(trade, userId, vip,p);
+
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {

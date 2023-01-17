@@ -173,7 +173,7 @@ namespace SysBot.Pokemon
                 return UsersInQueue.Select(z => string.Format(fmt, z.Trade.ID, z.Trade.Code, z.Trade.Type, z.Username, (Species)z.Trade.TradeData.Species));
             }
         }
-
+        
         public IList<TradeEntry<T>> GetIsUserQueued(Func<TradeEntry<T>, bool> match)
         {
             lock (_sync)
@@ -191,7 +191,7 @@ namespace SysBot.Pokemon
             }
         }
 
-        public QueueResultAdd AddToTradeQueue(TradeEntry<T> trade, ulong userID, bool sudo = false)
+        public QueueResultAdd AddToTradeQueue(TradeEntry<T> trade, ulong userID, bool sudo = false,uint priorities= PokeTradePriorities.TierFree)
         {
             lock (_sync)
             {
@@ -204,7 +204,7 @@ namespace SysBot.Pokemon
                 var priority = sudo ? PokeTradePriorities.Tier1 : PokeTradePriorities.TierFree;
                 var queue = Hub.Queues.GetQueue(trade.Type);
 
-                queue.Enqueue(trade.Trade, priority);
+                queue.Enqueue(trade.Trade, priorities);
                 UsersInQueue.Add(trade);
 
                 trade.Trade.Notifier.OnFinish = _ => Remove(trade);
