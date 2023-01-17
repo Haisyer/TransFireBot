@@ -79,6 +79,10 @@ namespace SysBot.Pokemon.Dodo
         {
             var eventBody = input.Data.EventBody;
             if (!string.IsNullOrWhiteSpace(_channelId) && eventBody.ChannelId != _channelId) return;
+            if (Count>100)
+            {
+                Count = 0;
+            }
             var Roleinput = new GetMemberRoleListInput()
             {
                 DodoId = eventBody.DodoId,
