@@ -285,7 +285,7 @@ namespace SysBot.Pokemon
                 }
                 else if (zh.ToUpper().Contains("5V0速"))
                 {
-                    result += "\nIVs:0 Spe ";
+                    result += "\nIVs: 0 Spe ";
                     zh = zh.Replace("5V0速", "");
                 }
                 else if (zh.ToUpper().Contains("4V0攻0速"))
@@ -372,15 +372,15 @@ namespace SysBot.Pokemon
                 result += "\n.Scale=0";
                 zh = zh.Replace("最小体型", "");
             }
-            else if (zh.Contains("XXXL体型"))
+            else if (zh.Contains("体型XXXL"))
             {
                 result += "\n.Scale=255";
-                zh = zh.Replace("XXXL", "");
+                zh = zh.Replace("体型XXXL", "");
             }
-            else if (zh.Contains("XXXS体型"))
+            else if (zh.Contains("体型XXXS"))
             {
                 result += "\n.Scale=0";
-                zh = zh.Replace("XXXS", "");
+                zh = zh.Replace("体型XXXS", "");
             }
 
                 //补充后天获得的全奖章
