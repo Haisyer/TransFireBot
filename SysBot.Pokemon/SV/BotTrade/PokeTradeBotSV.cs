@@ -383,6 +383,7 @@ namespace SysBot.Pokemon
             {
                 counting++;
                 toSend = send;
+                await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);//先写一次箱子
                 if (Hub.Config.Legality.UseTradePartnerInfo)
                 {
                     await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, token);
