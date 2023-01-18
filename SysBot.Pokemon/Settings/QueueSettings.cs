@@ -21,7 +21,7 @@ namespace SysBot.Pokemon
         public int MaxQueueCount { get; set; } = 999;
 
         [Category(FeatureToggle), Description("允许用户在交易时取消排队\nAllows users to dequeue while being traded.")]
-        public bool CanDequeueIfProcessing { get; set; }
+        public bool CanDequeueIfProcessing { get; set; } = true;
 
         [Category(FeatureToggle), Description("确定Flex模式将如何处理队列\nDetermines how Flex Mode will process the queues.")]
         public FlexYieldMode FlexMode { get; set; } = FlexYieldMode.Weighted;
@@ -30,7 +30,7 @@ namespace SysBot.Pokemon
         public QueueOpening QueueToggleMode { get; set; } = QueueOpening.Threshold;
 
         [Category(FeatureToggle), Description("是否打开批量文件夹功能")]
-        public bool MutiTrade { get; set; } = false;
+        public bool MutiTrade { get; set; }
 
 
         // Queue Toggle
@@ -64,8 +64,8 @@ namespace SysBot.Pokemon
         [Category(UserBias), Description("让第几个用户提前准备")]
         public int AlertNumber { get; set; } = 3;
 
-        [Category(UserBias), Description("可以插队的身分组")]
-        public string VipQueue { get; set; } = "179142";
+        [Category(UserBias), Description("可以插队的身份组")]
+        public string VipQueue { get; set; } = "1111111";
 
         // Flex Time
 

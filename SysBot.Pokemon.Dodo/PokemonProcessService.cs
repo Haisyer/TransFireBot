@@ -19,7 +19,7 @@ namespace SysBot.Pokemon.Dodo
     {
         private readonly OpenApiService _openApiService;
         private static readonly string LogIdentity = "DodoBot";
-        private static readonly string Welcome = "宝可梦机器人为您服务\n中文指令请看在线文件:https://docs.qq.com/doc/DVWdQdXJPWllabm5t?&u=1c5a2618155548239a9563e9f22a57c0\n或者使用PS代码\n或者上传pk文件\n取消排队请输入:排队\n当前位置请输入:位置";
+        private static readonly string Welcome = "宝可梦机器人为您服务\n中文指令请看在线文件:https://docs.qq.com/doc/DVWdQdXJPWllabm5t?&u=1c5a2618155548239a9563e9f22a57c0\n或者使用PS代码\n或者上传pk文件\n取消排队请输入:取消\n当前位置请输入:位置";
         private readonly string _channelId;
         private readonly string _botDodoId;
         private uint Count = 0;
@@ -110,7 +110,7 @@ namespace SysBot.Pokemon.Dodo
                     {
                         if (RoleResult)
                         {
-                            DodoBot<TP>.SendChannelMessage($"你是vip,直接插队", eventBody.ChannelId);
+                            DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
                             DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count);
                             Count++;
                         }
@@ -135,7 +135,7 @@ namespace SysBot.Pokemon.Dodo
                 content = content.Replace("trade", "");
                 if (RoleResult)
                 {
-                    DodoBot<TP>.SendChannelMessage($"你是vip,直接插队", eventBody.ChannelId);
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
                     DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false,Count);
                     Count++;
                 }
@@ -188,7 +188,7 @@ namespace SysBot.Pokemon.Dodo
                 LogUtil.LogInfo($"收到命令\n{ps}", LogIdentity);
                 if (RoleResult)
                 {
-                    DodoBot<TP>.SendChannelMessage($"你是vip,直接插队", eventBody.ChannelId);
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
                     DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count );
                     Count++;
                 }
