@@ -337,8 +337,8 @@ namespace SysBot.Pokemon
             var tradePartnerFullInfo = await GetTradePartnerFullInfo(token).ConfigureAwait(false);
             var tradePartner = new TradePartnerSV(tradePartnerFullInfo);
             var trainerNID = await GetTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
-            RecordUtil<PokeTradeBot>.Record($"启动\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-            Log($"找到连接交换对象: {tradePartner.TrainerName}-TID:{tradePartner.TID7}-SID;{tradePartner.SID7}(任天堂网络ID: {trainerNID})");
+            RecordUtil<PokeTradeBot>.Record($"找到连接交换对象\tNID:{trainerNID:X16}\tOT_Name:{tradePartner.TrainerName}\t平台昵称:{poke.Trainer.TrainerName}\t平台ID:{poke.Trainer.ID}\t序列号:{poke.ID}\tEC:{toSend.EncryptionConstant:X8}");
+            Log($"找到连接交换对象: {tradePartner.TrainerName}-TID:{tradePartner.TID7}-SID:{tradePartner.SID7}(任天堂网络ID: {trainerNID})");
 
             var partnerCheck = CheckPartnerReputation(poke, trainerNID, tradePartner.TrainerName);
             if (partnerCheck != PokeTradeResult.Success)
