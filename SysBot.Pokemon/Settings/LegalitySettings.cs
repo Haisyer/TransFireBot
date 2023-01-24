@@ -29,10 +29,10 @@ namespace SysBot.Pokemon
         }
 
         [Category(Generate), Description("如果请求与提供的任何Trainer数据文件都不匹配，则默认的16位Trainer ID (TID)。这应该是一个5位数\nDefault 16-bit Trainer ID (TID) for requests that don't match any of the provided trainer data files. This should be a 5-digit number.")]
-        public int GenerateTID16 { get; set; } = 12345;
+        public ushort GenerateTID16 { get; set; } = 12345;
 
         [Category(Generate), Description("如果请求与提供的任何训练器数据文件都不匹配，则使用默认的16位里ID (SID)。这应该是一个5位数\nDefault 16-bit Secret ID (SID) for requests that don't match any of the provided trainer data files. This should be a 5-digit number.")]
-        public int GenerateSID16 { get; set; } = 54321;
+        public ushort GenerateSID16 { get; set; } = 54321;
 
         [Category(Generate), Description("PKM文件的默认语言，不匹配任何提供的PKM文件\nDefault language for PKM files that don't match any of the provided PKM files.")]
         public LanguageID GenerateLanguage { get; set; } = LanguageID.English;

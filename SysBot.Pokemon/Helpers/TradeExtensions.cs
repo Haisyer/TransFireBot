@@ -231,7 +231,7 @@ namespace SysBot.Pokemon
 
             lock (_syncLog)
             {
-                bool mark = pk is PK8 pk8 && pk8.HasMark();
+                bool mark = pk is PK8 pk8 && pk8.HasEncounterMark();
                 var content = File.ReadAllText(filepath).Split('\n').ToList();
                 var splitTotal = content[0].Split(',');
                 content.RemoveRange(0, 3);
@@ -360,10 +360,10 @@ namespace SysBot.Pokemon
                 var enc = new LegalityAnalysis(mgPkm).EncounterMatch;
                 mgPkm.SetHandlerandMemory(info, enc);
 
-                if (mgPkm.TID is 0 && mgPkm.SID is 0)
+                if (mgPkm.TID16 is 0 && mgPkm.SID16 is 0)
                 {
-                    mgPkm.TID = info.TID;
-                    mgPkm.SID = info.SID;
+                    mgPkm.TID16 = info.TID16;
+                    mgPkm.SID16 = info.SID16;
                 }
 
                 mgPkm.CurrentLevel = mg.LevelMin;

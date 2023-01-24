@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Platforms>AnyCPU</Platforms>
 		<Nullable>enable</Nullable>
-		<LangVersion>9</LangVersion>
+		<LangVersion>11</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,14 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="IndexRange">
-	    <HintPath>..\SysBot.Pokemon\deps\IndexRange.dll</HintPath>
-	  </Reference>
 	  <Reference Include="PKHeX.Core">
 	    <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.dll</HintPath>
-	  </Reference>
-	  <Reference Include="System.ValueTuple">
-	    <HintPath>..\SysBot.Pokemon\deps\System.ValueTuple.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

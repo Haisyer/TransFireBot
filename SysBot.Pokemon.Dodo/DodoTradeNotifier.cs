@@ -65,7 +65,7 @@ namespace SysBot.Pokemon.Dodo
                  $"加密常数:{result.EncryptionConstant:X}\n" +
                  $"训练家姓名:{result.OT_Name}\n" +
                  $"训练家性别:{(result.OT_Gender == 0 ? "男" : "女")}\n" +
-                 $"训练家表ID:{result.TrainerID7}\n" +
+                 $"训练家表ID:{result.TrainerTID7}\n" +
                  $"训练家里ID:{result.TrainerSID7}"; 
             LogUtil.LogText(message);
             RecordUtil<PokeTradeBot>.Record($"交换完成\t交换对象:{info.Trainer.TrainerName}\t队列号:{info.ID}\t宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\t");
