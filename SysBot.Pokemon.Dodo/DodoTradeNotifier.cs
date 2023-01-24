@@ -41,12 +41,13 @@ namespace SysBot.Pokemon.Dodo
             LogUtil.LogText(line);
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID,line, ChannelId);
             var n = DodoBot<T>.Info.Hub.Config.Queues.AlertNumber;
-            for (int i = 1; i <= n; i++)
+            var waitUserIds = DodoBot<T>.Info.GetUserIdList(DodoBot<T>.Info.Hub.Config.Queues.AlertNumber).ToList();
+            for (int i = 1; i <= waitUserIds.Count; i++)
             {
                 var r = DodoBot<T>.Info.CheckIndex(i);
                 if (r != 0)
                 {
-                    DodoBot<T>.SendChannelAtMessage(r, $":注意{i}个以后该到你了！", ChannelId);
+                    DodoBot<T>.SendChannelAtMessage(r, $"注意你在第{i+1}位,{i}个以后该到你了！\n", ChannelId);
                 }
             }
         }
@@ -76,7 +77,7 @@ namespace SysBot.Pokemon.Dodo
                 var r = DodoBot<T>.Info.CheckIndex(i);
                 if (r != 0)
                 {
-                    DodoBot<T>.SendChannelAtMessage(r, $":注意{i}个以后该到你了！", ChannelId);
+                    DodoBot<T>.SendChannelAtMessage(r, $"注意你在第{i + 1}位,{i}个以后该到你了！\n", ChannelId);
                 }
             }
         }

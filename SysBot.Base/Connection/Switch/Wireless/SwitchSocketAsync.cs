@@ -16,7 +16,7 @@ namespace SysBot.Base
     /// <remarks>
     /// Interactions are performed asynchronously.
     /// </remarks>
-    public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync, IAsyncConnection
+    public sealed class SwitchSocketAsync : SwitchSocket, ISwitchConnectionAsync
     {
         public SwitchSocketAsync(IWirelessConnectionConfig cfg) : base(cfg) { }
 
@@ -30,7 +30,7 @@ namespace SysBot.Base
 
             Log("连接到设备Connecting to device...");
             Connection.Connect(Info.IP, Info.Port);
-            Connected = true;
+           
             Log("已连接Connected!");
             Label = Name;
         }
@@ -47,8 +47,14 @@ namespace SysBot.Base
             foreach (IPAddress adr in address)
             {
                 IPEndPoint ep = new(adr, Info.Port);
-                Connection.BeginConnect(ep, ConnectCallback, Connection);
-                Connected = true;
+                try
+                {
+                    Connection.Connect(ep);
+                }
+                catch
+                {
+                    return;
+                }
                 Log("已连接Connected!");
             }
         }
@@ -57,37 +63,20 @@ namespace SysBot.Base
         {
             Log("与设备断开连接Disconnecting from device...");
             Connection.Shutdown(SocketShutdown.Both);
-            Connection.BeginDisconnect(true, DisconnectCallback, Connection);
-            Connected = false;
+            try
+            {
+                Connection.Disconnect(false);
+            }
+            catch
+            {
+                return;
+            }
+
             Log("断线了! 重新设置插座Disconnected! Resetting Socket.");
             InitializeSocket();
         }
 
-        private readonly AutoResetEvent connectionDone = new(false);
-
-        public void ConnectCallback(IAsyncResult ar)
-        {
-            // Complete the connection request.
-            Socket client = (Socket)ar.AsyncState;
-            client.EndConnect(ar);
-
-            // Signal that the connection is complete.
-            connectionDone.Set();
-            LogUtil.LogInfo("已连接Connected.", Name);
-        }
-
-        private readonly AutoResetEvent disconnectDone = new(false);
-
-        public void DisconnectCallback(IAsyncResult ar)
-        {
-            // Complete the disconnect request.
-            Socket client = (Socket)ar.AsyncState;
-            client.EndDisconnect(ar);
-
-            // Signal that the disconnect is complete.
-            disconnectDone.Set();
-            LogUtil.LogInfo("未连接Disconnected.", Name);
-        }
+        
 
         private int Read(byte[] buffer)
         {
