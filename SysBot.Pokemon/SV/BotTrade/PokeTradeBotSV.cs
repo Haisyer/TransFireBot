@@ -379,10 +379,12 @@ namespace SysBot.Pokemon
                     var data = File.ReadAllBytes(fileName);
 
                     var pkt = EntityFormat.GetFromBytes(data);
-
-                    pkt.RefreshChecksum();
-                    var pk2 = EntityConverter.ConvertToType(pkt, typeof(PK9), out _) as PK9;
-                    ls.Add(pk2);
+                    if (pkt != null)
+                    {
+                        pkt.RefreshChecksum();
+                        if (EntityConverter.ConvertToType(pkt, typeof(PK9), out _) is PK9 pk2)
+                            ls.Add(pk2);
+                    }
                 }
             }
             else
