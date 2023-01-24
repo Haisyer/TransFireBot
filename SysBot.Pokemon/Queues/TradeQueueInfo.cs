@@ -174,7 +174,7 @@ namespace SysBot.Pokemon
                 return UsersInQueue.Select(z => string.Format(fmt, z.Trade.ID, z.Trade.Code, z.Trade.Type, z.Username, (Species)z.Trade.TradeData.Species));
             }
         }
-        public IEnumerable<ulong> GetUserIdList(int count)
+        public IEnumerable<ulong>? GetUserIdList(int count)
         {
             lock (_sync)
             {

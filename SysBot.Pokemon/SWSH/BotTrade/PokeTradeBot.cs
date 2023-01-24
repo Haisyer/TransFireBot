@@ -415,8 +415,8 @@ namespace SysBot.Pokemon
             var tidsid = BitConverter.ToUInt32(data, 0);
             var cln = (PK8)toSend.Clone();
             cln.OT_Gender = data[6];
-            cln.TrainerID7 = (int)(tidsid % 1_000_000);
-            cln.TrainerSID7 = (int)(tidsid / 1_000_000);
+            cln.TrainerTID7 = (uint)(tidsid % 1_000_000);
+            cln.TrainerSID7 = (uint)(tidsid / 1_000_000);
             cln.Language = data[5];
             cln.OT_Name = trainerName;
             cln.ClearNickname();

@@ -825,8 +825,8 @@ namespace SysBot.Pokemon
         {
             var cln = (PA8)toSend.Clone();
             cln.OT_Gender = tradePartner.Gender;
-            cln.TrainerID7 = int.Parse(tradePartner.TID7);
-            cln.TrainerSID7 = int.Parse(tradePartner.SID7);
+            cln.TrainerTID7 = uint.Parse(tradePartner.TID7);
+            cln.TrainerSID7 = uint.Parse(tradePartner.SID7);
             cln.Language = tradePartner.Language;
             cln.OT_Name = tradePartner.TrainerName;
             cln.ClearNickname();

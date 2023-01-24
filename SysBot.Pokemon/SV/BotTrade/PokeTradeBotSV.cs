@@ -66,8 +66,8 @@ namespace SysBot.Pokemon
 
         // Store the current save's OT and TID/SID for comparison.
         private string OT = string.Empty;
-        private int DisplaySID;
-        private int DisplayTID;
+        private uint DisplaySID;
+        private uint DisplayTID;
 
         // Stores whether we returned all the way to the overworld, which repositions the cursor.
         private bool StartFromOverworld = true;
@@ -379,10 +379,12 @@ namespace SysBot.Pokemon
                     var data = File.ReadAllBytes(fileName);
 
                     var pkt = EntityFormat.GetFromBytes(data);
-
-                    pkt.RefreshChecksum();
-                    var pk2 = EntityConverter.ConvertToType(pkt, typeof(PK9), out _) as PK9;
-                    ls.Add(pk2);
+                    if (pkt != null)
+                    {
+                        pkt.RefreshChecksum();
+                        if (EntityConverter.ConvertToType(pkt, typeof(PK9), out _) is PK9 pk2)
+                            ls.Add(pk2);
+                    }
                 }
             }
             else
@@ -1082,8 +1084,8 @@ namespace SysBot.Pokemon
             }
             var cln = (PK9)toSend.Clone();
             cln.OT_Gender = tradePartner.Gender;
-            cln.TrainerID7 = (int)Math.Abs(tradePartner.DisplayTID);
-            cln.TrainerSID7 = (int)Math.Abs(tradePartner.DisplaySID);
+            cln.TrainerTID7 = (uint)Math.Abs(tradePartner.DisplayTID);
+            cln.TrainerSID7 = (uint)Math.Abs(tradePartner.DisplaySID);
             cln.Language = tradePartner.Language;
             cln.OT_Name = tradePartner.OT;
             if (toSend.IsEgg == false)
@@ -1123,7 +1125,7 @@ namespace SysBot.Pokemon
             }
             if(toSend.Met_Location==Locations.TeraCavern9&&toSend.IsShiny)
             {
-                cln.PID = (((uint)(cln.TID ^ cln.SID) ^ (cln.PID & 0xFFFF) ^ 1u) << 16) | (cln.PID & 0xFFFF);
+                cln.PID = (((uint)(cln.TID16 ^ cln.SID16) ^ (cln.PID & 0xFFFF) ^ 1u) << 16) | (cln.PID & 0xFFFF);
             }
             else if (toSend.IsShiny)
                 cln.SetShiny();

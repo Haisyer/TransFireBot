@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;</TargetFrameworks>
-    <LangVersion>9</LangVersion>
+    <TargetFrameworks>net7.0;</TargetFrameworks>
+    <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>x64;x86</Platforms>
   </PropertyGroup>
@@ -17,15 +17,6 @@
     </Reference>
     <Reference Include="PKHeX.Core">
       <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Buffers">
-      <HintPath>..\SysBot.Pokemon\deps\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory">
-      <HintPath>..\SysBot.Pokemon\deps\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple">
-      <HintPath>..\SysBot.Pokemon\deps\System.ValueTuple.dll</HintPath>
     </Reference>
   </ItemGroup>
 

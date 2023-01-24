@@ -93,8 +93,8 @@ namespace SysBot.Pokemon
 
             // Set the TID, SID, and Language
             var id = await SwitchConnection.PointerPeek(4, Offsets.MyStatusTIDPointer, token).ConfigureAwait(false);
-            info.TID = BitConverter.ToUInt16(id, 0);
-            info.SID = BitConverter.ToUInt16(id, 2);
+            info.TID16 = BitConverter.ToUInt16(id, 0);
+            info.SID16 = BitConverter.ToUInt16(id, 2);
 
             var lang = await SwitchConnection.PointerPeek(1, Offsets.ConfigLanguagePointer, token).ConfigureAwait(false);
             sav.Language = lang[0];

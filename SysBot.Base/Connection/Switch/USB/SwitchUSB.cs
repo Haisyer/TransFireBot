@@ -84,7 +84,7 @@ namespace SysBot.Base
                     if (ur.Pid != 0x3000)
                         continue;
 
-                    ur.DeviceProperties.TryGetValue("Address", out object addr);
+                    ur.DeviceProperties.TryGetValue("Address", out object? addr);
                     if (Port.ToString() != addr?.ToString())
                         continue;
 
