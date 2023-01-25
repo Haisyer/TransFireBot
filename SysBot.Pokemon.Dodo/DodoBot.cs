@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using DoDo.Open.Sdk.Models;
 using DoDo.Open.Sdk.Models.Channels;
 using DoDo.Open.Sdk.Models.Messages;
@@ -41,6 +42,7 @@ namespace SysBot.Pokemon.Dodo
             {
                 StartDistribution();
                 await openEventService.ReceiveAsync();
+                
             });
         }
 
@@ -79,8 +81,8 @@ namespace SysBot.Pokemon.Dodo
                 SendChannelMessage($"当前版本为朱紫,{Msg}", channelId);
             }
         }
-
-        public static void SendChannelMessage(string message, string channelId)
+     
+            public static void SendChannelMessage(string message, string channelId)
         {
             if (string.IsNullOrEmpty(message)) return;
             OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyText>
@@ -131,5 +133,21 @@ namespace SysBot.Pokemon.Dodo
                 }
             });
         }
+        public static void SendChannelMessagePicture(string url, string channelId)
+        {
+            if (string.IsNullOrEmpty(url)) return;
+            OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyPicture>
+            {
+                ChannelId = channelId,
+                MessageBody = new MessageBodyPicture
+                {
+                    Url = url,
+                    Width = 1280,
+                    Height = 720,
+                    IsOriginal = 1
+                }
+            });
+        }
+       
     }
 }

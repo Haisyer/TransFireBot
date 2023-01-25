@@ -36,7 +36,11 @@ namespace SysBot.Pokemon.QQ
             LogUtil.LogText(message);
             //SendMessage($"@{info.Trainer.TrainerName}: {message}");
         }
-
+        public void SendNotification(PokeRoutineExecutor<T> routine,  string message)
+        {
+            LogUtil.LogText(message);
+            //SendMessage($"@{info.Trainer.TrainerName}: {message}");
+        }
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);

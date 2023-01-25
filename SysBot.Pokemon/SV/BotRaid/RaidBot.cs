@@ -3,13 +3,15 @@ using PKHeX.Core;
 using System.Threading;
 using System.Threading.Tasks;
 using SysBot.Pokemon.SV;
-using System.Collections.Concurrent;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Discord;
+//using Discord;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Pokemon.RaidSettingsSV;
+using System.Net.Http;
+using SysBot.Base;
 
 namespace SysBot.Pokemon
 {
@@ -21,7 +23,7 @@ namespace SysBot.Pokemon
 
         public static CancellationTokenSource RaidSVEmbedSource { get; set; } = new();
         public static bool RaidSVEmbedsInitialized { get; set; }
-        public static ConcurrentQueue<(byte[]?, EmbedBuilder)> EmbedQueue { get; set; } = new();
+      //  public static ConcurrentQueue<(byte[]?, EmbedBuilder)> EmbedQueue { get; set; } = new();
         private RemoteControlAccessList RaiderBanList => Settings.RaiderBanList;
 
         public RaidSV(PokeBotState cfg, PokeTradeHub<PK9> hub) : base(cfg)
@@ -522,12 +524,13 @@ namespace SysBot.Pokemon
                 nidPointer[2] = Offsets.LinkTradePartnerNIDPointer[2] + (p * 0x8);
                 TeraNIDOffsets[p] = await SwitchConnection.PointerAll(nidPointer, token).ConfigureAwait(false);
             }
+            EchoUtil.Echo("Caching offsets complete!");
             Log("Caching offsets complete!");
         }
         //需要修改一下
         private async Task EnqueueEmbed(List<string>? names, string message, bool hatTrick, bool disband, bool starting, CancellationToken token)
         {
-            if (RaidSVEmbedsInitialized)
+            
             {
                 // Get Code early for use in title IF starting
                 var rcode = await GetRaidCode(token).ConfigureAwait(false);
@@ -547,42 +550,42 @@ namespace SysBot.Pokemon
                 byte[]? bytes = Array.Empty<byte>();
                 if (Settings.TakeScreenshot)
                     bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
-                var embed = new EmbedBuilder()
-                {
-                    Title = disband ? "**Raid was disbanded due to a banned user**" : title,
-                    Description = disband ? message : !starting ? description + $"᲼\n᲼" : description,
-                    Color = disband ? Color.Red : hatTrick ? Color.DarkMagenta : starting ? Color.Purple : Color.Gold,
-                    ImageUrl = bytes.Length > 0 ? "attachment://zap.jpg" : default,
-                }.WithFooter(new EmbedFooterBuilder()
-                {
-                    Text = $"Raids: {WinCount + LossCount} - Wins: {WinCount} - Losses: {LossCount} // Hosted by Drowns#4865"
-                });
+                /*      var embed = new EmbedBuilder()
+                      {
+                          Title = disband ? "**Raid was disbanded due to a banned user**" : title,
+                          Description = disband ? message : !starting ? description + $"᲼\n᲼" : description,
+                          Color = disband ? Color.Red : hatTrick ? Color.DarkMagenta : starting ? Color.Purple : Color.Gold,
+                          ImageUrl = bytes.Length > 0 ? "attachment://zap.jpg" : default,
+                      }.WithFooter(new EmbedFooterBuilder()
+                      {
+                          Text = $"Raids: {WinCount + LossCount} - Wins: {WinCount} - Losses: {LossCount} // Hosted by Drowns#4865"
+                      });
 
-                if (disband)
-                {
-                    embed.AddField("Ban Appeal Server", "[Pokemon Automation](https://discord.gg/pokemonautomation)", true);
-                    embed.AddField("Appeal Here", "[#tera-raid-bans](https://discord.com/channels/695809740428673034/1050667958562738197)", true);
-                }
+                      if (disband)
+                      {
+                          embed.AddField("Ban Appeal Server", "[Pokemon Automation](https://discord.gg/pokemonautomation)", true);
+                          embed.AddField("Appeal Here", "[#tera-raid-bans](https://discord.com/channels/695809740428673034/1050667958562738197)", true);
+                      }
 
-                if (!disband && names is null && Settings.CodeInInfo)
-                {
-                    if (Settings.CodeIfSplitHidden && rcode.Length == 6)
-                    {
-                        embed.AddField("**Waiting in lobby!**", $"Raid code: ||{rcode.Substring(0, rcode.Length / 2)}||᲼+᲼||{rcode.Substring(rcode.Length / 2)}||");
-                    }
-                    else
-                    {
-                        embed.AddField("**Waiting in lobby!**", $"Raid code: {rcode}");
-                    }
-                }
+                      if (!disband && names is null && Settings.CodeInInfo)
+                      {
+                          if (Settings.CodeIfSplitHidden && rcode.Length == 6)
+                          {
+                              embed.AddField("**Waiting in lobby!**", $"Raid code: ||{rcode.Substring(0, rcode.Length / 2)}||᲼+᲼||{rcode.Substring(rcode.Length / 2)}||");
+                          }
+                          else
+                          {
+                              embed.AddField("**Waiting in lobby!**", $"Raid code: {rcode}");
+                          }
+                      }
 
-                if (!disband && !starting)
-                {
-                    embed.AddField("IVs:", $"{Settings.RaidSpeciesIVs}", true);
-                    embed.AddField("Nature:", $"{Settings.RaidSpeciesNature}", true);
-                    embed.AddField("Ability:", $"{Settings.RaidSpeciesAbility}", true);
-                }
-
+                      if (!disband && !starting)
+                      {
+                          embed.AddField("IVs:", $"{Settings.RaidSpeciesIVs}", true);
+                          embed.AddField("Nature:", $"{Settings.RaidSpeciesNature}", true);
+                          embed.AddField("Ability:", $"{Settings.RaidSpeciesAbility}", true);
+                      }
+                */
                 if (!disband && names is not null && starting)
                 {
                     var players = string.Empty;
@@ -598,10 +601,10 @@ namespace SysBot.Pokemon
                         });
                     }
 
-                    embed.AddField($"**Players:**", players);
+                 //   embed.AddField($"**Players:**", players);
                 }
 
-                EmbedQueue.Enqueue((bytes, embed));
+               // EmbedQueue.Enqueue((bytes, embed));
             }
         }
 
@@ -672,6 +675,23 @@ namespace SysBot.Pokemon
             }
             await Task.Delay(1_000, token).ConfigureAwait(false);
             return true;
+        }
+        private static string GetDodoURL()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                MultipartFormDataContent contentFormData = new MultipartFormDataContent();
+                string path = @"D:\Desktop\a.jpg";
+                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "b.jpg");
+                var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
+                var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
+                var a = result.Split("https");
+                var b = a[1].Split("jpg");
+                var c = "https" + b[0] + "jpg";
+                return c;
+            }
+
         }
 
     }
