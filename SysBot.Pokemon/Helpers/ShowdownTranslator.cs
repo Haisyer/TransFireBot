@@ -164,25 +164,74 @@ namespace SysBot.Pokemon
                 zh = zh.Replace("超极巨", "");
             }
 
+            //添加初训家信息
+            if (candidateSpecieNo > 0)
+            {
+                if (zh.Contains("语言"))
+                {
+                    if (zh.Contains("JPN")) { result += "\nLanguage: Japanese"; }
+                    else if (zh.Contains("ENG")) { result += "\nLanguage: English"; }
+                    else if (zh.Contains("FRE")) { result += "\nLanguage: French"; }
+                    else if (zh.Contains("ITA")) { result += "\nLanguage: Italian"; }
+                    else if (zh.Contains("GER")) { result += "\nLanguage: German"; }
+                    else if (zh.Contains("ESP")) { result += "\nLanguage: Spanish"; }
+                    else if (zh.Contains("KOR")) { result += "\nLanguage: Korean"; }
+                    else if (zh.Contains("CHS")) { result += "\nLanguage: ChineseS"; }
+                    else if (zh.Contains("CHT")) { result += "\nLanguage: ChineseT"; }
+                }
+                if (zh.Contains("初训家"))
+                {
+                    if (Regex.IsMatch(zh, "表ID\\d{1,6}"))
+                    {
+                        string value = Regex.Match(zh, ("表ID(\\d{1,6})")).Groups?[1]?.Value ?? "";
+                        result += $"\n.DisplayTID={value}";
+                        zh = Regex.Replace(zh, "表ID\\d{1,6}", "");
+                    }
+                    if (Regex.IsMatch(zh, "里ID\\d{1,4}"))
+                    {
+                        string value = Regex.Match(zh, ("里ID(\\d{1,4})")).Groups?[1]?.Value ?? "";
+                        result += $"\n.DisplaySID={value}";
+                        zh = Regex.Replace(zh, "里ID\\d{1,4}", "");
+                    }
+                    /*if (zh.Contains("名字"))
+                    {
+                        result += "\nOT:";
+                        zh = zh.Replace("名字", "");
+                        if (Regex.IsMatch(zh, "\\d{1,6}"))
+                        {
+                            string value = Regex.Match(zh, "(\\d{1,6})").Groups?[1].Value ?? "";
+                            result += $" {value}";
+                            zh = Regex.Replace(zh, "\\d{1,6}", "");
+                        }
+                    }*/
+                    if (zh.Contains("性别"))
+                    {
+                        if (zh.Contains("男")) { result += "\nOTGender: Male"; }
+                        else if (zh.Contains("女")) { result += "\nOTGender: Female"; }
+                    }
+
+                }
+            }
+
             // 添加异色
             if (zh.Contains("异色"))
             {
-                result += "\nShiny: Yes";
+                result += "\n.PID=$Shiny";
                 zh = zh.Replace("异色", "");
             }
             else if (zh.Contains("闪光"))
             {
-                result += "\nShiny: Yes";
+                result += "\n.PID=$Shiny";
                 zh = zh.Replace("闪光", "");
             }
             else if (zh.Contains("星闪"))
             {
-                result += "\nShiny: Star";
+                result += "\n.PID=$Shiny";
                 zh = zh.Replace("星闪", "");
             }
             else if (zh.Contains("方闪"))
             {
-                result += "\nShiny: Square";
+                result += "\n.PID=$Shiny0";
                 zh = zh.Replace("方闪", "");
             }
 
@@ -355,7 +404,7 @@ namespace SysBot.Pokemon
                 }
             }
 
-            //体型大小并添加证章
+            //体型大小
             if (Regex.IsMatch(zh, "\\d{1,3}大小"))
             {
                 string value = Regex.Match(zh, "(\\d{1,3})大小").Groups?[1]?.Value ?? "";
