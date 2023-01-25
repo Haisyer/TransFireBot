@@ -124,5 +124,23 @@ namespace SysBot.Base
                 return BitConverter.ToUInt64(baseBytes, 0);
             }, token);
         }
+        public Task<byte[]?> Screengrab(CancellationToken token)
+        {
+            return Task.Run(() =>
+            {
+                Send(SwitchCommand.Screengrab(false));
+                return GetScreenshot();
+            }, token);
+        }
+
+        public Task<long> GetUnixTime(CancellationToken token)
+        {
+            return Task.Run(() =>
+            {
+                Send(SwitchCommand.GetUnixTime(false));
+                byte[] baseBytes = ReadBulkUSB();
+                return BitConverter.ToInt64(baseBytes, 0);
+            }, token);
+        }
     }
 }

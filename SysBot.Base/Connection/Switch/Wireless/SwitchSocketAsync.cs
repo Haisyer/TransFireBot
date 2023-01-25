@@ -224,5 +224,53 @@ namespace SysBot.Base
             Array.Reverse(offsetBytes, 0, 8);
             return BitConverter.ToUInt64(offsetBytes, 0);
         }
+        public async Task<byte[]?> Screengrab(CancellationToken token)
+        {
+            List<byte> flexBuffer = new();
+            Connection.ReceiveTimeout = 1_000;
+
+            await SendAsync(SwitchCommand.Screengrab(), token).ConfigureAwait(false);
+            await Task.Delay(Connection.ReceiveBufferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
+
+            int available = Connection.Available;
+            do
+            {
+                byte[] buffer = new byte[available];
+                try
+                {
+                    Connection.Receive(buffer, available, SocketFlags.None);
+                    flexBuffer.AddRange(buffer);
+                }
+                catch (Exception ex)
+                {
+                    LogError($"Socket exception thrown while receiving screenshot data:\n{ex.Message}");
+                    return null;
+                }
+
+                await Task.Delay(MaximumTransferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
+                available = Connection.Available;
+            } while (flexBuffer.Count == 0 || flexBuffer.Last() != (byte)'\n');
+
+            Connection.ReceiveTimeout = 0;
+            var result = Array.Empty<byte>();
+            try
+            {
+                result = Decoder.ConvertHexByteStringToBytes(flexBuffer.ToArray());
+            }
+            catch (Exception e)
+            {
+                LogError($"Malformed screenshot data received:\n{e.Message}");
+                result = null;
+            }
+
+            return result;
+        }
+
+        public async Task<long> GetUnixTime(CancellationToken token)
+        {
+            var result = await ReadBytesFromCmdAsync(SwitchCommand.GetUnixTime(), 8, token).ConfigureAwait(false);
+            Array.Reverse(result);
+            return BitConverter.ToInt64(result, 0);
+        }
     }
 }

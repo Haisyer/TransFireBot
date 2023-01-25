@@ -14,6 +14,11 @@
   <ItemGroup>
     <Folder Include="deps\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net.Core" Version="3.9.0" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="PKHeX.Core">
       <HintPath>deps\PKHeX.Core.dll</HintPath>
