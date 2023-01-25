@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PKHeX.Core;
 using SysBot.Base;
 using System.IO;
+using Org.BouncyCastle.Cms;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -20,14 +21,23 @@ namespace SysBot.Pokemon.Dodo
                 return;
             }
 
-            StartTrade(pkm, dodoId, nickName, channelId,vip, priority);
+            var code = DodoBot<T>.Info.GetRandomTradeCode();
+            var __ = AddToTradeQueue(pkm, code, ulong.Parse(dodoId), nickName, channelId,
+              PokeRoutineType.LinkTrade, out string message, "", vip, priority);
+            DodoBot<T>.SendChannelMessage(message, channelId);
         }
 
         public static void StartTrade(T pkm, string dodoId, string nickName, string channelId,bool vip=false,uint priority=uint.MaxValue)
         {
+            var _ = CheckPkm(pkm, dodoId, out var msg);
+            if (!_)
+            {
+                DodoBot<T>.SendChannelMessage(msg, channelId);
+                return;
+            }
             var code = DodoBot<T>.Info.GetRandomTradeCode();
             var __ = AddToTradeQueue(pkm, code, ulong.Parse(dodoId), nickName, channelId,
-                PokeRoutineType.LinkTrade, out string message,"",vip, priority);
+              PokeRoutineType.LinkTrade, out string message, "", vip, priority);
             DodoBot<T>.SendChannelMessage(message, channelId);
         }
         public static void StartMutiTrade(string dodoId, string nickName, string channelId, string path)
@@ -93,7 +103,7 @@ namespace SysBot.Pokemon.Dodo
                 if (pkm is T pk)
                 {
                     var valid = new LegalityAnalysis(pkm).Valid;
-                    if (valid)
+                    if (valid|| DodoBot<T>.Info.Hub.Config.Legality.CommandillegalMod)
                     {
                         outPkm = pk;
 
@@ -119,6 +129,54 @@ namespace SysBot.Pokemon.Dodo
             return false;
         }
 
+        public static bool CheckPkm(PKM pk,string username, out string msg)
+        {
+            string result="";
+            if (!DodoBot<T>.Info.GetCanQueue())
+            {
+                msg = "对不起, 我不再接受队列请求!";
+                return false;
+            }
+            if (pk.Nickname == null)
+            {
+                msg = $"取消派送, <@!{username}>: 宝可梦昵称为空.";
+                return false;
+            }
+            if (pk.Species < 1)
+            {
+                msg =
+                    $"取消派送, <@!{username}>: 请使用正确的Showdown Set代码";
+                return false;
+            }
+            try
+            {
+            if (!pk.CanBeTraded())
+            {
+                msg = $"取消派送, <@!{username}>: 官方禁止该宝可梦交易!";
+                return false;
+            }
+            var valid = new LegalityAnalysis(pk).Valid;
+            if (valid || DodoBot<T>.Info.Hub.Config.Legality.FileillegalMod)
+            {    
+                msg =
+                    $"<@!{username}> - 已加入等待队列. 如果你选宝可梦的速度太慢，你的派送请求将被取消!";
+                return true;
+            }
+            var reason = result == "Timeout"
+                ? "宝可梦创造超时"
+                : "宝可梦不合法,或机器人数据库未更新";
+            msg = $"<@!{username}>: {reason}";
+            }
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
+            {
+                LogUtil.LogSafe(ex, nameof(DodoBot<T>));
+                msg = $"取消派送, <@!{username}>: 发生了一个错误";
+            }
+
+            return false;
+        }
         private static bool AddToTradeQueue(T pk, int code, ulong userId, string name, string channelId,
             PokeRoutineType type, out string msg,string path="",bool vip=false,uint p= uint.MaxValue)
         {
