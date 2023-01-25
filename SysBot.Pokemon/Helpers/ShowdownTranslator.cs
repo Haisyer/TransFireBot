@@ -165,8 +165,20 @@ namespace SysBot.Pokemon
             }
 
             //添加初训家信息
-            if (candidateSpecieNo > 0)
+            if (zh.Contains("初训家"))
             {
+                if (Regex.IsMatch(zh, "表ID\\d{1,6}"))
+                {
+                    string value = Regex.Match(zh, ("表ID(\\d{1,6})")).Groups?[1]?.Value ?? "";
+                    result += $"\n.DisplayTID={value}";
+                    zh = Regex.Replace(zh, "表ID\\d{1,6}", "");
+                }
+                if (Regex.IsMatch(zh, "里ID\\d{1,4}"))
+                {
+                    string value = Regex.Match(zh, ("里ID(\\d{1,4})")).Groups?[1]?.Value ?? "";
+                    result += $"\n.DisplaySID={value}";
+                    zh = Regex.Replace(zh, "里ID\\d{1,4}", "");
+                }
                 if (zh.Contains("语言"))
                 {
                     if (zh.Contains("JPN")) { result += "\nLanguage: Japanese"; }
@@ -179,38 +191,33 @@ namespace SysBot.Pokemon
                     else if (zh.Contains("CHS")) { result += "\nLanguage: ChineseS"; }
                     else if (zh.Contains("CHT")) { result += "\nLanguage: ChineseT"; }
                 }
-                if (zh.Contains("初训家"))
+                if (zh.Contains("名字") && zh.Contains("语言"))
                 {
-                    if (Regex.IsMatch(zh, "表ID\\d{1,6}"))
+                    if (zh.Contains("ENG") || zh.Contains("FRE") || zh.Contains("ITA") || zh.Contains("GER") || zh.Contains("ESP"))
                     {
-                        string value = Regex.Match(zh, ("表ID(\\d{1,6})")).Groups?[1]?.Value ?? "";
-                        result += $"\n.DisplayTID={value}";
-                        zh = Regex.Replace(zh, "表ID\\d{1,6}", "");
-                    }
-                    if (Regex.IsMatch(zh, "里ID\\d{1,4}"))
-                    {
-                        string value = Regex.Match(zh, ("里ID(\\d{1,4})")).Groups?[1]?.Value ?? "";
-                        result += $"\n.DisplaySID={value}";
-                        zh = Regex.Replace(zh, "里ID\\d{1,4}", "");
-                    }
-                    /*if (zh.Contains("名字"))
-                    {
-                        result += "\nOT:";
-                        zh = zh.Replace("名字", "");
-                        if (Regex.IsMatch(zh, "\\d{1,6}"))
+                        if (Regex.IsMatch(zh, "名字[A-Za-z0-9]{1,12}"))
                         {
-                            string value = Regex.Match(zh, "(\\d{1,6})").Groups?[1].Value ?? "";
-                            result += $" {value}";
-                            zh = Regex.Replace(zh, "\\d{1,6}", "");
+                            string value = Regex.Match(zh, "名字([A-Za-z0-9]{1,12})").Groups?[1].Value ?? "";
+                            result += $"\nOT: {value}";
+                            zh = Regex.Replace(zh, "名字[A-Za-z0-9]{1,12}", "");
                         }
-                    }*/
-                    if (zh.Contains("性别"))
-                    {
-                        if (zh.Contains("男")) { result += "\nOTGender: Male"; }
-                        else if (zh.Contains("女")) { result += "\nOTGender: Female"; }
                     }
-
+                    else if (zh.Contains("JPN") || zh.Contains("KOR") || zh.Contains("CHS") || zh.Contains("CHT"))
+                    {
+                        if (Regex.IsMatch(zh, "名字[A-Za-z0-9]{1,6}"))
+                        {
+                            string value = Regex.Match(zh, "名字([A-Za-z0-9]{1,6})").Groups?[1].Value ?? "";
+                            result += $"\nOT: {value}";
+                            zh = Regex.Replace(zh, "名字[A-Za-z0-9]{1,6}", "");
+                        }
+                    }
                 }
+                if (zh.Contains("性别"))
+                {
+                    if (zh.Contains("男")) { result += "\nOTGender: Male"; }
+                    else if (zh.Contains("女")) { result += "\nOTGender: Female"; }
+                }
+
             }
 
             // 添加异色
