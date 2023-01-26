@@ -284,7 +284,7 @@ namespace SysBot.Pokemon
                 Log($"输入连接交换密码: {code:0000 0000}...");
                 await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
                 var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
-                File.WriteAllBytes(Hub.Config.Folder.ScreenshotFolder, bytes) ;
+             //   File.WriteAllBytes(Hub.Config.Folder.ScreenshotFolder, bytes) ;
                 var result=GetDodoURL();
                 poke.SendNotification(this,toSend, result);
                 await Click(PLUS, 3_000, token).ConfigureAwait(false);
