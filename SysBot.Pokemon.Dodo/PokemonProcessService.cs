@@ -211,10 +211,7 @@ namespace SysBot.Pokemon.Dodo
                     DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
                 }
                 
-                if(DodoBot<TP>.Info.Hub.Config.Legality.ReturnShowdownSets == true)
-                {
-                    DodoBot<TP>.SendPersonalMessage(eventBody.DodoId, $"收到命令\n{ps}");
-                }
+               
             }
             else if (content.Contains("取消"))
             {

@@ -46,7 +46,8 @@ namespace SysBot.Pokemon
         /// <summary> 批量文件路径 </summary>
         public string Path = "";
 
-        public PokeTradeDetail(TPoke pkm, PokeTradeTrainerInfo info, IPokeTradeNotifier<TPoke> notifier, PokeTradeType type, int code, bool favored = false,string path = "")
+        public bool MODID;
+        public PokeTradeDetail(TPoke pkm, PokeTradeTrainerInfo info, IPokeTradeNotifier<TPoke> notifier, PokeTradeType type, int code, bool favored = false,string path = "",bool ModId=false)
         {
             ID = Interlocked.Increment(ref CreatedCount) % 3000;
             Code = code;
@@ -57,6 +58,7 @@ namespace SysBot.Pokemon
             Time = DateTime.Now;
             IsFavored = favored;
             Path = path;
+            MODID = ModId;
         }
 
         public void TradeInitialize(PokeRoutineExecutor<TPoke> routine) => Notifier.TradeInitialize(routine, this);

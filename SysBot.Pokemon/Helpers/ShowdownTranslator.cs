@@ -167,6 +167,7 @@ namespace SysBot.Pokemon
             //添加初训家信息
             if (zh.Contains("初训家"))
             {
+                result += "\n初训家";
                 if (Regex.IsMatch(zh, "表ID\\d{1,6}"))
                 {
                     string value = Regex.Match(zh, ("表ID(\\d{1,6})")).Groups?[1]?.Value ?? "";
@@ -217,6 +218,7 @@ namespace SysBot.Pokemon
                     if (zh.Contains("男")) { result += "\nOTGender: Male"; }
                     else if (zh.Contains("女")) { result += "\nOTGender: Female"; }
                 }
+               
 
             }
 

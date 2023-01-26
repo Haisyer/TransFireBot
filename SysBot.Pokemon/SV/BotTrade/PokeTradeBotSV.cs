@@ -404,7 +404,7 @@ namespace SysBot.Pokemon
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);//先写一次箱子
                 if (Hub.Config.Legality.UseTradePartnerInfo)
                 {
-                    await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, token);
+                    await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav,poke.MODID, token);
                 }
                 Log("Wait for an offered Pokemon...");
                 // Wait for user input...
@@ -1095,11 +1095,16 @@ namespace SysBot.Pokemon
             }
             
         }
-        private async Task<bool> SetBoxPkmWithSwappedIDDetailsSV(PK9 toSend, TradeMyStatus tradePartner, SAV9SV sav, CancellationToken token)
+        private async Task<bool> SetBoxPkmWithSwappedIDDetailsSV(PK9 toSend, TradeMyStatus tradePartner, SAV9SV sav,bool ModId, CancellationToken token)
         {
             if (toSend.Species == (ushort)Species.Ditto)
             {
                 Log($"发送百变怪，不进行自id操作");
+                return false;
+            }
+            if (ModId)
+            {
+                Log($"用户自定义ID，不进行自id操作");
                 return false;
             }
             var cln = (PK9)toSend.Clone();
