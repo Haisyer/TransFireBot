@@ -14,6 +14,7 @@ namespace SysBot.Pokemon
                 => new PokeTradeBotSV(Hub, cfg),
 
             PokeRoutineType.RemoteControl => new RemoteControlBotSV(cfg),
+            PokeRoutineType.RaidBot => new RaidSV(cfg, Hub),
 
             _ => throw new ArgumentException(nameof(cfg.NextRoutineType)),
         };
@@ -27,6 +28,7 @@ namespace SysBot.Pokemon
                 => true,
 
             PokeRoutineType.RemoteControl => true,
+            PokeRoutineType.RaidBot => true,
 
             _ => false,
         };

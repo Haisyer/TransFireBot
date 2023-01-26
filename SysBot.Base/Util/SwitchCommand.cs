@@ -280,5 +280,12 @@ namespace SysBot.Base
         /// <param name="crlf">Line terminator (unused by USB protocol)</param>
         /// <returns>Encoded command bytes</returns>
         public static byte[] IsProgramRunning(ulong pid, bool crlf = true) => Encode($"isProgramRunning 0x{pid:x16}", crlf);
+        /// <summary>
+        /// Takes and sends a raw screenshot.
+        /// </summary>
+        /// <param name="crlf">Line terminator (unused by USB's protocol)</param>
+        /// <returns>Encoded command bytes</returns>
+        public static byte[] Screengrab(bool crlf = true) => Encode("pixelPeek", crlf);
+        public static byte[] GetUnixTime(bool crlf = true) => Encode("getUnixTime", crlf);
     }
 }

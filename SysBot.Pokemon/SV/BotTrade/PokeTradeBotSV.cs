@@ -11,6 +11,7 @@ using static SysBot.Pokemon.PokeDataOffsetsSV;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 
 namespace SysBot.Pokemon
 {
@@ -282,7 +283,10 @@ namespace SysBot.Pokemon
                 var code = poke.Code;
                 Log($"输入连接交换密码: {code:0000 0000}...");
                 await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
-
+                var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
+                File.WriteAllBytes(Hub.Config.Folder.ScreenshotFolder, bytes) ;
+                var result=GetDodoURL();
+                poke.SendNotification(this,toSend, result);
                 await Click(PLUS, 3_000, token).ConfigureAwait(false);
                 StartFromOverworld = false;
             }
@@ -1074,7 +1078,23 @@ namespace SysBot.Pokemon
             Name = name,
             Comment = $"自动添加在 {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
         };
-
+        private  string GetDodoURL()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                MultipartFormDataContent contentFormData = new MultipartFormDataContent();
+                string path = Hub.Config.Folder.ScreenshotFolder;
+                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "image.jpg");
+                var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
+                var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
+                var a=result.Split("https");
+                var b = a[1].Split("jpg");
+                var c = "https" + b[0] + "jpg";
+                return c;
+            }
+            
+        }
         private async Task<bool> SetBoxPkmWithSwappedIDDetailsSV(PK9 toSend, TradeMyStatus tradePartner, SAV9SV sav, CancellationToken token)
         {
             if (toSend.Species == (ushort)Species.Ditto)

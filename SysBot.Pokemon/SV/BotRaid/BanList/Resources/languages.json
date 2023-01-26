@@ -1,0 +1,47 @@
+[
+  {
+    "name": "English",
+    "language": "eng",
+    "weight": "1/5"
+  },
+  {
+    "name": "Japanese",
+    "language": "jpn",
+    "weight": "1/10"
+  },
+  {
+    "name": "Spanish",
+    "language": "spa",
+    "weight": "1/5"
+  },
+  {
+    "name": "French",
+    "language": "fra",
+    "weight": "1/5"
+  },
+  {
+    "name": "German",
+    "language": "deu",
+    "weight": "1/5"
+  },
+  {
+    "name": "Italian",
+    "language": "ita",
+    "weight": "1/5"
+  },
+  {
+    "name": "Korean",
+    "language": "kor",
+    "weight": "1/10"
+  },
+  {
+    "name": "Chinese (Simplified)",
+    "language": "chi_sim",
+    "weight": "1/100"
+  },
+  {
+    "name": "Chinese (Traditional)",
+    "language": "chi_tra",
+    "weight": "1/100"
+  }
+]

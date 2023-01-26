@@ -54,6 +54,9 @@ namespace SysBot.Pokemon
 
         [Category(BotEncounter)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
+        public RaidSettingsSV RaidSV { get; set; } = new();
+        [Category(BotEncounter)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public FossilSettings FossilSWSH { get; set; } = new();
 
         [Category(BotEncounter)]
@@ -64,9 +67,11 @@ namespace SysBot.Pokemon
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public StopConditionSettings StopConditions { get; set; } = new();
 
+       
+
         // Integration
 
-       
+
         [Category(Integration), Description("配置流资源的生成。\nConfigure generation of assets for streaming.")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public StreamSettings Stream { get; set; } = new();

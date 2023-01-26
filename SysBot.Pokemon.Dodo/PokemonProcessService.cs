@@ -12,6 +12,10 @@ using SysBot.Base;
 using SysBot.Pokemon;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -153,7 +157,6 @@ namespace SysBot.Pokemon.Dodo
             }
             else if (content.Trim().StartsWith("批量"))
             {
-
                 if (DodoBot<TP>.Info.Hub.Config.Queues.MutiTrade)
                 {
                     var r = content.Split('量');
@@ -175,12 +178,23 @@ namespace SysBot.Pokemon.Dodo
                 }
                 return;
             }
-            //可用于识别其他版本模板文本,不进入队列艾特提示本人,例如已经失效的XXXL文本
-            //if (content.Contains("蔡徐坤"))
-            //{
-            //    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "就你也敢直呼鸡哥的大名", eventBody.ChannelId);
-            //    return;
-            //}
+            else if (content.Trim().StartsWith("截图"))//截图测试用
+            {
+                using (HttpClient client =new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                    MultipartFormDataContent contentFormData = new MultipartFormDataContent();
+                    string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
+                    //添加文件参数，参数名为files，文件名为123.png
+                    contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "image.jpg");
+                    var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
+                    var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
+                    LogUtil.LogInfo(result, LogIdentity);
+                    DodoBot<TP>.SendChannelMessagePicture(GetDodoURL(), eventBody.ChannelId);
+                }
+                return;
+            }
+            
 
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);
             if (!string.IsNullOrWhiteSpace(ps))
@@ -195,7 +209,6 @@ namespace SysBot.Pokemon.Dodo
                 else
                 {
                     DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
-                   
                 }
                 
                 if(DodoBot<TP>.Info.Hub.Config.Legality.ReturnShowdownSets == true)
@@ -221,7 +234,23 @@ namespace SysBot.Pokemon.Dodo
                 DodoBot<TP>.SendChannelMessage($"{Welcome}", eventBody.ChannelId);
             }
         }
+        private static string GetDodoURL()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                MultipartFormDataContent contentFormData = new MultipartFormDataContent();
+                string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
+                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "a.jpg");
+                var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
+                var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
+                var a = result.Split("https");
+                var b = a[1].Split("jpg");
+                var c = "https" + b[0] + "jpg";
+                return c;
+            }
 
+        }
         public string GetQueueCheckResultMessage(QueueCheckResult<TP> result)
         {
             if (!result.InQueue || result.Detail is null)

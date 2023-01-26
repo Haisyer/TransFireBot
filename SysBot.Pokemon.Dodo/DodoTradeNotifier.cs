@@ -1,9 +1,11 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
+using SysBot.Pokemon;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -32,7 +34,6 @@ namespace SysBot.Pokemon.Dodo
         {
             LogUtil.LogText(message);
         }
-
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             string description = GetEnumDescription(msg);
@@ -152,7 +153,11 @@ namespace SysBot.Pokemon.Dodo
                         $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
                     DodoBot<T>.SendChannelMessage(text, ChannelId);
                 }
-            }
+            }/*图片截图密码
+            else if ( message.Contains("https"))
+            {
+                DodoBot<T>.SendChannelMessagePicture(message, ChannelId);
+            }*/
            
         }
         public static string GetEnumDescription(Enum value)
