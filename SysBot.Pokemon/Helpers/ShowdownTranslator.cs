@@ -204,11 +204,11 @@ namespace SysBot.Pokemon
                     }
                     else if (zh.Contains("JPN") || zh.Contains("KOR") || zh.Contains("CHS") || zh.Contains("CHT"))
                     {
-                        if (Regex.IsMatch(zh, "名字[A-Za-z0-9]{1,6}"))
+                        if (Regex.IsMatch(zh, "名字[\u0020-\uD7FF\uE000-\uFFFD]{1,6}"))
                         {
-                            string value = Regex.Match(zh, "名字([A-Za-z0-9]{1,6})").Groups?[1].Value ?? "";
+                            string value = Regex.Match(zh, "名字([\u0020-\uD7FF\uE000-\uFFFD]{1,6})").Groups?[1].Value ?? "";
                             result += $"\nOT: {value}";
-                            zh = Regex.Replace(zh, "名字[A-Za-z0-9]{1,6}", "");
+                            zh = Regex.Replace(zh, "名字[\u0020-\uD7FF\uE000-\uFFFD]{1,6}", "");
                         }
                     }
                 }
