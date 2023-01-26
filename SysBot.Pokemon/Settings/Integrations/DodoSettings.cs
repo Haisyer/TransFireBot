@@ -23,5 +23,8 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("机器人响应频道id")]
         public string ChannelId { get; set; } = string.Empty;
+
+        [Category(Startup), Description("是否发送截图到dodo服务器")]
+        public bool DodoScreenshot { get; set; } = false;
     }
 }

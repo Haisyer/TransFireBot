@@ -279,14 +279,17 @@ namespace SysBot.Pokemon
                 if (poke.Type != PokeTradeType.Random)
                     Hub.Config.Stream.StartEnterCode(this);
                 await Task.Delay(Hub.Config.Timings.ExtraTimeOpenCodeEntry, token).ConfigureAwait(false);
-
-                var code = poke.Code;
+               
+               var code = poke.Code;
                 Log($"输入连接交换密码: {code:0000 0000}...");
                 await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
-                var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
-             //   File.WriteAllBytes(Hub.Config.Folder.ScreenshotFolder, bytes) ;
-                var result=GetDodoURL(bytes);
-                poke.SendNotification(this,toSend, result);
+                if (Hub.Config.Dodo.DodoScreenshot)
+                {
+                    var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
+                    //File.WriteAllBytes(Hub.Config.Folder.ScreenshotFolder, bytes) ;
+                    var result = GetDodoURL(bytes);
+                    poke.SendNotification(this, toSend, result);
+                }
                 await Click(PLUS, 3_000, token).ConfigureAwait(false);
                 StartFromOverworld = false;
             }
