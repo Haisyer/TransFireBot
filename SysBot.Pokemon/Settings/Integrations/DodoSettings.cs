@@ -26,5 +26,8 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("是否发送截图到dodo服务器")]
         public bool DodoScreenshot { get; set; } = false;
+
+        [Category(Startup), Description("Dodo上传文件授权链接\nBot+空格+识别码+.+Token\n实例：Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM")]
+        public string DodoUploadFileUrl { get; set; } = string.Empty;
     }
 }

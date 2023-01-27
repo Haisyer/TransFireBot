@@ -178,7 +178,9 @@ namespace SysBot.Pokemon.Dodo
                 }
                 return;
             }
-            else if (content.Trim().StartsWith("截图"))//截图测试用
+            //截图测试用
+            #region
+          /*  else if (content.Trim().StartsWith("截图"))
             {
                 using (HttpClient client =new HttpClient())
                 {
@@ -193,8 +195,8 @@ namespace SysBot.Pokemon.Dodo
                     DodoBot<TP>.SendChannelMessagePicture(GetDodoURL(), eventBody.ChannelId);
                 }
                 return;
-            }
-            
+            }*/
+            #endregion
 
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);
             if (!string.IsNullOrWhiteSpace(ps))

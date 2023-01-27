@@ -153,11 +153,11 @@ namespace SysBot.Pokemon.Dodo
                         $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
                     DodoBot<T>.SendChannelMessage(text, ChannelId);
                 }
-            }/*图片截图密码
+            }
             else if ( message.Contains("https"))
             {
                 DodoBot<T>.SendChannelMessagePicture(message, ChannelId);
-            }*/
+            }
            
         }
         public static string GetEnumDescription(Enum value)

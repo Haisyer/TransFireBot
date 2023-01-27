@@ -286,7 +286,6 @@ namespace SysBot.Pokemon
                 if (Hub.Config.Dodo.DodoScreenshot)
                 {
                     var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
-                    //File.WriteAllBytes(Hub.Config.Folder.ScreenshotFolder, bytes) ;
                     var result = GetDodoURL(bytes);
                     poke.SendNotification(this, toSend, result);
                 }
@@ -1085,7 +1084,7 @@ namespace SysBot.Pokemon
         {
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                client.DefaultRequestHeaders.Add("Authorization", Hub.Config.Dodo.DodoUploadFileUrl);
                 MultipartFormDataContent contentFormData = new MultipartFormDataContent();
                 contentFormData.Add(new ByteArrayContent(bytes), "file", "image.jpg");
                 var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
