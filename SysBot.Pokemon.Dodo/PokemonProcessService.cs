@@ -237,7 +237,7 @@ namespace SysBot.Pokemon.Dodo
         {
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                client.DefaultRequestHeaders.Add("Authorization", DodoBot<TP>.Info.Hub.Config.Dodo.DodoUploadFileUrl);
                 MultipartFormDataContent contentFormData = new MultipartFormDataContent();
                 string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
                 contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "a.jpg");
