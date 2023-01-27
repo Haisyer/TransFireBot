@@ -148,6 +148,21 @@ namespace SysBot.Pokemon.Dodo
                 }
             });
         }
-       
+        public static void SendPersonalMessagePicture(string url, string dodoId)
+        {
+            if (string.IsNullOrEmpty(url)) return;
+            OpenApiService.SetPersonalMessageSend(new SetPersonalMessageSendInput<MessageBodyPicture>
+            {
+                DoDoId=dodoId,
+                MessageBody = new MessageBodyPicture
+                {
+                    Url = url,
+                    Width = 1280,
+                    Height = 720,
+                    IsOriginal = 1
+                }
+            });
+        }
+
     }
 }

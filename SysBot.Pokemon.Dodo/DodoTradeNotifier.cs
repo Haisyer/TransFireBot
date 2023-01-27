@@ -156,7 +156,7 @@ namespace SysBot.Pokemon.Dodo
             }
             else if ( message.Contains("https"))
             {
-                DodoBot<T>.SendChannelMessagePicture(message, ChannelId);
+                DodoBot<T>.SendPersonalMessagePicture(message, info.Trainer.ID.ToString());
             }
            
         }
