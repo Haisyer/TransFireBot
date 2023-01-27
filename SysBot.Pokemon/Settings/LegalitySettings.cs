@@ -82,6 +82,8 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("允许文件非法开关")]
         public bool FileillegalMod { get; set; } = false;
 
+        [Category(Generate), Description("派送文件和法检测开关")]
+        public bool PokemonPoolillegalMod { get; set; } = false;
         // Misc
 
         [Category(Misc), Description("将HOME跟踪器归零，不管当前跟踪器的值。同样适用于用户要求的PKM文件\nZero out HOME tracker regardless of current tracker value. Applies to user requested PKM files as well.")]
