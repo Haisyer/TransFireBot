@@ -23,10 +23,12 @@ namespace SysBot.Pokemon
         [Description("可疑交换")]
         SuspiciousActivity,
 
-        // Recovery -- General Bot Failures
-        // Anything below here should be retried once if possible.
+        // Recovery -- General Bot Failures.恢复——一般的机器人故障
+        // Anything below here should be retried once if possible.如果可能，下面的代码都应该重试一次。
         RoutineCancel,
+        [Description("异常连接")]
         ExceptionConnection,
+        [Description("内部异常")]
         ExceptionInternal,
         RecoverStart,
         RecoverPostLinkCode,

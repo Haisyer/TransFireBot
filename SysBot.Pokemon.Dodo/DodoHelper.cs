@@ -145,7 +145,7 @@ namespace SysBot.Pokemon.Dodo
             string result="";
             if (!DodoBot<T>.Info.GetCanQueue())
             {
-                msg = "对不起, 我不再接受队列请求!";
+                msg = $"对不起,<@!{username}>,我不再接受队列请求!";
                 return false;
             }
             if (pk.Nickname == null)

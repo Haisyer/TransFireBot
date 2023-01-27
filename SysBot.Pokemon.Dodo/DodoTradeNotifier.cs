@@ -102,8 +102,8 @@ namespace SysBot.Pokemon.Dodo
             var message = $"正在等待{name}!,机器人IGN为{routine.InGameName}.";
             message += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(message);
-            var text = $"我正在等你,{name},第{info.ID}号\n我的游戏ID为{routine.InGameName}\n正在派送:***{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}***\n密码:***见私信***\n状态:搜索中\n";
-            DodoBot<T>.SendChannelMessage(text, ChannelId);
+            var text = $"我正在等你,第{info.ID}号\n我的游戏ID为{routine.InGameName}\n正在派送:***{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}***\n密码:***见私信***\n状态:搜索中\n";
+            DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, text, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你,{name}\n密码:{info.Code:0000 0000}\n请速来领取");
         }
 
