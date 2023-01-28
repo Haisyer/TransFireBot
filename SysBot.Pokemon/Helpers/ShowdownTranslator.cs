@@ -1,4 +1,5 @@
 ﻿using PKHeX.Core;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SysBot.Pokemon
@@ -35,19 +36,15 @@ namespace SysBot.Pokemon
                     // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
                     else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母"))
                         result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
-                    // 识别肯泰罗地区形态
-                    else if (zh.Contains("帕底亚的样子（火）形态") && candidateSpecieNo is 128)
-                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-Paldea-Fire)";
-                    else if (zh.Contains("帕底亚的样子（水）形态") && candidateSpecieNo is 128)
-                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-Paldea-Water)";
-                    else if (zh.Contains("形态"))
+                    // 识别形态
+                    else if (candidateSpecieNo > 0)
                     {
-                        for (int i = 0; i < GameStringsZh.forms.Length; i++)
+                        foreach (var s in formDict)
                         {
-                            if (GameStringsZh.forms[i].Length == 0) continue;
-                            if (!zh.Contains(GameStringsZh.forms[i] + "形态")) continue;
-                            result += $"({GameStringsEn.Species[candidateSpecieNo]}-{GameStringsEn.forms[i]})";
-                            zh = zh.Replace(GameStringsZh.forms[i] + "形态", "");
+                            var searchKey = s.Key.EndsWith("形态") ? s.Key : s.Key + "形态";
+                            if (!zh.Contains(searchKey)) continue;
+                            result += $"({GameStringsEn.Species[candidateSpecieNo]}-{s.Value})";
+                            zh = zh.Replace(searchKey, "");
                             break;
                         }
                     }
@@ -74,43 +71,16 @@ namespace SysBot.Pokemon
                 {
                     return result;
                 }
-                // 识别形态
-                if (zh.Contains("帕底亚的样子（火）形态"))
-                {
-                    result += $"-Paldea-Fire";
-                    zh = zh.Replace("帕底亚的样子（火）形态", "");
-                }
-                else if (zh.Contains("帕底亚的样子（水）形态"))
-                {
-                    result += $"-Paldea-Water";
-                    zh = zh.Replace("帕底亚的样子（水）形态", "");
-                }
-                else if (zh.Contains("四只家庭形态"))
-                {
-                    result += $"-Four";
-                    zh = zh.Replace("四只家庭形态", "");
-                }
-                else
-                {
-                    for (int i = 0; i < GameStringsZh.forms.Length; i++)
-                    {
-                        if (GameStringsZh.forms[i].Length == 0) continue;
-                        if (!zh.Contains(GameStringsZh.forms[i] + "形态")) continue;
-                        result += $"-{GameStringsEn.forms[i]}";
-                        zh = zh.Replace(GameStringsZh.forms[i] + "形态", "");
-                        break;
-                    }
-                }
-            }
 
-            // 识别未知图腾
-            if (Regex.IsMatch(zh, "[A-Z?!？！]形态"))
-            {
-                string formsUnown = Regex.Match(zh, "([A-Z?!？！])形态").Groups?[1]?.Value ?? "";
-                if (formsUnown == "？") formsUnown = "?";
-                else if (formsUnown == "！") formsUnown = "!";
-                result += $"-{formsUnown}";
-                zh = Regex.Replace(zh, "[A-Z?!？！]形态", "");
+                // 识别形态
+                foreach (var s in formDict)
+                {
+                    var searchKey = s.Key.EndsWith("形态") ? s.Key : s.Key + "形态";
+                    if (!zh.Contains(searchKey)) continue;
+                    result += $"-{s.Value}";
+                    zh = zh.Replace(searchKey, "");
+                    break;
+                }
             }
 
             // 添加性别
@@ -550,5 +520,186 @@ namespace SysBot.Pokemon
 
             return result;
         }
+
+        #region 形态中文ps字典，感谢ppllouf
+        public static Dictionary<string, string> formDict = new Dictionary<string, string> {
+            {"阿罗拉","Alola"},
+            {"初始","Original"},
+            {"丰缘","Hoenn"},
+            {"神奥","Sinnoh"},
+            {"合众","Unova"},
+            {"卡洛斯","Kalos"},
+            {"就决定是你了","Partner"},
+            {"搭档","Starter"},
+            {"世界","World"},
+            {"摇滚巨星","Rock-Star"},
+            {"贵妇","Belle"},
+            {"流行偶像","Pop-Star"},
+            {"博士","PhD"},
+            {"面罩摔角手","Libre"},
+            {"换装","Cosplay"},
+            {"伽勒尔","Galar"},
+            {"洗翠","Hisui"},
+            {"帕底亚斗战种","Paldea-Combat"},
+            {"帕底亚火炽种","Paldea-Blaze"},
+            {"帕底亚水澜种","Paldea-Aqua"},
+            {"刺刺耳","Spiky-eared"},
+            {"帕底亚","Paldea"},
+            {"B","B"},
+            {"C","C"},
+            {"D","D"},
+            {"E","E"},
+            {"F","F"},
+            {"G","G"},
+            {"H","H"},
+            {"I","I"},
+            {"J","J"},
+            {"K","K"},
+            {"L","L"},
+            {"M","M"},
+            {"N","N"},
+            {"O","O"},
+            {"P","P"},
+            {"Q","Q"},
+            {"R","R"},
+            {"S","S"},
+            {"T","T"},
+            {"U","U"},
+            {"V","V"},
+            {"W","W"},
+            {"X","X"},
+            {"Y","Y"},
+            {"Z","Z"},
+            {"！","Exclamation"},
+            {"？","Question"},
+            {"太阳","Sunny"},
+            {"雨水","Rainy"},
+            {"雪云","Snowy"},
+            {"原始回归","Primal"},
+            {"攻击形态","Attack"},
+            {"防御形态","Defense"},
+            {"速度形态","Speed"},
+            {"砂土蓑衣","Sandy"},
+            {"垃圾蓑衣","Trash"},
+            {"晴天形态","Sunshine"},
+            {"东海","East"},
+            {"加热","Heat"},
+            {"清洗","Wash"},
+            {"结冰","Frost"},
+            {"旋转","Fan"},
+            {"切割","Mow"},
+            {"起源","Origin"},
+            {"天空","Sky"},
+            {"格斗","Fighting"},
+            {"飞行","Flying"},
+            {"毒","Poison"},
+            {"地面","Ground"},
+            {"岩石","Rock"},
+            {"虫","Bug"},
+            {"幽灵","Ghost"},
+            {"钢","Steel"},
+            {"火","Fire"},
+            {"水","Water"},
+            {"草","Grass"},
+            {"电","Electric"},
+            {"超能力","Psychic"},
+            {"冰","Ice"},
+            {"龙","Dragon"},
+            {"恶","Dark"},
+            {"妖精","Fairy"},
+            {"蓝条纹","Blue-Striped"},
+            {"白条纹","White-Striped"},
+            {"夏天","Summer"},
+            {"秋天","Autumn"},
+            {"冬天","Winter"},
+            {"灵兽形态","Therian"},
+            {"暗黑","White"},
+            {"焰白","Black"},
+            {"觉悟","Resolute"},
+            {"舞步形态","Pirouette"},
+            {"水流卡带","Douse"},
+            {"闪电卡带","Shock"},
+            {"火焰卡带","Burn"},
+            {"冰冻卡带","Chill"},
+            {"小智版","Ash"},
+            {"冰雪花纹","Icy Snow"},
+            {"雪国花纹","Polar"},
+            {"雪原花纹","Tundra"},
+            {"大陆花纹","Continental"},
+            {"庭院花纹","Garden"},
+            {"高雅花纹","Elegant"},
+            {"摩登花纹","Modern"},
+            {"大海花纹","Marine"},
+            {"群鸟花纹","Archipelago"},
+            {"荒野花纹","High Plains"},
+            {"沙尘花纹","Sandstorm"},
+            {"大河花纹","River"},
+            {"骤雨花纹","Monsoon"},
+            {"热带草原花纹","Savanna"},
+            {"太阳花纹","Sun"},
+            {"大洋花纹","Ocean"},
+            {"热带雨林花纹","Jungle"},
+            {"幻彩花纹","Fancy"},
+            {"球球花纹","Pokeball"},
+            {"蓝花","Blue"},
+            {"橙花","Orange"},
+            {"白花","White"},
+            {"黄花","Yellow"},
+            {"永恒之花","Eternal"},
+            {"心形造型","Heart"},
+            {"星形造型","Star"},
+            {"菱形造型","Diamond"},
+            {"淑女造型","Debutante"},
+            {"贵妇造型","Matron"},
+            {"绅士造型","Dandy"},
+            {"女王造型","La Reine"},
+            {"歌舞伎造型","Kabuki"},
+            {"国王造型","Pharaoh"},
+            {"小尺寸","Small"},
+            {"大尺寸","Large"},
+            {"特大尺寸","Super"},
+            {"解放","Unbound"},
+            {"啪滋啪滋风格","Pom-Pom"},
+            {"呼拉呼拉风格","Pa'u"},
+            {"轻盈轻盈风格","Sensu"},
+            {"黑夜","Midnight"},
+            {"黄昏","Dusk"},
+            {"流星","Meteor"},
+            {"橙色核心","Orange"},
+            {"黄色核心","Yellow"},
+            {"绿色核心","Green"},
+            {"浅蓝色核心","Blue"},
+            {"蓝色核心","Indigo"},
+            {"紫色核心","Violet"},
+            {"黄昏之鬃","Dusk-Mane"},
+            {"拂晓之翼","Dawn-Wings"},
+            {"究极","Ultra"},
+            {"５００年前的颜色","Original"},
+            {"低调","Low-Key"},
+            {"真品","Antique"},
+            {"奶香红钻","Ruby-Cream"},
+            {"奶香抹茶","Matcha-Cream"},
+            {"奶香薄荷","Mint-Cream"},
+            {"奶香柠檬","Lemon-Cream"},
+            {"奶香雪盐","Salted-Cream"},
+            {"红钻综合","Ruby-Swirl"},
+            {"焦糖综合","Caramel-Swirl"},
+            {"三色综合","Rainbow-Swirl"},
+            {"剑之王","Crowned"},
+            {"盾之王","Crowned"},
+            {"无极巨化","Eternamax"},
+            {"连击流","Rapid-Strike"},
+            {"阿爸","Dada"},
+            {"骑白马","Ice"},
+            {"骑黑马","Shadow"},
+            {"四只家庭","Four"},
+            {"蓝羽毛","Blue"},
+            {"黄羽毛","Yellow"},
+            {"白羽毛","White"},
+            {"下垂姿势","Droopy"},
+            {"平挺姿势","Stretchy"},
+            {"三节形态","Three-Segment"},
+        };
+        #endregion
     }
 }

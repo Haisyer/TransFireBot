@@ -76,13 +76,13 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("在取消之前生成SET代码时所花费的最大时间(以秒为单位)。这可以防止复杂的代码冻结机器人\nMaximum time in seconds to spend when generating a set before canceling. This prevents difficult sets from freezing the bot.")]
         public int Timeout { get; set; } = 15;
 
-        [Category(Generate), Description("允许指令非法开关")]
+        [Category(Generate), Description("允许指令非法开关\ntrue=开启不合法模式，false=关闭不合法模式")]
         public bool CommandillegalMod { get; set; } = false;
 
-        [Category(Generate), Description("允许文件非法开关")]
+        [Category(Generate), Description("允许文件非法开关\ntrue=开启不合法模式，false=关闭不合法模式")]
         public bool FileillegalMod { get; set; } = false;
 
-        [Category(Generate), Description("派送文件和法检测开关")]
+        [Category(Generate), Description("派送文件和法检测开关\ntrue=开启不合法模式，false=关闭不合法模式")]
         public bool PokemonPoolillegalMod { get; set; } = false;
         // Misc
 
