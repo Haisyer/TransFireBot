@@ -82,7 +82,7 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("允许文件非法开关\ntrue=开启不合法模式，false=关闭不合法模式")]
         public bool FileillegalMod { get; set; } = false;
 
-        [Category(Generate), Description("派送文件和法检测开关\ntrue=开启不合法模式，false=关闭不合法模式")]
+        [Category(Generate), Description("派送文件合法检测开关\ntrue=开启不合法模式，false=关闭不合法模式")]
         public bool PokemonPoolillegalMod { get; set; } = false;
         // Misc
 
