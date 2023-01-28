@@ -8,10 +8,11 @@ namespace SysBot.Pokemon
     {
         public static GameStrings GameStringsZh = GameInfo.GetStrings("zh");
         public static GameStrings GameStringsEn = GameInfo.GetStrings("en");
+        
         public static string Chinese2Showdown(string zh)
         {
             string result = "";
-
+            var zhclone = zh;
             // 添加宝可梦
             int candidateSpecieNo = 0;
             int candidateSpecieStringLength = 0;
@@ -252,47 +253,46 @@ namespace SysBot.Pokemon
                 zh = zh.Replace(GameStringsZh.Natures[i], "");
                 break;
             }
-
+            var ivstring = zhclone.Split("个体值");
+            if(ivstring.Length > 1 )
             // 添加个体值
-            if (zh.Contains("个体值"))
             {
                 result += "\nIVs: ";
-                zh = zh.Replace("个体值", "");
-                if (Regex.IsMatch(zh, "\\d{1,2}生命"))
+                if (Regex.IsMatch(ivstring[1], "\\d{1,2}生命"))
                 {
-                    string value = Regex.Match(zh, "(\\d{1,2})生命").Groups?[1]?.Value ?? "";
+                    string value = Regex.Match(ivstring[1], "(\\d{1,2})生命").Groups?[1]?.Value ?? "";
                     result += $"{value} HP / ";
-                    zh = Regex.Replace(zh, "\\d{1,2}生命", "");
+                    ivstring[1] = Regex.Replace(ivstring[1], "\\d{1,2}生命", "");
                 }
-                if (Regex.IsMatch(zh, "\\d{1,2}攻击"))
+                if (Regex.IsMatch(ivstring[1], "\\d{1,2}攻击"))
                 {
-                    string value = Regex.Match(zh, "(\\d{1,2})攻击").Groups?[1]?.Value ?? "";
+                    string value = Regex.Match(ivstring[1], "(\\d{1,2})攻击").Groups?[1]?.Value ?? "";
                     result += $"{value} Atk / ";
-                    zh = Regex.Replace(zh, "\\d{1,2}攻击", "");
+                    ivstring[1] = Regex.Replace(ivstring[1], "\\d{1,2}攻击", "");
                 }
-                if (Regex.IsMatch(zh, "\\d{1,2}防御"))
+                if (Regex.IsMatch(ivstring[1], "\\d{1,2}防御"))
                 {
-                    string value = Regex.Match(zh, "(\\d{1,2})防御").Groups?[1]?.Value ?? "";
+                    string value = Regex.Match(ivstring[1], "(\\d{1,2})防御").Groups?[1]?.Value ?? "";
                     result += $"{value} Def / ";
-                    zh = Regex.Replace(zh, "\\d{1,2}防御", "");
+                    ivstring[1] = Regex.Replace(ivstring[1], "\\d{1,2}防御", "");
                 }
-                if (Regex.IsMatch(zh, "\\d{1,2}特攻"))
+                if (Regex.IsMatch(ivstring[1], "\\d{1,2}特攻"))
                 {
-                    string value = Regex.Match(zh, "(\\d{1,2})特攻").Groups?[1]?.Value ?? "";
+                    string value = Regex.Match(ivstring[1], "(\\d{1,2})特攻").Groups?[1]?.Value ?? "";
                     result += $"{value} SpA / ";
-                    zh = Regex.Replace(zh, "\\d{1,2}特攻", "");
+                    ivstring[1] = Regex.Replace(ivstring[1], "\\d{1,2}特攻", "");
                 }
-                if (Regex.IsMatch(zh, "\\d{1,2}特防"))
+                if (Regex.IsMatch(ivstring[1], "\\d{1,2}特防"))
                 {
-                    string value = Regex.Match(zh, "(\\d{1,2})特防").Groups?[1]?.Value ?? "";
+                    string value = Regex.Match(ivstring[1], "(\\d{1,2})特防").Groups?[1]?.Value ?? "";
                     result += $"{value} SpD / ";
-                    zh = Regex.Replace(zh, "\\d{1,2}特防", "");
+                    ivstring[1] = Regex.Replace(ivstring[1], "\\d{1,2}特防", "");
                 }
-                if (Regex.IsMatch(zh, "\\d{1,2}速度"))
+                if (Regex.IsMatch(ivstring[1], "\\d{1,2}速度"))
                 {
-                    string value = Regex.Match(zh, "(\\d{1,2})速度").Groups?[1]?.Value ?? "";
+                    string value = Regex.Match(ivstring[1], "(\\d{1,2})速度").Groups?[1]?.Value ?? "";
                     result += $"{value} Spe";
-                    zh = Regex.Replace(zh, "\\d{1,2}速度", "");
+                    ivstring[1] = Regex.Replace(ivstring[1], "\\d{1,2}速度", "");
                 }
                 if (result.EndsWith("/ "))
                 {
@@ -324,49 +324,97 @@ namespace SysBot.Pokemon
             }
 
             // 添加努力值
-            if (zh.Contains("努力值"))
+            var evstring = zhclone.Split("努力值");
+            if (evstring.Length > 1)
             {
+                var ExIVstring=evstring[1].Split("个体值");
+
                 result += "\nEVs: ";
-                zh = zh.Replace("努力值", "");
-                if (Regex.IsMatch(zh, "\\d{1,3}生命"))
+                if (ExIVstring.Length > 1)
                 {
-                    string value = Regex.Match(zh, "(\\d{1,3})生命").Groups?[1]?.Value ?? "";
-                    result += $"{value} HP / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}生命", "");
+                    if (Regex.IsMatch(ExIVstring[0], "\\d{1,3}生命"))
+                    {
+                        string value = Regex.Match(ExIVstring[0], "(\\d{1,3})生命").Groups?[1]?.Value ?? "";
+                        result += $"{value} HP / ";
+                        ExIVstring[0] = Regex.Replace(ExIVstring[0], "\\d{1,3}生命", "");
+                    }
+                    if (Regex.IsMatch(ExIVstring[0], "\\d{1,3}攻击"))
+                    {
+                        string value = Regex.Match(ExIVstring[0], "(\\d{1,3})攻击").Groups?[1]?.Value ?? "";
+                        result += $"{value} Atk / ";
+                        ExIVstring[0] = Regex.Replace(ExIVstring[0], "\\d{1,3}攻击", "");
+                    }
+                    if (Regex.IsMatch(ExIVstring[0], "\\d{1,3}防御"))
+                    {
+                        string value = Regex.Match(ExIVstring[0], "(\\d{1,3})防御").Groups?[1]?.Value ?? "";
+                        result += $"{value} Def / ";
+                        ExIVstring[0] = Regex.Replace(ExIVstring[0], "\\d{1,3}防御", "");
+                    }
+                    if (Regex.IsMatch(ExIVstring[0], "\\d{1,3}特攻"))
+                    {
+                        string value = Regex.Match(ExIVstring[0], "(\\d{1,3})特攻").Groups?[1]?.Value ?? "";
+                        result += $"{value} SpA / ";
+                        ExIVstring[0] = Regex.Replace(ExIVstring[0], "\\d{1,3}特攻", "");
+                    }
+                    if (Regex.IsMatch(ExIVstring[0], "\\d{1,3}特防"))
+                    {
+                        string value = Regex.Match(ExIVstring[0], "(\\d{1,3})特防").Groups?[1]?.Value ?? "";
+                        result += $"{value} SpD / ";
+                        ExIVstring[0] = Regex.Replace(ExIVstring[0], "\\d{1,3}特防", "");
+                    }
+                    if (Regex.IsMatch(ExIVstring[0], "\\d{1,3}速度"))
+                    {
+                        string value = Regex.Match(ExIVstring[0], "(\\d{1,3})速度").Groups?[1]?.Value ?? "";
+                        result += $"{value} Spe";
+                        ExIVstring[0] = Regex.Replace(ExIVstring[0], "\\d{1,3}速度", "");
+                    }
+                    if (result.EndsWith("/ "))
+                    {
+                        result = result.Substring(0, result.Length - 2);
+                    }
                 }
-                if (Regex.IsMatch(zh, "\\d{1,3}攻击"))
+                else
                 {
-                    string value = Regex.Match(zh, "(\\d{1,3})攻击").Groups?[1]?.Value ?? "";
-                    result += $"{value} Atk / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}攻击", "");
-                }
-                if (Regex.IsMatch(zh, "\\d{1,3}防御"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})防御").Groups?[1]?.Value ?? "";
-                    result += $"{value} Def / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}防御", "");
-                }
-                if (Regex.IsMatch(zh, "\\d{1,3}特攻"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})特攻").Groups?[1]?.Value ?? "";
-                    result += $"{value} SpA / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}特攻", "");
-                }
-                if (Regex.IsMatch(zh, "\\d{1,3}特防"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})特防").Groups?[1]?.Value ?? "";
-                    result += $"{value} SpD / ";
-                    zh = Regex.Replace(zh, "\\d{1,3}特防", "");
-                }
-                if (Regex.IsMatch(zh, "\\d{1,3}速度"))
-                {
-                    string value = Regex.Match(zh, "(\\d{1,3})速度").Groups?[1]?.Value ?? "";
-                    result += $"{value} Spe";
-                    zh = Regex.Replace(zh, "\\d{1,3}速度", "");
-                }
-                if (result.EndsWith("/ "))
-                {
-                    result = result.Substring(0, result.Length - 2);
+                    if (Regex.IsMatch(evstring[1], "\\d{1,3}生命"))
+                    {
+                        string value = Regex.Match(evstring[1], "(\\d{1,3})生命").Groups?[1]?.Value ?? "";
+                        result += $"{value} HP / ";
+                        evstring[1] = Regex.Replace(evstring[1], "\\d{1,3}生命", "");
+                    }
+                    if (Regex.IsMatch(evstring[1], "\\d{1,3}攻击"))
+                    {
+                        string value = Regex.Match(evstring[1], "(\\d{1,3})攻击").Groups?[1]?.Value ?? "";
+                        result += $"{value} Atk / ";
+                        evstring[1] = Regex.Replace(evstring[1], "\\d{1,3}攻击", "");
+                    }
+                    if (Regex.IsMatch(evstring[1], "\\d{1,3}防御"))
+                    {
+                        string value = Regex.Match(evstring[1], "(\\d{1,3})防御").Groups?[1]?.Value ?? "";
+                        result += $"{value} Def / ";
+                        evstring[1] = Regex.Replace(evstring[1], "\\d{1,3}防御", "");
+                    }
+                    if (Regex.IsMatch(evstring[1], "\\d{1,3}特攻"))
+                    {
+                        string value = Regex.Match(evstring[1], "(\\d{1,3})特攻").Groups?[1]?.Value ?? "";
+                        result += $"{value} SpA / ";
+                        evstring[1] = Regex.Replace(evstring[1], "\\d{1,3}特攻", "");
+                    }
+                    if (Regex.IsMatch(evstring[1], "\\d{1,3}特防"))
+                    {
+                        string value = Regex.Match(evstring[1], "(\\d{1,3})特防").Groups?[1]?.Value ?? "";
+                        result += $"{value} SpD / ";
+                        evstring[1] = Regex.Replace(evstring[1], "\\d{1,3}特防", "");
+                    }
+                    if (Regex.IsMatch(evstring[1], "\\d{1,3}速度"))
+                    {
+                        string value = Regex.Match(evstring[1], "(\\d{1,3})速度").Groups?[1]?.Value ?? "";
+                        result += $"{value} Spe";
+                        evstring[1] = Regex.Replace(evstring[1], "\\d{1,3}速度", "");
+                    }
+                    if (result.EndsWith("/ "))
+                    {
+                        result = result.Substring(0, result.Length - 2);
+                    }
                 }
             }
 
