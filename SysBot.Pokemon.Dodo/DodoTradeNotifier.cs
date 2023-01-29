@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace SysBot.Pokemon.Dodo
@@ -32,6 +33,14 @@ namespace SysBot.Pokemon.Dodo
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, string message)
         {
+            if (message.Contains("Found Trading Partner:"))
+            {
+                Regex regex = new Regex("TID: (\\d+)");
+                string tid = regex.Match(message).Groups[1].ToString();
+                regex = new Regex("SID: (\\d+)");
+                string sid = regex.Match(message).Groups[1].ToString();
+                DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"找到你了，你本人的SID7:{sid},TID7:{tid}");
+            }
             LogUtil.LogText(message);
         }
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
