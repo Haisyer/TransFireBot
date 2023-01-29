@@ -38,7 +38,7 @@ namespace SysBot.Pokemon
                     else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母"))
                         result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
                     // 识别形态
-                    else if (candidateSpecieNo > 0)
+                    else if (zh.Contains("形态"))
                     {
                         foreach (var s in formDict)
                         {
