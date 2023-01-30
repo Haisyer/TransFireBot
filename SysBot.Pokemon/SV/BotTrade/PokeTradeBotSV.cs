@@ -392,6 +392,10 @@ namespace SysBot.Pokemon
                             ls.Add(pk2);
                     }
                 }
+                if (poke.DeletFile)
+                {
+                    File.Delete(directory);
+                }
             }
             else
             {
@@ -1037,7 +1041,7 @@ namespace SysBot.Pokemon
             if (previous != null && previous.NetworkID == TrainerNID && previous.RemoteID != user.ID && !isDistribution)
             {
                 var delta = DateTime.Now - previous.Time;
-                if (delta > TimeSpan.FromMinutes(AbuseSettings.TradeAbuseExpiration) && AbuseSettings.TradeAbuseAction != TradeAbuseAction.Ignore)
+                if (delta < TimeSpan.FromMinutes(AbuseSettings.TradeAbuseExpiration) && AbuseSettings.TradeAbuseAction != TradeAbuseAction.Ignore)
                 {
                     if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                     {
@@ -1118,13 +1122,13 @@ namespace SysBot.Pokemon
             {
                 if (toSend.Species == (ushort)Species.Koraidon)
                 {
-                    cln.Version = 50;
+                    cln.Version =(int) GameVersion.SL;
                     Log($"故勒顿，强制修改版本为朱");
 
                 }
                 else if (toSend.Species == (ushort)Species.Miraidon)
                 {
-                    cln.Version = 51;
+                    cln.Version = (int)GameVersion.VL;
                     Log($"密勒顿，强制修改版本为紫");
                 }
                 else

@@ -64,8 +64,7 @@ namespace SysBot.Pokemon
         [Category(UserBias), Description("让第几个用户提前准备")]
         public int AlertNumber { get; set; } = 3;
 
-        [Category(UserBias), Description("可以插队的身份组")]
-        public string VipQueue { get; set; } = "1111111";
+     
 
         // Flex Time
 

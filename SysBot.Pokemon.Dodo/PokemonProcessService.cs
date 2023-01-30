@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -82,7 +84,8 @@ namespace SysBot.Pokemon.Dodo
                 IslandSourceId = eventBody.IslandSourceId,
             };
             var Roleoutput = DodoBot<TP>.OpenApiService.GetMemberRoleList(Roleinput);
-            bool RoleResult = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Queues.VipQueue);
+            bool VipRole = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Dodo.VipRole);
+            bool BatchRole = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Dodo.BatchRole);
             if (eventBody.MessageBody is MessageBodyFile messageBodyFile)
             {
                 if (!DodoBot<TP>.Info.Hub.Config.Legality.AllowUseFile)
@@ -102,7 +105,7 @@ namespace SysBot.Pokemon.Dodo
                     var p = GetPKM(downloadBytes);
                     if (p is TP pkm)
                     {
-                        if (RoleResult)
+                        if (VipRole)
                         {
                             DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
                             DodoHelper<TP>.StartTrade(pkm, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId,eventBody.IslandSourceId, false, Count);
@@ -131,7 +134,7 @@ namespace SysBot.Pokemon.Dodo
             if (content.Trim().StartsWith("trade"))
             {
                 content = content.Replace("trade", "");
-                if (RoleResult)
+                if (VipRole)
                 {
                     DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
                     DodoHelper<TP>.StartTrade(content, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, false,Count);
@@ -151,6 +154,11 @@ namespace SysBot.Pokemon.Dodo
             }
             else if (content.Trim().StartsWith("批量"))
             {
+                if(!BatchRole)
+                {
+                    DodoBot<TP>.SendChannelMessage($"你不是VIP不能批量！", eventBody.ChannelId);
+                    return;
+                }
                 if (DodoBot<TP>.Info.Hub.Config.Queues.MutiTrade)
                 {
                     var r = content.Split('量');
@@ -161,7 +169,7 @@ namespace SysBot.Pokemon.Dodo
                         if (fileEntries.Length > 0)
                         {
                             DodoBot<TP>.SendChannelMessage($"找到{r[1]}", eventBody.ChannelId);
-                            DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, r[1]);
+                            DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, r[1],false);
                         }
                         else
                         {
@@ -174,40 +182,61 @@ namespace SysBot.Pokemon.Dodo
             }
             //截图测试用
             #region
-          /*  else if (content.Trim().StartsWith("截图"))
-            {
-                using (HttpClient client =new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
-                    MultipartFormDataContent contentFormData = new MultipartFormDataContent();
-                    string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
-                    //添加文件参数，参数名为files，文件名为123.png
-                    contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "image.jpg");
-                    var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
-                    var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
-                    LogUtil.LogInfo(result, LogIdentity);
-                    DodoBot<TP>.SendChannelMessagePicture(GetDodoURL(), eventBody.ChannelId);
-                }
-                return;
-            }*/
+            /*  else if (content.Trim().StartsWith("截图"))
+              {
+                  using (HttpClient client =new HttpClient())
+                  {
+                      client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
+                      MultipartFormDataContent contentFormData = new MultipartFormDataContent();
+                      string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
+                      //添加文件参数，参数名为files，文件名为123.png
+                      contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "image.jpg");
+                      var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
+                      var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
+                      LogUtil.LogInfo(result, LogIdentity);
+                      DodoBot<TP>.SendChannelMessagePicture(GetDodoURL(), eventBody.ChannelId);
+                  }
+                  return;
+              }*/
             #endregion
-
+         //   LogUtil.LogInfo(content, LogIdentity);
+            var Mutips = Regex.Split(content, "[\r\n]+"); ;
+            if (Mutips.Length > 1) 
+            {
+                if (!BatchRole)
+                {
+                    DodoBot<TP>.SendChannelMessage($"你不是VIP不能批量！", eventBody.ChannelId);
+                    return;
+                }
+                int i = 0;
+                var userpath = DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder + @"\" + eventBody.DodoSourceId;
+                Directory.CreateDirectory(DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder+@"\"+ eventBody.DodoSourceId);
+                foreach (var p in Mutips)
+                {
+                    i++;
+                    var pss = ShowdownTranslator<TP>.Chinese2Showdown(p);
+                    LogUtil.LogInfo($"收到命令\n{pss}\n", LogIdentity);
+                    DodoHelper<TP>.GetPkm(pss, eventBody.DodoSourceId, out var msg, out var pk, out var id);
+                    File.WriteAllBytes(userpath +@"\"+$"第{i}只.pk9", pk.Data);
+                    LogUtil.LogInfo(msg, LogIdentity);
+                }
+                DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, eventBody.DodoSourceId,true);
+                content = null;
+            }
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);
             if (!string.IsNullOrWhiteSpace(ps))
             {
                 LogUtil.LogInfo($"收到命令\n{ps}", LogIdentity);
-                if (RoleResult)
+                if (VipRole)
                 {
                     DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, false, Count );
+                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, false, Count);
                     Count++;
                 }
                 else
                 {
-                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId,eventBody.IslandSourceId);
+                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId);
                 }
-                
-               
             }
             else if (content.Contains("取消"))
             {

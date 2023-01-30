@@ -24,6 +24,7 @@ namespace SysBot.Pokemon
         [Category(Files), Description("截图根目录")]
         public string ScreenshotFolder{ get; set; } = string.Empty;
 
+       
         public void CreateDefaults(string path)
         {
             var dump = Path.Combine(path, "dump");

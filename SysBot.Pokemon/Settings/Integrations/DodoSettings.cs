@@ -29,5 +29,11 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("Dodo上传文件授权链接\nBot+空格+识别码+.+Token\n实例：Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM")]
         public string DodoUploadFileUrl { get; set; } = string.Empty;
+
+        [Category(Startup), Description("可以插队的身份组")]
+        public string VipRole { get; set; } = "1111111";
+
+        [Category(Startup), Description("可以批量的身分组")]
+        public string BatchRole { get; set; } = "1111111";
     }
 }
