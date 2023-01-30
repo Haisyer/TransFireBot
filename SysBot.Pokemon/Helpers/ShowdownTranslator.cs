@@ -1,5 +1,4 @@
 ﻿using PKHeX.Core;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SysBot.Pokemon
