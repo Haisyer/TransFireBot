@@ -26,7 +26,7 @@ namespace SysBot.Pokemon.QQ
             Code = code;
             Username = username;
             GroupId = groupId;
-            LogUtil.LogText($"Created trade details for {Username} - {Code}");
+            LogUtil.LogText($"创建交易细节: {Username} - {Code}");
         }
 
         public Action<PokeRoutineExecutor<T>>? OnFinish { private get; set; }
@@ -44,7 +44,7 @@ namespace SysBot.Pokemon.QQ
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);
-            var line = $"@{info.Trainer.TrainerName}: Trade canceled, {msg}";
+            var line = $"@{info.Trainer.TrainerName}: 交换取消, {msg}";
             LogUtil.LogText(line);
             SendMessage(new AtMessage($"{info.Trainer.ID}").Append(" 取消"));
         }
@@ -56,8 +56,8 @@ namespace SysBot.Pokemon.QQ
             var tradedToUser = Data.Species;
             //日志
             var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0
-                ? $"Trade finished. Enjoy your {(Species)tradedToUser}! Receive:{result.Nickname} Gender:{gender} TID:{result.DisplayTID.ToString().PadLeft(6, '0')} SID:{result.DisplaySID.ToString().PadLeft(4, '0')}"
-                : "Trade finished!");
+                ? $"交换完成,享用你的:{(Species)tradedToUser}!收到:{result.Nickname} 性别:{gender} TID:{result.DisplayTID.ToString().PadLeft(6, '0')} SID:{result.DisplaySID.ToString().PadLeft(4, '0')}"
+                : "交换完成!");
             LogUtil.LogText(message);
             //返回交换完成的提示并显示收到的宝可梦信息
             var message1 = $" 完成";
@@ -73,8 +73,8 @@ namespace SysBot.Pokemon.QQ
         {
             var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
             var msg =
-                $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready.";
-            msg += $" Your trade code is: {info.Code:0000 0000}";
+                $"@{info.Trainer.TrainerName} (ID: {info.ID}): 正在准备交换给你的:{receive}. 请准备.";
+            msg += $" 你的交换密码是: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
             SendMessage(MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(info.Trainer.ID.ToString())
                 ? new AtMessage($"{info.Trainer.ID}").Append($" 准备交换\n连接密码是你私信我的\n我的名字:{routine.InGameName}")
@@ -86,8 +86,8 @@ namespace SysBot.Pokemon.QQ
         {
             var name = Info.TrainerName;
             var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
-            var message = $"I'm waiting for you{trainer}! My IGN is {routine.InGameName}.";
-            message += $" Your trade code is: {info.Code:0000 0000}";
+            var message = $"我正在等:{trainer}! 我的名字:{routine.InGameName}.";
+            message += $"你的交换密码: {info.Code:0000 0000}";
             LogUtil.LogText(message);
             SendMessage(new AtMessage($"{info.Trainer.ID}").Append($" 寻找中"));
         }
@@ -103,7 +103,7 @@ namespace SysBot.Pokemon.QQ
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
-            var msg = $"Details for {result.FileName}: " + message;
+            var msg = $"它的详情: {result.FileName}: " + message;
             LogUtil.LogText(msg);
             SendMessage(msg);
         }

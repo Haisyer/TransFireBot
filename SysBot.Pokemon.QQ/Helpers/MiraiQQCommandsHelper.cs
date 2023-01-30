@@ -11,14 +11,14 @@ namespace SysBot.Pokemon.QQ
         {
             if (!MiraiQQBot<T>.Info.GetCanQueue())
             {
-                msg = "Sorry, I am not currently accepting queue requests!";
+                msg = "对不起，我目前不再接受队列请求!";
                 return false;
             }
 
             var set = ShowdownUtil.ConvertToShowdown(setstring);
             if (set == null)
             {
-                msg = $"Skipping trade, @{username}: Empty nickname provided for the species.";
+                msg = $"取消派送, @{username}:宝可梦昵称为空.";
                 return false;
             }
 
@@ -26,14 +26,14 @@ namespace SysBot.Pokemon.QQ
             if (template.Species < 1)
             {
                 msg =
-                    $"Skipping trade, @{username}: Please read what you are supposed to type as the command argument.";
+                    $"取消派送, @{username}: 请使用正确的Showdown Set代码.";
                 return false;
             }
 
             if (set.InvalidLines.Count != 0)
             {
                 msg =
-                    $"Skipping trade, @{username}: Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
+                    $"取消派送, @{username}: 非法的Showdown Set代码:\n{string.Join("\n", set.InvalidLines)}";
                 return false;
             }
 
@@ -41,10 +41,12 @@ namespace SysBot.Pokemon.QQ
             {
                 var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
                 var pkm = sav.GetLegal(template, out var result);
-
+                var nickname = pkm.Nickname.ToLower();
+                if (nickname == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
+                    TradeExtensions<T>.EggTrade(pkm, template);
                 if (!pkm.CanBeTraded())
                 {
-                    msg = $"Skipping trade, @{username}: Provided Pokemon content is blocked from trading!";
+                    msg = $"取消派送, @{username}:官方禁止该宝可梦交易!";
                     return false;
                 }
 
@@ -57,20 +59,20 @@ namespace SysBot.Pokemon.QQ
                         MiraiQQBot<T>.QueuePool.RemoveAll(z => z.QQ == mUserId); // remove old requests if any
                         MiraiQQBot<T>.QueuePool.Add(tq);
                         msg =
-                            $"@{username} - added to the waiting list. Your request from the waiting list will be removed if you are too slow!";
+                            $"@{username} - 已加入等待队列. 如果你选宝可梦的速度太慢，你的派送请求将被取消!";
                         return true;
                     }
                 }
 
-                var reason = result == "Timeout" ? "Set took too long to generate." : "Unable to legalize the Pokemon.";
-                msg = $"Skipping trade, @{username}: {reason}";
+                var reason = result == "Timeout" ? "宝可梦创造超时." : "宝可梦不合法，或者本机器人的数据库未更新.";
+                msg = $"取消派送, @{username}: {reason}";
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
                 LogUtil.LogSafe(ex, nameof(MiraiQQCommandsHelper<T>));
-                msg = $"Skipping trade, @{username}: An unexpected problem occurred.";
+                msg = $"取消派送, @{username}:发生了一个预期之外的错误.";
             }
 
             return false;
@@ -80,7 +82,7 @@ namespace SysBot.Pokemon.QQ
         {
             if (!MiraiQQBot<T>.Info.GetCanQueue())
             {
-                msg = "Sorry, I am not currently accepting queue requests!";
+                msg = "对不起，我目前不再接受队列请求!";
                 return false;
             }
 
@@ -88,7 +90,7 @@ namespace SysBot.Pokemon.QQ
             {
                 if (!pkm.CanBeTraded())
                 {
-                    msg = $"Skipping trade, @{username}: Provided Pokemon content is blocked from trading!";
+                    msg = $"取消派送, @{username}: 官方禁止该宝可梦交易!";
                     return false;
                 }
 
@@ -101,20 +103,20 @@ namespace SysBot.Pokemon.QQ
                         MiraiQQBot<T>.QueuePool.RemoveAll(z => z.QQ == mUserId); // remove old requests if any
                         MiraiQQBot<T>.QueuePool.Add(tq);
                         msg =
-                            $"@{username} - added to the waiting list. Your request from the waiting list will be removed if you are too slow!";
+                            $"@{username} - 已加入等待队列. 如果你选宝可梦的速度太慢，你的派送请求将被取消!";
                         return true;
                     }
                 }
 
-                var reason = "Unable to legalize the Pokemon.";
-                msg = $"Skipping trade, @{username}: {reason}";
+                var reason = "宝可梦不合法，或者本机器人的数据库未更新.";
+                msg = $"取消派送, @{username}: {reason}";
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
                 LogUtil.LogSafe(ex, nameof(MiraiQQCommandsHelper<T>));
-                msg = $"Skipping trade, @{username}: An unexpected problem occurred.";
+                msg = $"取消派送, @{username}: 发生了一个预期之外的错误.";
             }
 
             return false;
