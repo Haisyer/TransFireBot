@@ -392,10 +392,15 @@ namespace SysBot.Pokemon
                             ls.Add(pk2);
                     }
                 }
-                if (poke.DeletFile)
+                if (Directory.Exists(directory)&&poke.DeletFile)
                 {
-                    File.Delete(directory);
+                    foreach (var item in Directory.GetFiles(directory))
+                    {
+                        File.Delete(item);
+                    }
+                    Directory.Delete(directory);
                 }
+
             }
             else
             {

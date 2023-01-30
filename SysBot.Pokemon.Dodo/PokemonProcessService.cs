@@ -200,7 +200,7 @@ namespace SysBot.Pokemon.Dodo
               }*/
             #endregion
          //   LogUtil.LogInfo(content, LogIdentity);
-            var Mutips = Regex.Split(content, "[\r\n]+"); ;
+            var Mutips = Regex.Split(content, "[+]+"); ;
             if (Mutips.Length > 1) 
             {
                 if (!BatchRole)
@@ -216,9 +216,15 @@ namespace SysBot.Pokemon.Dodo
                     i++;
                     var pss = ShowdownTranslator<TP>.Chinese2Showdown(p);
                     LogUtil.LogInfo($"收到命令\n{pss}\n", LogIdentity);
-                    DodoHelper<TP>.GetPkm(pss, eventBody.DodoSourceId, out var msg, out var pk, out var id);
-                    File.WriteAllBytes(userpath +@"\"+$"第{i}只.pk9", pk.Data);
-                    LogUtil.LogInfo(msg, LogIdentity);
+                    if (DodoHelper<TP>.GetPkm(pss, eventBody.DodoSourceId, out var msg, out var pk, out var id))
+                    {
+                        File.WriteAllBytes(userpath + @"\" + $"第{i}只.pk9", pk.Data);
+                        LogUtil.LogInfo(msg, LogIdentity);
+                    }
+                    else
+                    {
+                        DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"第{i}只非法", eventBody.ChannelId);
+                    }
                 }
                 DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, eventBody.DodoSourceId,true);
                 content = null;
