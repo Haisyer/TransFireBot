@@ -1116,13 +1116,13 @@ namespace SysBot.Pokemon
             cln.OT_Name = tradePartner.OT;
             if (toSend.IsEgg == false)
             {
-                if (toSend.Species == 1007)
+                if (toSend.Species == (ushort)Species.Koraidon)
                 {
                     cln.Version = 50;
                     Log($"故勒顿，强制修改版本为朱");
 
                 }
-                else if (toSend.Species == 1008)
+                else if (toSend.Species == (ushort)Species.Miraidon)
                 {
                     cln.Version = 51;
                     Log($"密勒顿，强制修改版本为紫");
