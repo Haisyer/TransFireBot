@@ -50,14 +50,23 @@ namespace SysBot.Pokemon.QQ
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
-        {
+        {        
             OnFinish?.Invoke(routine);
+            var gender = result.OT_Gender == 0 ? "男" : "女";
             var tradedToUser = Data.Species;
+            //日志
             var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0
-                ? $"Trade finished. Enjoy your {(Species) tradedToUser}!"
+                ? $"Trade finished. Enjoy your {(Species)tradedToUser}! Receive:{result.Nickname} Gender:{gender} TID:{result.DisplayTID.ToString().PadLeft(6, '0')} SID:{result.DisplaySID.ToString().PadLeft(4, '0')}"
                 : "Trade finished!");
             LogUtil.LogText(message);
-            SendMessage(new AtMessage($"{info.Trainer.ID}").Append(" 完成"));
+            //返回交换完成的提示并显示收到的宝可梦信息
+            var message1 = $" 完成";
+            var message2 = $"\n收到了：{result.Nickname}\n" +    
+                           $"原训练家：{result.OT_Name}\n" +   
+                           $"性别：{gender}\n" +                
+                           $"Trainer ID：{result.DisplayTID.ToString().PadLeft(6, '0')}\n" + 
+                           $" Secret ID：{result.DisplaySID.ToString().PadLeft(4, '0')}";                                                                                         
+            SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1 + message2)); //发送完成提示以及收到宝可梦信息
         }
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
