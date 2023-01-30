@@ -389,39 +389,39 @@ namespace SysBot.Pokemon
             }
             else return (T)mgPkm;
         }
+        #region //目前无用
+        /* public static string PokeImg(PKM pkm, bool canGmax, bool fullSize)
+         {
+             bool md = false;
+             bool fd = false;
+             string[] baseLink;
+             if (fullSize)
+                 baseLink = "https://raw.githubusercontent.com/Koi-3088/HomeImages/master/512x512/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
+             else baseLink = "https://raw.githubusercontent.com/Koi-3088/HomeImages/master/128x128/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
 
-        public static string PokeImg(PKM pkm, bool canGmax, bool fullSize)
-        {
-            bool md = false;
-            bool fd = false;
-            string[] baseLink;
-            if (fullSize)
-                baseLink = "https://raw.githubusercontent.com/Koi-3088/HomeImages/master/512x512/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
-            else baseLink = "https://raw.githubusercontent.com/Koi-3088/HomeImages/master/128x128/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
+             if (Enum.IsDefined(typeof(GenderDependent), pkm.Species) && !canGmax && pkm.Form is 0)
+             {
+                 if (pkm.Gender is 0 && pkm.Species is not (ushort)Species.Torchic)
+                     md = true;
+                 else fd = true;
+             }
 
-            if (Enum.IsDefined(typeof(GenderDependent), pkm.Species) && !canGmax && pkm.Form is 0)
-            {
-                if (pkm.Gender is 0 && pkm.Species is not (ushort)Species.Torchic)
-                    md = true;
-                else fd = true;
-            }
+             int form = pkm.Species switch
+             {
+                 (ushort)Species.Sinistea or (ushort)Species.Polteageist or (ushort)Species.Rockruff or (ushort)Species.Mothim => 0,
+                 (ushort)Species.Alcremie when pkm.IsShiny || canGmax => 0,
+                 _ => pkm.Form,
+             };
 
-            int form = pkm.Species switch
-            {
-                (ushort)Species.Sinistea or (ushort)Species.Polteageist or (ushort)Species.Rockruff or (ushort)Species.Mothim => 0,
-                (ushort)Species.Alcremie when pkm.IsShiny || canGmax => 0,
-                _ => pkm.Form,
-            };
-
-            baseLink[2] = pkm.Species < 10 ? $"000{pkm.Species}" : pkm.Species < 100 && pkm.Species > 9 ? $"00{pkm.Species}" : $"0{pkm.Species}";
-            baseLink[3] = pkm.Form < 10 ? $"00{form}" : $"0{form}";
-            baseLink[4] = pkm.PersonalInfo.OnlyFemale ? "fo" : pkm.PersonalInfo.OnlyMale ? "mo" : pkm.PersonalInfo.Genderless ? "uk" : fd ? "fd" : md ? "md" : "mf";
-            baseLink[5] = canGmax ? "g" : "n";
-            baseLink[6] = "0000000" + (pkm.Species is (ushort)Species.Alcremie && !canGmax ? pkm.Data[0xE4] : 0);
-            baseLink[8] = pkm.IsShiny ? "r.png" : "n.png";
-            return string.Join("_", baseLink);
-        }
-
+             baseLink[2] = pkm.Species < 10 ? $"000{pkm.Species}" : pkm.Species < 100 && pkm.Species > 9 ? $"00{pkm.Species}" : $"0{pkm.Species}";
+             baseLink[3] = pkm.Form < 10 ? $"00{form}" : $"0{form}";
+             baseLink[4] = pkm.PersonalInfo.OnlyFemale ? "fo" : pkm.PersonalInfo.OnlyMale ? "mo" : pkm.PersonalInfo.Genderless ? "uk" : fd ? "fd" : md ? "md" : "mf";
+             baseLink[5] = canGmax ? "g" : "n";
+             baseLink[6] = "0000000" + (pkm.Species is (ushort)Species.Alcremie && !canGmax ? pkm.Data[0xE4] : 0);
+             baseLink[8] = pkm.IsShiny ? "r.png" : "n.png";
+             return string.Join("_", baseLink);
+         }*/
+        #endregion
         public static string FormOutput(ushort species, byte form, out string[] formString)
         {
             var strings = GameInfo.GetStrings("en");

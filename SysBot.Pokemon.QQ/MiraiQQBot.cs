@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Mirai.Net.Utils.Scaffolds;
 using System.Text.RegularExpressions;
 using Mirai.Net.Data.Events.Concretes.Group;
+using System.Net.Http;
 
 namespace SysBot.Pokemon.QQ
 {
@@ -219,7 +220,9 @@ namespace SysBot.Pokemon.QQ
                 var f = await FileManager.GetFileAsync(groupId, fileMessage.FileId, true);
 
                 string url = f.DownloadInfo.Url;
-                byte[] data = new System.Net.WebClient().DownloadData(url);
+                using var client = new HttpClient();
+                var downloadBytes = client.GetByteArrayAsync(url).Result;
+                var data = downloadBytes;
                 switch (operationType)
                 {
                     case "pk8" or "pb8" or "pk9" when data.Length != 344:

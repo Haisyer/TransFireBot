@@ -365,7 +365,7 @@ namespace SysBot.Pokemon
             var tradeOffered = await ReadUntilChanged(TradePartnerOfferedOffset, lastOffered, 10_000, 0_500, false, true, token).ConfigureAwait(false);
             if (!tradeOffered)
                 return PokeTradeResult.TrainerTooSlow;
-            poke.SendNotification(this, $"Found Trading Partner: {tradePartner.TrainerName}. TID: {tradePartner.TID7} SID: {tradePartner.SID7} Waiting for a Pokémon...");
+            poke.SendNotification(this, $"Found Trading Partner:{tradePartner.TrainerName}. TID: {tradePartner.TID7} SID: {tradePartner.SID7} Waiting for a Pokémon...");//勿动
             if (poke.Type == PokeTradeType.Dump)
             {
                 var result = await ProcessDumpTradeAsync(poke, token).ConfigureAwait(false);
@@ -1034,7 +1034,7 @@ namespace SysBot.Pokemon
             var previous = isDistribution
                 ? list.TryRegister(TrainerNID, TrainerName)
                 : list.TryRegister(TrainerNID, TrainerName, poke.Trainer.ID);
-            if (previous != null && previous.NetworkID != TrainerNID && !isDistribution)
+            if (previous != null && previous.NetworkID == TrainerNID && previous.RemoteID != user.ID && !isDistribution)
             {
                 var delta = DateTime.Now - previous.Time;
                 if (delta > TimeSpan.FromMinutes(AbuseSettings.TradeAbuseExpiration) && AbuseSettings.TradeAbuseAction != TradeAbuseAction.Ignore)

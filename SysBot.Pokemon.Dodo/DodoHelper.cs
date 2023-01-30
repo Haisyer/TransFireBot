@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using PKHeX.Core;
 using SysBot.Base;
 using System.IO;
-using Org.BouncyCastle.Cms;
 
 namespace SysBot.Pokemon.Dodo
 {

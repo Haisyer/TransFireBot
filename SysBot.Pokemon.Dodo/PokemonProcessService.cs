@@ -25,20 +25,15 @@ namespace SysBot.Pokemon.Dodo
         private static readonly string LogIdentity = "DodoBot";
         private static readonly string Welcome = "宝可梦机器人为您服务\n中文指令请看在线文件:https://docs.qq.com/doc/DVWdQdXJPWllabm5t?&u=1c5a2618155548239a9563e9f22a57c0\n或者使用PS代码\n或者上传pk文件\n取消排队请输入:取消\n当前位置请输入:位置";
         private readonly string _channelId;
-        private readonly string _botDodoId;
+        private string _botDodoSourceId;
         private uint Count = 0;
 
         public PokemonProcessService(OpenApiService openApiService, string channelId)
         {
             _openApiService = openApiService;
-            var output = _openApiService.GetBotInfo(new GetBotInfoInput());
-            if (output != null)
-            {
-                _botDodoId = output.DodoId;
-            }
-
             _channelId = channelId;
         }
+
 
         public override void Connected(string message)
         {
@@ -61,22 +56,16 @@ namespace SysBot.Pokemon.Dodo
         }
 
         public override void PersonalMessageEvent<T>(
-            EventSubjectOutput<EventSubjectDataBusiness<EventBodyPersonalMessage<T>>> input)
+           EventSubjectOutput<EventSubjectDataBusiness<EventBodyPersonalMessage<T>>> input)
         {
             var eventBody = input.Data.EventBody;
 
             if (eventBody.MessageBody is MessageBodyText messageBodyText)
             {
-                _openApiService.SetPersonalMessageSend(new SetPersonalMessageSendInput<MessageBodyText>
-                {
-                    DoDoId = eventBody.DodoId,
-                    MessageBody = new MessageBodyText
-                    {
-                        Content = "你好"
-                    }
-                });
+                DodoBot<TP>.SendPersonalMessage(eventBody.DodoSourceId, $"你好", eventBody.IslandSourceId);
             }
         }
+
 
         public override void ChannelMessageEvent<T>(
             EventSubjectOutput<EventSubjectDataBusiness<EventBodyChannelMessage<T>>> input)
@@ -89,8 +78,8 @@ namespace SysBot.Pokemon.Dodo
             }
             var Roleinput = new GetMemberRoleListInput()
             {
-                DodoId = eventBody.DodoId,
-                IslandId = eventBody.IslandId,
+                DodoSourceId = eventBody.DodoSourceId,
+                IslandSourceId = eventBody.IslandSourceId,
             };
             var Roleoutput = DodoBot<TP>.OpenApiService.GetMemberRoleList(Roleinput);
             bool RoleResult = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Queues.VipQueue);
@@ -98,7 +87,7 @@ namespace SysBot.Pokemon.Dodo
             {
                 if (!DodoBot<TP>.Info.Hub.Config.Legality.AllowUseFile)
                 {
-                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "本频道不允许上传文件", eventBody.ChannelId);
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.ChannelId), "本频道不允许上传文件", eventBody.ChannelId);
                     return;
                 }
                 else
@@ -108,18 +97,19 @@ namespace SysBot.Pokemon.Dodo
                         DodoBot<TP>.SendChannelMessage("非法文件", eventBody.ChannelId);
                         return;
                     }
-                    var p = GetPKM(new WebClient().DownloadData(messageBodyFile.Url));
-                   
+                    using var client = new HttpClient();
+                    var downloadBytes = client.GetByteArrayAsync(messageBodyFile.Url).Result;
+                    var p = GetPKM(downloadBytes);
                     if (p is TP pkm)
                     {
                         if (RoleResult)
                         {
-                            DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count);
+                            DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
+                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count);
                             Count++;
                         }
                         else
-                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId);
                     }
 
                     return;
@@ -130,8 +120,12 @@ namespace SysBot.Pokemon.Dodo
 
             var content = messageBodyText.Content;
 
-            LogUtil.LogInfo($"{eventBody.Personal.NickName}({eventBody.DodoId}):{content}", LogIdentity);
-            if (!content.Contains($"<@!{_botDodoId}>")) return;
+            LogUtil.LogInfo($"{eventBody.Personal.NickName}({eventBody.DodoSourceId}):{content}", LogIdentity);
+            if (_botDodoSourceId == null)
+            {
+                _botDodoSourceId = _openApiService.GetBotInfo(new GetBotInfoInput()).DodoSourceId;
+            }
+            if (!content.Contains($"<@!{_botDodoSourceId}>")) return;
 
             content = content.Substring(content.IndexOf('>') + 1);
             if (content.Trim().StartsWith("trade"))
@@ -139,20 +133,20 @@ namespace SysBot.Pokemon.Dodo
                 content = content.Replace("trade", "");
                 if (RoleResult)
                 {
-                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                    DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false,Count);
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
+                    DodoHelper<TP>.StartTrade(content, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, false,Count);
                     Count++;
                 }
                 else
                 {
-                    DodoHelper<TP>.StartTrade(content, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                    DodoHelper<TP>.StartTrade(content, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId);
                     
                 }
                 return;
             } 
             else if (content.Trim().StartsWith("检测"))
             {
-                DodoHelper<TP>.StartDump(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                DodoHelper<TP>.StartDump(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId);
                 return;
             }
             else if (content.Trim().StartsWith("批量"))
@@ -167,7 +161,7 @@ namespace SysBot.Pokemon.Dodo
                         if (fileEntries.Length > 0)
                         {
                             DodoBot<TP>.SendChannelMessage($"找到{r[1]}", eventBody.ChannelId);
-                            DodoHelper<TP>.StartMutiTrade(eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, r[1]);
+                            DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, r[1]);
                         }
                         else
                         {
@@ -204,27 +198,27 @@ namespace SysBot.Pokemon.Dodo
                 LogUtil.LogInfo($"收到命令\n{ps}", LogIdentity);
                 if (RoleResult)
                 {
-                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count );
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
+                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, false, Count );
                     Count++;
                 }
                 else
                 {
-                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoId, eventBody.Personal.NickName, eventBody.ChannelId);
+                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId);
                 }
                 
                
             }
             else if (content.Contains("取消"))
             {
-                var result = DodoBot<TP>.Info.ClearTrade(ulong.Parse(eventBody.DodoId));
-                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId), $" {GetClearTradeMessage(result)}",
+                var result = DodoBot<TP>.Info.ClearTrade(ulong.Parse(eventBody.DodoSourceId));
+                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $" {GetClearTradeMessage(result)}",
                     eventBody.ChannelId);
             }
             else if (content.Contains("位置"))
             {
-                var result = DodoBot<TP>.Info.CheckPosition(ulong.Parse(eventBody.DodoId));
-                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoId),
+                var result = DodoBot<TP>.Info.CheckPosition(ulong.Parse(eventBody.DodoSourceId));
+                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId),
                     $" {GetQueueCheckResultMessage(result)}",
                     eventBody.ChannelId);
             }

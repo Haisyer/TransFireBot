@@ -39,7 +39,14 @@ namespace SysBot.Pokemon.Dodo
                 string tid = regex.Match(message).Groups[1].ToString();
                 regex = new Regex("SID: (\\d+)");
                 string sid = regex.Match(message).Groups[1].ToString();
-                DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"找到你了，你本人的SID7:{sid},TID7:{tid}");
+                var m1 = message.Split(':');
+                if(m1.Length>1)
+                {
+                    var m2 = m1[1].Split('.');
+                    if(m2!=null)
+                    DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"找到你了{m2[0]}，你本人的表ID:{tid},里ID:{sid}");
+                }
+             
             }
             LogUtil.LogText(message);
         }

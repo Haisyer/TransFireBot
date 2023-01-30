@@ -1,9 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using DoDo.Open.Sdk.Models;
-using DoDo.Open.Sdk.Models.Channels;
+using System.Linq;
 using DoDo.Open.Sdk.Models.Messages;
 using DoDo.Open.Sdk.Models.Personals;
+using DoDo.Open.Sdk.Models.ChannelMessages;
+using DoDo.Open.Sdk.Models.Islands;
 using DoDo.Open.Sdk.Services;
 using PKHeX.Core;
 
@@ -16,7 +18,7 @@ namespace SysBot.Pokemon.Dodo
 
         public static OpenApiService OpenApiService;
 
-        private DodoSettings Settings;
+        private static DodoSettings Settings;
 
         public DodoBot(DodoSettings settings, PokeTradeHub<T> hub)
         {
@@ -121,12 +123,17 @@ namespace SysBot.Pokemon.Dodo
             });
         }
 
-        public static void SendPersonalMessage(string dodoId, string message)
+        public static void SendPersonalMessage(string dodoId, string message, string islandSourceId = "")
         {
             if (string.IsNullOrEmpty(message)) return;
+            if (string.IsNullOrWhiteSpace(islandSourceId))
+            {
+                islandSourceId = OpenApiService.GetIslandList(new GetIslandListInput()).FirstOrDefault().IslandSourceId ?? "";
+            }
             OpenApiService.SetPersonalMessageSend(new SetPersonalMessageSendInput<MessageBodyText>
             {
-                DoDoId = dodoId,
+                IslandSourceId = islandSourceId,
+                DodoSourceId = dodoId,
                 MessageBody = new MessageBodyText
                 {
                     Content = message
@@ -148,12 +155,17 @@ namespace SysBot.Pokemon.Dodo
                 }
             });
         }
-        public static void SendPersonalMessagePicture(string url, string dodoId)
+        public static void SendPersonalMessagePicture(string url, string dodoId, string islandSourceId = "")
         {
             if (string.IsNullOrEmpty(url)) return;
+            if (string.IsNullOrWhiteSpace(islandSourceId))
+            {
+                islandSourceId = OpenApiService.GetIslandList(new GetIslandListInput()).FirstOrDefault().IslandSourceId ?? "";
+            }
             OpenApiService.SetPersonalMessageSend(new SetPersonalMessageSendInput<MessageBodyPicture>
             {
-                DoDoId=dodoId,
+                IslandSourceId = islandSourceId,
+                DodoSourceId = dodoId,
                 MessageBody = new MessageBodyPicture
                 {
                     Url = url,
