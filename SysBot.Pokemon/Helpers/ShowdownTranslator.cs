@@ -13,6 +13,7 @@ namespace SysBot.Pokemon
         {
             string result = "";
             var zhclone = zh;
+
             // 添加宝可梦
             int candidateSpecieNo = 0;
             int candidateSpecieStringLength = 0;
@@ -25,19 +26,21 @@ namespace SysBot.Pokemon
                 }
             }
 
-            //识别蛋
-            if (zh.Contains("的蛋"))
+            if (candidateSpecieNo > 0)
             {
-                result += "Egg ";
-                if (candidateSpecieNo > 0)
+                zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
+
+                // 处理蛋宝可梦
+                if (zh.Contains("的蛋"))
                 {
-                    if (candidateSpecieNo == 29) result = "(Nidoran-F)";
-                    else if (candidateSpecieNo == 32) result = "(Nidoran-M)";
-                    // 特殊性别差异
-                    // 29-尼多兰F,32-尼多朗M,678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
-                    else if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母"))
-                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
-                    // 识别形态
+                    result += "Egg ";
+                    zh = zh.Replace("的蛋", "");
+
+                    // Showdown 文本差异，29-尼多兰F，32-尼多朗M，876-爱管侍，
+                    if (candidateSpecieNo is (ushort)Species.NidoranF) result += "(Nidoran-F)";
+                    else if (candidateSpecieNo is (ushort)Species.NidoranM) result += "(Nidoran-M)";
+                    else if ((candidateSpecieNo is (ushort)Species.Indeedee) && zh.Contains('母')) result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
+                    // 识别地区形态
                     else if (zh.Contains("形态"))
                     {
                         foreach (var s in formDict)
@@ -49,39 +52,35 @@ namespace SysBot.Pokemon
                             break;
                         }
                     }
-                    else
+                    else result += $"({GameStringsEn.Species[candidateSpecieNo]})";
+                }
+                // 处理非蛋宝可梦
+                else
+                {
+                    // Showdown 文本差异，29-尼多兰F，32-尼多朗M，678-超能妙喵，876-爱管侍，902-幽尾玄鱼, 916-飘香豚
+                    if (candidateSpecieNo is (ushort)Species.NidoranF) result = "Nidoran-F";
+                    else if (candidateSpecieNo is (ushort)Species.NidoranM) result = "Nidoran-M";
+                    else if ((candidateSpecieNo is (ushort)Species.Meowstic or (ushort)Species.Indeedee or (ushort)Species.Basculegion or (ushort)Species.Oinkologne) && zh.Contains("母"))
+                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
+                    // 识别地区形态
+                    else if (zh.Contains("形态"))
                     {
-                        result += $"({GameStringsEn.Species[candidateSpecieNo]})";
+                        foreach (var s in formDict)
+                        {
+                            var searchKey = s.Key.EndsWith("形态") ? s.Key : s.Key + "形态";
+                            if (!zh.Contains(searchKey)) continue;
+                            result = $"{GameStringsEn.Species[candidateSpecieNo]}-{s.Value}";
+                            zh = zh.Replace(searchKey, "");
+                            break;
+                        }
                     }
+                    else result = $"{GameStringsEn.Species[candidateSpecieNo]}";
                     zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
                 }
             }
             else
             {
-                if (candidateSpecieNo > 0)
-                {
-                    if (candidateSpecieNo == 29) result = "Nidoran-F";
-                    else if (candidateSpecieNo == 32) result = "Nidoran-M";
-                    else result += GameStringsEn.Species[candidateSpecieNo];
-                    zh = zh.Replace(GameStringsZh.Species[candidateSpecieNo], "");
-                    // 特殊差异
-                    // 678-超能妙喵F,876-爱管侍F,902-幽尾玄鱼F, 916-飘香豚
-                    if ((candidateSpecieNo is 678 or 876 or 902 or 916) && zh.Contains("母")) result += "-F";
-                }
-                else
-                {
-                    return result;
-                }
-
-                // 识别形态
-                foreach (var s in formDict)
-                {
-                    var searchKey = s.Key.EndsWith("形态") ? s.Key : s.Key + "形态";
-                    if (!zh.Contains(searchKey)) continue;
-                    result += $"-{s.Value}";
-                    zh = zh.Replace(searchKey, "");
-                    break;
-                }
+                return result;
             }
 
             // 添加性别
