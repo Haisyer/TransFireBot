@@ -233,6 +233,7 @@ namespace SysBot.Pokemon.Dodo
                     return;
                 }
                 int i = 0;
+                int j = 0;
                 var subpath = eventBody.DodoSourceId;
                 var userpath = DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder + @"\" + subpath;
                 Directory.CreateDirectory(DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder+@"\"+ subpath);
@@ -249,6 +250,7 @@ namespace SysBot.Pokemon.Dodo
                     else
                     {
                         DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"第{i}只非法", eventBody.ChannelId);
+                        j++;
                     }
                     if(i> DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber)
                     {
@@ -256,7 +258,12 @@ namespace SysBot.Pokemon.Dodo
                         return;
                     }
                 }
-                DodoHelper<TP>.StartMutiTrade(parameter, subpath, true);
+                if(i==j)
+                {
+                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"全非法,换个屁", eventBody.ChannelId);
+                    return;
+                }
+                DodoHelper<TP>.StartTrade(parameter, subpath, true);
                 content = null;
             }
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);

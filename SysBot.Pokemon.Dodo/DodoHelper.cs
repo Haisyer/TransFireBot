@@ -39,6 +39,14 @@ namespace SysBot.Pokemon.Dodo
               PokeRoutineType.LinkTrade, out string message, false,p.islandid, "", vip, priority);
             DodoBot<T>.SendChannelMessage(message, p.channelId);
         }
+        public static void StartTrade( DodoParameter p, string path, bool DeletFile)
+        {
+          
+            var code = DodoBot<T>.Info.GetRandomTradeCode();
+            var __ = AddToTradeQueue(new T(), code, ulong.Parse(p.dodoId), p.nickName, p.channelId,
+              PokeRoutineType.LinkTrade, out string message, false, p.islandid, path, false, uint.MaxValue, DeletFile);
+            DodoBot<T>.SendChannelMessage(message, p.channelId);
+        }
         public static void StartMutiTrade(DodoParameter p, string path,bool DeletFile)
         {
             var code = DodoBot<T>.Info.GetRandomTradeCode();

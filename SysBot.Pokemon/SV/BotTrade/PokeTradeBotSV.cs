@@ -374,7 +374,7 @@ namespace SysBot.Pokemon
             }
             int waittime = 25_000;
             List<PK9> ls = new List<PK9>();
-            if (poke.Type == PokeTradeType.MutiTrade)
+            if (poke.Type == PokeTradeType.MutiTrade|| poke.DeletFile)
             {
                 waittime = 375_000;
                 string directory = Path.Combine(TradeF, poke.Path);
