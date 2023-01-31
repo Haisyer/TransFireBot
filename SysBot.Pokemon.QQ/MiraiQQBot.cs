@@ -126,9 +126,19 @@ namespace SysBot.Pokemon.QQ
 
         private async Task HandleAliveMessage(GroupMessageReceiver receiver)
         {
-            if (Settings.AliveMsg == receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text)
+            if (Settings.AliveMsgOne == receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text)
             {
-                await MessageManager.SendGroupMessageAsync(receiver.Sender.Group.Id, Settings.AliveMsg);
+                await MessageManager.SendGroupMessageAsync(receiver.Sender.Group.Id, Settings.ReplyMsgOne);
+                return;
+            }
+            if (Settings.AliveMsgTwo == receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text)
+            {
+                await MessageManager.SendGroupMessageAsync(receiver.Sender.Group.Id, Settings.ReplyMsgTwo);
+                return;
+            }
+            if (Settings.AliveMsgThree == receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text)
+            {
+                await MessageManager.SendGroupMessageAsync(receiver.Sender.Group.Id, Settings.ReplyMsgThree);
                 return;
             }
         }
