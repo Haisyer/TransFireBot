@@ -11,47 +11,47 @@ namespace SysBot.Pokemon.Dodo
 {
     public class DodoHelper<T> where T : PKM, new()
     {
-        public static void StartTrade(string ps, string dodoId, string nickName, string channelId,string islandid,bool vip=false, uint priority = uint.MaxValue)
+        public static void StartTrade(string ps, DodoParameter p,bool vip=false, uint priority = uint.MaxValue)
         {
-            var _ = CheckAndGetPkm(ps, dodoId, out var msg, out var pkm,out var id);
+            var _ = CheckAndGetPkm(ps, p.dodoId, out var msg, out var pkm,out var id);
             if (!_)
             {
-                DodoBot<T>.SendChannelMessage(msg, channelId);
+                DodoBot<T>.SendChannelMessage(msg, p.channelId);
                 return;
             }
 
             var code = DodoBot<T>.Info.GetRandomTradeCode();
-            var __ = AddToTradeQueue(pkm, code, ulong.Parse(dodoId), nickName, channelId,
-              PokeRoutineType.LinkTrade, out string message,id, islandid, "", vip, priority);
-            DodoBot<T>.SendChannelMessage(message, channelId);
+            var __ = AddToTradeQueue(pkm, code, ulong.Parse(p.dodoId), p.nickName, p.channelId,
+              PokeRoutineType.LinkTrade, out string message,id, p.islandid, "", vip, priority);
+            DodoBot<T>.SendChannelMessage(message, p.channelId);
         }
 
-        public static void StartTrade(T pkm, string dodoId, string nickName, string channelId,string islandid, bool vip=false,uint priority=uint.MaxValue)
+        public static void StartTrade(T pkm, DodoParameter p, bool vip=false,uint priority=uint.MaxValue)
         {
-            var _ = CheckPkm(pkm, dodoId, out var msg);
+            var _ = CheckPkm(pkm, p.dodoId, out var msg);
             if (!_)
             {
-                DodoBot<T>.SendChannelMessage(msg, channelId);
+                DodoBot<T>.SendChannelMessage(msg, p.channelId);
                 return;
             }
             var code = DodoBot<T>.Info.GetRandomTradeCode();
-            var __ = AddToTradeQueue(pkm, code, ulong.Parse(dodoId), nickName, channelId,
-              PokeRoutineType.LinkTrade, out string message, false,islandid, "", vip, priority);
-            DodoBot<T>.SendChannelMessage(message, channelId);
+            var __ = AddToTradeQueue(pkm, code, ulong.Parse(p.dodoId), p.nickName, p.channelId,
+              PokeRoutineType.LinkTrade, out string message, false,p.islandid, "", vip, priority);
+            DodoBot<T>.SendChannelMessage(message, p.channelId);
         }
-        public static void StartMutiTrade(string dodoId, string nickName, string channelId,string islandid, string path,bool DeletFile)
+        public static void StartMutiTrade(DodoParameter p, string path,bool DeletFile)
         {
             var code = DodoBot<T>.Info.GetRandomTradeCode();
-            var __ = AddToTradeQueue(new T(), code, ulong.Parse(dodoId), nickName, channelId,
-                PokeRoutineType.MutiTrade, out string message,false, islandid, path,false,uint.MaxValue,DeletFile);
-            DodoBot<T>.SendChannelMessage(message, channelId);
+            var __ = AddToTradeQueue(new T(), code, ulong.Parse(p.dodoId), p.nickName, p.channelId,
+                PokeRoutineType.MutiTrade, out string message,false, p.islandid, path,false,uint.MaxValue,DeletFile);
+            DodoBot<T>.SendChannelMessage(message, p.channelId);
         }
-        public static void StartDump(string dodoId, string nickName, string channelId)
+        public static void StartDump(DodoParameter p)
         {
             var code = DodoBot<T>.Info.GetRandomTradeCode();
-            var __ = AddToTradeQueue(new T(), code, ulong.Parse(dodoId), nickName, channelId,
-                PokeRoutineType.Dump, out string message, false,"");
-            DodoBot<T>.SendChannelMessage(message, channelId);
+            var __ = AddToTradeQueue(new T(), code, ulong.Parse(p.dodoId), p.nickName, p.channelId,
+                PokeRoutineType.Dump, out string message, false, p.islandid);
+            DodoBot<T>.SendChannelMessage(message, p.channelId);
         }
 
 
@@ -223,82 +223,6 @@ namespace SysBot.Pokemon.Dodo
 
             return true;
         }
-        public static bool GetPkm(string setstring, string username, out string msg, out T outPkm, out bool ModID)
-        {
-            outPkm = new T();
-            ModID = false;
-            if (setstring.Contains("\n初训家"))
-            {
-                ModID = true;
-                setstring = setstring.Replace("\n初训家", "");
-            }
-          //  if (DodoBot<T>.Info.Hub.Config.Legality.ReturnShowdownSets == true)
-          //  {
-          //      DodoBot<T>.SendPersonalMessage(username, $"收到命令\n{setstring}");
-          //  }
-            LogUtil.LogText(setstring);
-            var set = ShowdownUtil.ConvertToShowdown(setstring);
-            if (set == null)
-            {
-                msg = $"取消派送, <@!{username}>: 宝可梦昵称为空.";
-                return false;
-            }
-
-            var template = AutoLegalityWrapper.GetTemplate(set);
-            if (template.Species < 1)
-            {
-                msg =
-                    $"取消派送, <@!{username}>: 请使用正确的Showdown Set代码";
-                return false;
-            }
-
-            if (set.InvalidLines.Count != 0)
-            {
-                msg =
-                    $"取消派送, <@!{username}>: 非法的Showdown Set代码:\n{string.Join("\n", set.InvalidLines)}";
-                return false;
-            }
-
-            try
-            {
-                var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
-                var pkm = sav.GetLegal(template, out var result);
-                var nickname = pkm.Nickname.ToLower();
-                if (nickname == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                    TradeExtensions<T>.EggTrade(pkm, template);
-                if (!pkm.CanBeTraded())
-                {
-                    msg = $"取消派送, <@!{username}>: 官方禁止该宝可梦交易!";
-                    return false;
-                }
-
-                if (pkm is T pk)
-                {
-                    var valid = new LegalityAnalysis(pkm).Valid;
-                    if (valid || DodoBot<T>.Info.Hub.Config.Legality.CommandillegalMod)
-                    {
-                        outPkm = pk;
-
-                        msg =
-                            $"<@!{username}> - 已加入等待队列. 如果你选宝可梦的速度太慢，你的派送请求将被取消!";
-                        return true;
-                    }
-                }
-
-                var reason = result == "Timeout"
-                    ? "宝可梦创造超时"
-                    : "宝可梦不合法,或机器人数据库未更新";
-                msg = $"<@!{username}>: {reason}";
-            }
-#pragma warning disable CA1031 // Do not catch general exception types
-            catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
-            {
-                LogUtil.LogSafe(ex, nameof(DodoBot<T>));
-                msg = $"取消派送, <@!{username}>: 发生了一个错误";
-            }
-
-            return false;
-        }
+      
     }
 }

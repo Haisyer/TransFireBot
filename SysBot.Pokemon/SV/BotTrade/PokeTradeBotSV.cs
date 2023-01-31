@@ -1117,7 +1117,7 @@ namespace SysBot.Pokemon
                 Log($"用户自定义ID，不进行自id操作");
                 return false;
             }
-            var cln = (PK9)toSend.Clone();
+            var cln = toSend.Clone();
             cln.OT_Gender = tradePartner.Gender;
             cln.TrainerTID7 = (uint)Math.Abs(tradePartner.DisplayTID);
             cln.TrainerSID7 = (uint)Math.Abs(tradePartner.DisplaySID);

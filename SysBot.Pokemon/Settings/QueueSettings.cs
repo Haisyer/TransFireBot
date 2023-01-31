@@ -32,6 +32,8 @@ namespace SysBot.Pokemon
         [Category(FeatureToggle), Description("是否打开批量文件夹功能")]
         public bool MutiTrade { get; set; }
 
+        [Category(UserBias), Description("指令批量最大数目")]
+        public int MutiMaxNumber { get; set; } = 3;
 
         // Queue Toggle
 
@@ -64,7 +66,9 @@ namespace SysBot.Pokemon
         [Category(UserBias), Description("让第几个用户提前准备")]
         public int AlertNumber { get; set; } = 3;
 
-     
+       
+
+
 
         // Flex Time
 

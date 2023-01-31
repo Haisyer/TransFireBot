@@ -32,6 +32,7 @@
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon.Bilibili\SysBot.Pokemon.Bilibili.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon.Dodo\SysBot.Pokemon.Dodo.csproj" />
+    <ProjectReference Include="..\SysBot.Pokemon.Kook\SysBot.Pokemon.Kook.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon.QQ\SysBot.Pokemon.QQ.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon.Z3\SysBot.Pokemon.Z3.csproj" />

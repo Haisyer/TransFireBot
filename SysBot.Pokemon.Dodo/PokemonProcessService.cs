@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.Dodo
         private readonly string _channelId;
         private string _botDodoSourceId;
         private uint Count = 0;
-
+        private DodoParameter parameter;
         public PokemonProcessService(OpenApiService openApiService, string channelId)
         {
             _openApiService = openApiService;
@@ -74,6 +74,13 @@ namespace SysBot.Pokemon.Dodo
         {
             var eventBody = input.Data.EventBody;
             if (!string.IsNullOrWhiteSpace(_channelId) && eventBody.ChannelId != _channelId) return;
+            parameter = new DodoParameter()
+            {
+                channelId = _channelId,
+                dodoId = eventBody.DodoSourceId,
+                islandid = eventBody.IslandSourceId,
+                nickName = eventBody.Personal.NickName,
+            };
             if (Count>100)
             {
                 Count = 0;
@@ -108,11 +115,11 @@ namespace SysBot.Pokemon.Dodo
                         if (VipRole)
                         {
                             DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId,eventBody.IslandSourceId, false, Count);
+                            DodoHelper<TP>.StartTrade(pkm, parameter, false, Count);
                             Count++;
                         }
                         else
-                            DodoHelper<TP>.StartTrade(pkm, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId);
+                            DodoHelper<TP>.StartTrade(pkm, parameter);
                     }
 
                     return;
@@ -137,19 +144,19 @@ namespace SysBot.Pokemon.Dodo
                 if (VipRole)
                 {
                     DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                    DodoHelper<TP>.StartTrade(content, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, false,Count);
+                    DodoHelper<TP>.StartTrade(content, parameter, false,Count);
                     Count++;
                 }
                 else
                 {
-                    DodoHelper<TP>.StartTrade(content, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId);
+                    DodoHelper<TP>.StartTrade(content, parameter);
                     
                 }
                 return;
             } 
             else if (content.Trim().StartsWith("检测"))
             {
-                DodoHelper<TP>.StartDump(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId);
+                DodoHelper<TP>.StartDump(parameter);
                 return;
             }
             else if (content.Trim().StartsWith("批量"))
@@ -169,7 +176,7 @@ namespace SysBot.Pokemon.Dodo
                         if (fileEntries.Length > 0)
                         {
                             DodoBot<TP>.SendChannelMessage($"找到{r[1]}", eventBody.ChannelId);
-                            DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, r[1],false);
+                            DodoHelper<TP>.StartMutiTrade(parameter, r[1],false);
                         }
                         else
                         {
@@ -197,9 +204,26 @@ namespace SysBot.Pokemon.Dodo
                       DodoBot<TP>.SendChannelMessagePicture(GetDodoURL(), eventBody.ChannelId);
                   }
                   return;
-              }*/
+              }
+              private static string GetDodoURL()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", DodoBot<TP>.Info.Hub.Config.Dodo.DodoUploadFileUrl);
+                MultipartFormDataContent contentFormData = new MultipartFormDataContent();
+                string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
+                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "a.jpg");
+                var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
+                var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
+                var a = result.Split("https");
+                var b = a[1].Split("jpg");
+                var c = "https" + b[0] + "jpg";
+                return c;
+            }
+
+        }*/
             #endregion
-         //   LogUtil.LogInfo(content, LogIdentity);
+            //   LogUtil.LogInfo(content, LogIdentity);
             var Mutips = Regex.Split(content, "[+]+"); ;
             if (Mutips.Length > 1) 
             {
@@ -209,14 +233,15 @@ namespace SysBot.Pokemon.Dodo
                     return;
                 }
                 int i = 0;
-                var userpath = DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder + @"\" + eventBody.DodoSourceId;
-                Directory.CreateDirectory(DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder+@"\"+ eventBody.DodoSourceId);
+                var subpath = eventBody.DodoSourceId;
+                var userpath = DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder + @"\" + subpath;
+                Directory.CreateDirectory(DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder+@"\"+ subpath);
                 foreach (var p in Mutips)
                 {
                     i++;
                     var pss = ShowdownTranslator<TP>.Chinese2Showdown(p);
                     LogUtil.LogInfo($"收到命令\n{pss}\n", LogIdentity);
-                    if (DodoHelper<TP>.GetPkm(pss, eventBody.DodoSourceId, out var msg, out var pk, out var id))
+                    if (DodoHelper<TP>.CheckAndGetPkm(pss, subpath, out var msg, out var pk, out var id))
                     {
                         File.WriteAllBytes(userpath + @"\" + $"第{i}只.pk9", pk.Data);
                         LogUtil.LogInfo(msg, LogIdentity);
@@ -225,8 +250,13 @@ namespace SysBot.Pokemon.Dodo
                     {
                         DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"第{i}只非法", eventBody.ChannelId);
                     }
+                    if(i> DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber)
+                    {
+                        DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"超出数量限制{DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber}",eventBody.ChannelId);
+                        return;
+                    }
                 }
-                DodoHelper<TP>.StartMutiTrade(eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, eventBody.DodoSourceId,true);
+                DodoHelper<TP>.StartMutiTrade(parameter, subpath, true);
                 content = null;
             }
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);
@@ -236,12 +266,12 @@ namespace SysBot.Pokemon.Dodo
                 if (VipRole)
                 {
                     DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId, false, Count);
+                    DodoHelper<TP>.StartTrade(ps, parameter, false, Count);
                     Count++;
                 }
                 else
                 {
-                    DodoHelper<TP>.StartTrade(ps, eventBody.DodoSourceId, eventBody.Personal.NickName, eventBody.ChannelId, eventBody.IslandSourceId);
+                    DodoHelper<TP>.StartTrade(ps, parameter);
                 }
             }
             else if (content.Contains("取消"))
@@ -262,23 +292,7 @@ namespace SysBot.Pokemon.Dodo
                 DodoBot<TP>.SendChannelMessage($"{Welcome}", eventBody.ChannelId);
             }
         }
-        private static string GetDodoURL()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Authorization", DodoBot<TP>.Info.Hub.Config.Dodo.DodoUploadFileUrl);
-                MultipartFormDataContent contentFormData = new MultipartFormDataContent();
-                string path = DodoBot<TP>.Info.Hub.Config.Folder.ScreenshotFolder;
-                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "a.jpg");
-                var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
-                var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
-                var a = result.Split("https");
-                var b = a[1].Split("jpg");
-                var c = "https" + b[0] + "jpg";
-                return c;
-            }
-
-        }
+      
         public string GetQueueCheckResultMessage(QueueCheckResult<TP> result)
         {
             if (!result.InQueue || result.Detail is null)
