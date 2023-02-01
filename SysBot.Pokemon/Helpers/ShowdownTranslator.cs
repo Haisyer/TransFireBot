@@ -60,7 +60,7 @@ namespace SysBot.Pokemon
                     if (candidateSpecieNo is (ushort)Species.NidoranF) result = "Nidoran-F";
                     else if (candidateSpecieNo is (ushort)Species.NidoranM) result = "Nidoran-M";
                     else if ((candidateSpecieNo is (ushort)Species.Meowstic or (ushort)Species.Indeedee or (ushort)Species.Basculegion or (ushort)Species.Oinkologne) && zh.Contains("母"))
-                        result += $"({GameStringsEn.Species[candidateSpecieNo]}-F)";
+                        result += $"{GameStringsEn.Species[candidateSpecieNo]}-F";
                     // 识别地区形态
                     else if (zh.Contains("形态"))
                     {
