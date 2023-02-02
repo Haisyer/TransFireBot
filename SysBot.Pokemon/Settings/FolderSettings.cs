@@ -35,6 +35,14 @@ namespace SysBot.Pokemon
             var distribute = Path.Combine(path, "distribute");
             Directory.CreateDirectory(distribute);
             DistributeFolder = distribute;
+
+            var tradefolder = Path.Combine(path, "tradefolder");
+            Directory.CreateDirectory(tradefolder);
+            TradeFolder = tradefolder;
+
+            var screenshot = Path.Combine(path, " screenshot");
+            Directory.CreateDirectory(screenshot);
+            ScreenshotFolder = screenshot;
         }
     }
 }
