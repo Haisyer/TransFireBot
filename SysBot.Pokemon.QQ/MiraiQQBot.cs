@@ -370,7 +370,7 @@ namespace SysBot.Pokemon.QQ
             var name = displayName;
 
             var trainer = new PokeTradeTrainerInfo(name, userID);
-            var notifier = new MiraiQQTradeNotifier<T>(pk, trainer, code, name, GroupId);
+            var notifier = new MiraiQQTradeNotifier<T>(pk, trainer, code, name, GroupId,Settings);
             var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed : PokeTradeType.Specific;
             var detail = new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, sig == RequestSignificance.Favored);
             var trade = new TradeEntry<T>(detail, userID, type, name);
