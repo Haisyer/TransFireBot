@@ -417,7 +417,7 @@ namespace SysBot.Pokemon
                 {
                     await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav,poke.MODID, token);
                 }
-                Log("Wait for an offered Pokemon...");
+                Log("等待用户选择宝可梦Wait for an offered Pokemon...");
                 // Wait for user input...
                 offered = await ReadUntilPresentMutiTrade(TradePartnerOfferedOffset, offered, counting, waittime, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
                 var oldEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);
@@ -621,7 +621,7 @@ namespace SysBot.Pokemon
             // Connect online if not already.
             if (!await ConnectToOnline(config, token).ConfigureAwait(false))
             {
-                Log("联机连接失败。");
+                Log("联机失败。");
                 return false; // Failed, either due to connection or softban.
             }
 
@@ -659,7 +659,7 @@ namespace SysBot.Pokemon
                 await Click(B, 2_000 + Hub.Config.Timings.ExtraTimeLoadPortal, token).ConfigureAwait(false);
             }
 
-            Log("正在移动界面的光标Adjusting the cursor in the Portal.");
+            Log("正在移动界面的光标");
             // Move down to Link Trade.
             await Click(DDOWN, 0_300, token).ConfigureAwait(false);
             await Click(DDOWN, 0_300, token).ConfigureAwait(false);
@@ -759,7 +759,7 @@ namespace SysBot.Pokemon
         // These don't change per session and we access them frequently, so set these each time we start.
         private async Task InitializeSessionOffsets(CancellationToken token)
         {
-            Log("正在缓存会话偏移量Caching session offsets...");
+            Log("正在缓存session偏移量Caching session offsets...");
             BoxStartOffset = await SwitchConnection.PointerAll(Offsets.BoxStartPokemonPointer, token).ConfigureAwait(false);
             OverworldOffset = await SwitchConnection.PointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
             PortalOffset = await SwitchConnection.PointerAll(Offsets.PortalBoxStatusPointer, token).ConfigureAwait(false);
