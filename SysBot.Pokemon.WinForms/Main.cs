@@ -136,22 +136,33 @@ namespace SysBot.Pokemon.WinForms
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
+            DialogResult result = MessageBox.Show("是否退出?", "操作提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             SaveCurrentConfig();
             var bots = RunningEnvironment;
-            if (!bots.IsRunning)
-                return;
-
-            async Task WaitUntilNotRunning()
+            
+            if (result == DialogResult.Yes)
             {
-                while (bots.IsRunning)
-                    await Task.Delay(10).ConfigureAwait(false);
-            }
+                if (!bots.IsRunning)
+                    return;
+                async Task WaitUntilNotRunning()
+                {
+                    while (bots.IsRunning)
+                        await Task.Delay(10).ConfigureAwait(false);
+                }
 
-            // Try to let all bots hard-stop before ending execution of the entire program.
-            WindowState = FormWindowState.Minimized;
-            ShowInTaskbar = false;
-            bots.StopAll();
-            Task.WhenAny(WaitUntilNotRunning(), Task.Delay(5_000)).ConfigureAwait(true).GetAwaiter().GetResult();
+                // Try to let all bots hard-stop before ending execution of the entire program.
+                WindowState = FormWindowState.Minimized;
+                ShowInTaskbar = false;
+                bots.StopAll();
+                Task.WhenAny(WaitUntilNotRunning(), Task.Delay(5_000)).ConfigureAwait(true).GetAwaiter().GetResult();
+            }
+            else if((result == DialogResult.No))
+            {
+                e.Cancel = true;
+                this.WindowState = FormWindowState.Minimized;
+                this.Visible = false;
+                this.notifyIcon1.Visible = true;
+            }
         }
 
         private void SaveCurrentConfig()
@@ -318,6 +329,21 @@ namespace SysBot.Pokemon.WinForms
         private void CB_Protocol_SelectedIndexChanged(object sender, EventArgs e)
         {
             TB_IP.Visible = CB_Protocol.SelectedIndex == 0;
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                this.Show();
+                this.Focus();
+                this.WindowState = FormWindowState.Normal;
+            }
+
+        }
+        private void exitToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

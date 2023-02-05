@@ -124,7 +124,7 @@ namespace SysBot.Pokemon
             while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.Idle)
             {
                 if (waitCounter == 0)
-                    Log("没有分配任务。正在等待新的任务分配No task assigned. Waiting for new task assignment.");
+                    Log("没有分配任务。正在等待新的任务分配");
                 waitCounter++;
                 if (waitCounter % 10 == 0 && Hub.Config.AntiIdle)
                     await Click(B, 1_000, token).ConfigureAwait(false);
@@ -166,7 +166,7 @@ namespace SysBot.Pokemon
             {
                 // Updates the assets.
                 Hub.Config.Stream.IdleAssets(this);
-                Log("Nothing to check, waiting for new users...");
+                Log("没什么可检查的，等待新用户…");
             }
 
             const int interval = 10;
