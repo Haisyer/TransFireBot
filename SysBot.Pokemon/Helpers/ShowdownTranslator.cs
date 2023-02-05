@@ -153,7 +153,7 @@ namespace SysBot.Pokemon
                 {
                     if (zh.Contains("JPN")) { result += "\nLanguage: Japanese"; }
                     else if (zh.Contains("ENG")) { result += "\nLanguage: English"; }
-                    else if (zh.Contains("FRE")) { result += "\nLanguage: French"; }
+                    else if (zh.Contains("FRA")) { result += "\nLanguage: French"; }
                     else if (zh.Contains("ITA")) { result += "\nLanguage: Italian"; }
                     else if (zh.Contains("GER")) { result += "\nLanguage: German"; }
                     else if (zh.Contains("ESP")) { result += "\nLanguage: Spanish"; }
