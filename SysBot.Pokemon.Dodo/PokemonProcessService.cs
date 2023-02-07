@@ -348,9 +348,9 @@ namespace SysBot.Pokemon.Dodo
         private static PKM GetPKM(byte[] bytes)
         {
             if (typeof(TP) == typeof(PK8)) return new PK8(bytes);
-            if (typeof(TP) == typeof(PB8)) return new PB8(bytes);
-            if (typeof(TP) == typeof(PA8)) return new PA8(bytes);
-            if (typeof(TP) == typeof(PK9)) return new PK9(bytes);
+            else if (typeof(TP) == typeof(PB8)) return new PB8(bytes);
+            else if (typeof(TP) == typeof(PA8)) return new PA8(bytes);
+            else if (typeof(TP) == typeof(PK9)) return new PK9(bytes);
             return null;
         }
 

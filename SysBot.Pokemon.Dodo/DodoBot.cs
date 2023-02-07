@@ -16,9 +16,9 @@ namespace SysBot.Pokemon.Dodo
         private static PokeTradeHub<T> Hub = default!;
         internal static TradeQueueInfo<T> Info => Hub.Queues.Info;
 
-        public static OpenApiService OpenApiService;
+        public static OpenApiService OpenApiService = default!;
 
-        private static DodoSettings Settings;
+        private static DodoSettings Settings = default!;
 
         public DodoBot(DodoSettings settings, PokeTradeHub<T> hub)
         {
