@@ -31,6 +31,15 @@ namespace SysBot.Pokemon
         [Category(Startup), Description("机器人私聊发送交换得到的精灵信息（精灵名字、训练家、表id、里id）,当参数为true时发送私聊,false时发送群聊")]
         public bool TidAndSidMsg { get; set; } = false;
 
+        [Category(Startup), Description("是否保存批量文件，true为保存，false为不保存")]
+        public bool BatchFile { get; set; } = true;
+
+        [Category(Startup), Description("qq文字批量数量限制，最小为2")]
+        public int qqBatchTradeMaxNumber { get; set; } = 3;
+
+        [Category(Startup), Description("qq文字批量交换开关，true开启，false为关闭")]
+        public bool BatchTradeSwitch { get; set; } = true;
+
         [Category(Startup), Description("机器人回复的触发词1")]
         public string AliveMsgOne { get; set; } = "关键词1"; 
 

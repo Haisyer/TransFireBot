@@ -14,6 +14,7 @@ using Mirai.Net.Utils.Scaffolds;
 using System.Text.RegularExpressions;
 using Mirai.Net.Data.Events.Concretes.Group;
 using System.Net.Http;
+using System.IO;
 
 namespace SysBot.Pokemon.QQ
 {
@@ -192,13 +193,85 @@ namespace SysBot.Pokemon.QQ
             if (receiver.MessageChain.OfType<AtMessage>().All(x => x.Target != Settings.QQ)) return;
             var text = receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text ?? "";
             if (string.IsNullOrWhiteSpace(text)) return;
+
+            var showdownCodeArray = Regex.Split(text, "[+]+");
+            var maxNumber = Settings.qqBatchTradeMaxNumber;
+            bool selfswitch = false;
+
+            if (showdownCodeArray.Length > 1)
+            {
+                if (Settings.BatchTradeSwitch == false)
+                {
+                    await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n批量交换你把握不住的,洗洗睡吧\n"));
+                    return;
+                }
+                if (maxNumber <= 1)
+                {
+                    await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n请将菜单qq设置中的qqBatchTradeMaxNumber参数改为大于1\n"));
+                    return;
+                }
+                if (showdownCodeArray.Length > maxNumber)
+                {
+                    await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"批量交换宝可梦数量应小于等于{maxNumber}"));
+                    return;
+                }
+                    
+                    int legalNumber = 0;
+                    int illegalNumber = 0;
+                    string qqNumberPath = receiver.Sender.Id;
+                    string userpath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeFolder + @"\" + qqNumberPath;
+                    string tradepath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeSaveFile + @"\" + qqNumberPath;
+
+                    if (Directory.Exists(tradepath)) Directory.Delete(tradepath, true);
+                    Directory.CreateDirectory(tradepath);
+
+                    if (Directory.Exists(userpath)) Directory.Delete(userpath, true);
+                    Directory.CreateDirectory(userpath);
+
+                    for (legalNumber = 0; legalNumber < showdownCodeArray.Length; legalNumber++)
+                    {
+                        var PokeInfo = ShowdownTranslator<T>.Chinese2Showdown(showdownCodeArray[legalNumber]);
+                        LogUtil.LogInfo($"收到命令\n第{legalNumber + 1}只\n{PokeInfo}\n", "qqBot");
+                        var flag = MiraiQQCommandsHelper<T>.AddToWaitingList(PokeInfo, receiver.Sender.Name, ulong.Parse(receiver.Sender.Id), out string mess, out var pkmsg, out var ModID);
+                        selfswitch = ModID;
+
+                    if (flag)
+                        {
+                            LogUtil.LogInfo($" \n第{legalNumber + 1}只合法", "qqBot");
+                            if (Settings.BatchFile != false)
+                            {
+                                File.WriteAllBytes(tradepath + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
+                                File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
+                            }
+                        }
+                        else
+                        {
+                            await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n第{legalNumber + 1}只不合法"));
+                            LogUtil.LogInfo($" \n第{legalNumber + 1}只不合法", "qqBot");
+                            ++illegalNumber;
+                        }
+
+                    }
+                    if (legalNumber == illegalNumber)
+                    {
+                        await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n全不合法，你换个头！"));
+                        return;
+                    }
+
+                var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
+                var __ = AddToTradeQueue(new T(), code, ulong.Parse(receiver.Sender.Id), receiver.Sender.Name, RequestSignificance.Favored,
+                  PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, selfswitch);
+                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"开始批量交换{legalNumber - illegalNumber}只"));
+                text = null;
+            }
+
             string ps = ShowdownTranslator<T>.Chinese2Showdown(text);
             if (string.IsNullOrWhiteSpace(ps)) return;
             LogUtil.LogInfo($"code\n{ps}", "HandlePokemonName");
             var _ = MiraiQQCommandsHelper<T>.AddToWaitingList(ps, receiver.Sender.Name,
-                ulong.Parse(receiver.Sender.Id), out string msg);
-
-            await ProcessAddWaitingListResult(_, msg, receiver.Sender.Id);
+                ulong.Parse(receiver.Sender.Id), out string msg, out var pkm, out var ModID2);
+            ;
+            await ProcessAddWaitingListResult(_, msg, receiver.Sender.Id,ModID2);
         }
 
         private async Task HandleFileUpload(GroupMessageReceiver receiver)
@@ -272,7 +345,7 @@ namespace SysBot.Pokemon.QQ
 
             var _ = MiraiQQCommandsHelper<T>.AddToWaitingList(pkm, receiver.Sender.Name,
                 ulong.Parse(senderQQ), out string msg);
-            await ProcessAddWaitingListResult(_, msg, senderQQ);
+            await ProcessAddWaitingListResult(_, msg, senderQQ,false);
         }
 
         private async Task HandleCommand(GroupMessageReceiver receiver)
@@ -314,18 +387,19 @@ namespace SysBot.Pokemon.QQ
                         LogUtil.LogError($"{ex.Message}", "mirai");
                     }
 
-                    var _ = MiraiQQCommandsHelper<T>.AddToWaitingList(args, nickName, ulong.Parse(qq), out string msg);
-                    await ProcessAddWaitingListResult(_, msg, qq);
+                    var _ = MiraiQQCommandsHelper<T>.AddToWaitingList(args, nickName, ulong.Parse(qq), out string msg,out var pkm, out var ModID3);
+                    await ProcessAddWaitingListResult(_, msg, qq, ModID3);
                     break;
             }
         }
 
-        private async Task ProcessAddWaitingListResult(bool success, string msg, string qq)
+        private async Task ProcessAddWaitingListResult(bool success, string msg, string qq, bool ModID)
         {
+            var modid = ModID;
             if (success)
             {
                 LogUtil.LogInfo(msg, "trade");
-                await GetUserFromQueueAndGenerateCodeToTrade(qq);
+                await GetUserFromQueueAndGenerateCodeToTrade(qq,ModID);
             }
             else
             {
@@ -334,7 +408,7 @@ namespace SysBot.Pokemon.QQ
             }
         }
 
-        private async Task GetUserFromQueueAndGenerateCodeToTrade(string qq)
+        private async Task GetUserFromQueueAndGenerateCodeToTrade(string qq,bool ModID)
         {
             var user = QueuePool.FindLast(q => q.QQ == ulong.Parse(qq));
 
@@ -348,7 +422,7 @@ namespace SysBot.Pokemon.QQ
                     ? TradeCodeDictionary[qq]
                     : Info.GetRandomTradeCode(); //Util.ToInt32(msg);
                 var _ = AddToTradeQueue(user.Pokemon, code, user.QQ, user.DisplayName, RequestSignificance.Favored,
-                    PokeRoutineType.LinkTrade, out string message);
+                    PokeRoutineType.LinkTrade, out string message,"",false, ModID);
                 if (!_)
                     await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(qq).Append(" 已在队列中"));
                 else
@@ -364,7 +438,7 @@ namespace SysBot.Pokemon.QQ
         }
 
         private bool AddToTradeQueue(T pk, int code, ulong qq, string displayName, RequestSignificance sig,
-            PokeRoutineType type, out string msg)
+            PokeRoutineType type, out string msg, string path, bool deletFile,bool ModID)
         {
             var userID = qq;
             var name = displayName;
@@ -372,14 +446,15 @@ namespace SysBot.Pokemon.QQ
             var trainer = new PokeTradeTrainerInfo(name, userID);
             var notifier = new MiraiQQTradeNotifier<T>(pk, trainer, code, name, GroupId,Settings);
             var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed : PokeTradeType.Specific;
-            var detail = new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, sig == RequestSignificance.Favored);
+            var detail = new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, sig == RequestSignificance.Favored,path,ModID,deletFile);
             var trade = new TradeEntry<T>(detail, userID, type, name);
 
             var added = Info.AddToTradeQueue(trade, userID, sig == RequestSignificance.Owner);
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = $"@{name}: Sorry, you are already in the queue.";
+                //msg = $"@{name}: Sorry, you are already in the queue.";
+                msg = $"@{name}: 对不起，您已经在队列中.";
                 return false;
             }
 
