@@ -270,7 +270,7 @@ namespace SysBot.Pokemon.QQ
             LogUtil.LogInfo($"code\n{ps}", "HandlePokemonName");
             var _ = MiraiQQCommandsHelper<T>.AddToWaitingList(ps, receiver.Sender.Name,
                 ulong.Parse(receiver.Sender.Id), out string msg, out var pkm, out var ModID2);
-            ;
+            
             await ProcessAddWaitingListResult(_, msg, receiver.Sender.Id,ModID2);
         }
 
