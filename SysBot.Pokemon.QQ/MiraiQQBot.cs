@@ -241,8 +241,8 @@ namespace SysBot.Pokemon.QQ
                             if (Settings.BatchFile != false)
                             {
                                 File.WriteAllBytes(tradepath + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
-                                File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
                             }
+                                File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
                         }
                         else
                         {
