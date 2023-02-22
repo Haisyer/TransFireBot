@@ -63,24 +63,29 @@ namespace SysBot.Pokemon.QQ
                 : "交换完成!");
             LogUtil.LogText(message);
 
-            //返回交换完成的提示并显示收到的宝可梦信息
-            var message1 = $" 完成\n";
-            var message2 = $"收到了：{result.Nickname}\n" +
+            //返回交换完成的提示并显示收到的最后一只宝可梦信息
+            var message1 = $" 完成";
+            var message2 = $"\n收到了：{result.Nickname}\n" +
                            $"原训练家：{result.OT_Name}\n" +
                            $"性别：{gender}\n" +
                            $"Trainer ID：{result.DisplayTID.ToString().PadLeft(6, '0')}\n" +
                            $" Secret ID：{result.DisplaySID.ToString().PadLeft(4, '0')}";
-            //发送完成提示
-            SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
 
-            //发送收到的宝可梦信息
-            if (!Settings.TidAndSidMsg)
+
+            //发送交换完成的提示信息以及的宝可梦信息
+            if (Settings.TidAndSidMsg == false && Settings.TidAndSidSwitch == true)
             {
-                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message2));
+                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1+message2));
+            }
+            else if (Settings.TidAndSidMsg == true && Settings.TidAndSidSwitch == true)
+            {
+                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
+                SendTempMessage(message2);
             }
             else
             {
-                SendTempMessage(message2);
+                //发送完成提示
+                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
             }
         }
 
