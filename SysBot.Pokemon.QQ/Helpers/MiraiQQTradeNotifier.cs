@@ -72,19 +72,20 @@ namespace SysBot.Pokemon.QQ
                            $" Secret ID：{result.DisplaySID.ToString().PadLeft(4, '0')}";
 
 
-            //发送交换完成的提示信息以及的宝可梦信息
+            //群发收到的宝可梦信息以及交易完成的提示
             if (Settings.TidAndSidMsg == false && Settings.TidAndSidSwitch == true)
             {
                 SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1+message2));
             }
+            //私发收到的宝可梦信息,群发交易完成的提示
             else if (Settings.TidAndSidMsg == true && Settings.TidAndSidSwitch == true)
             {
                 SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
                 SendTempMessage(message2);
             }
+            //群发发送完成提示,不发送收到的宝可梦信息
             else
             {
-                //发送完成提示
                 SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
             }
         }

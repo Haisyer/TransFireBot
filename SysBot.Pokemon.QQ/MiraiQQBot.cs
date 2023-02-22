@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using Mirai.Net.Data.Events.Concretes.Group;
 using System.Net.Http;
 using System.IO;
+using Discord;
 
 namespace SysBot.Pokemon.QQ
 {
@@ -242,14 +243,21 @@ namespace SysBot.Pokemon.QQ
                             {                           
                              File.WriteAllBytes(tradepath + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + $"第{legalNumber + 1}只.pk9", pkmsg.Data);                            
                             }
-                        File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
+                            File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
                         }
                         else
                         {
-                            batchtradeMessage += $"\n第{legalNumber + 1}只不合法";
-                           // await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n第{legalNumber + 1}只不合法"));
-                            LogUtil.LogInfo($" \n第{legalNumber + 1}只不合法", "qqBot");
                             ++illegalNumber;
+                            batchtradeMessage += $"\n第{legalNumber + 1}只不合法";
+                           // await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n第{legalNumber + 1}只不合法"));                          
+                            LogUtil.LogInfo($" \n第{legalNumber + 1}只不合法", "qqBot");  
+                        
+                            //防止qq单条消息过大发不出去
+                            if (batchtradeMessage.Length > 1000)
+                            {
+                                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append(batchtradeMessage));
+                                batchtradeMessage = "";
+                            }
                         }
 
                     }
@@ -310,22 +318,28 @@ namespace SysBot.Pokemon.QQ
             {
                     if (Settings.BinTradeSwitch == false)
                     {
+                        await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
                         await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n批量交换你把握不住的,洗洗睡吧\n"));
                         return;
                     }
+
                     LogUtil.LogInfo("QQBot bin文件模式", "HandleFileUpload");
                     var bin = await FileManager.GetFileAsync(groupId, fileMessage.FileId, true);
                     string binUrl = bin.DownloadInfo.Url;
                     using var binClient = new HttpClient();
 
                     var downloadBinBytes = binClient.GetByteArrayAsync(binUrl).Result;
-                    if (downloadBinBytes.Length != 330240) return;
-                                      
+                    if (downloadBinBytes.Length != 330240)
+                    {
+                        await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
+                        await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n你的bin文件有问题"));
+                        return;
+                    }                     
                     var copyBinBytes = new byte[400];
-                    string binMessage = "\n可交换收到的";
+                    string binMessage = "\n可交换收到的:";
 
-                    int count = 0;
-                    int legalcount = 0;
+                    int count = 0;  //交换的总宝可梦数量
+                    int legalcount = 0; //能够合法交换的宝可梦数量
                     string qqNumberPath = receiver.Sender.Id;
                     string userpath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeFolder + @"\" + qqNumberPath;
                     string tradepath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeSaveFile + @"\" + qqNumberPath;
@@ -335,8 +349,8 @@ namespace SysBot.Pokemon.QQ
                     if (Directory.Exists(tradepath)) Directory.Delete(tradepath, true);
                     Directory.CreateDirectory(tradepath);
 
-                    int maxnumber = Settings.qqBinTradeMaxNumber;
-                    int tradelength = maxnumber * 344;
+                    int maxnumber = Settings.qqBinTradeMaxNumber;   //单次交换宝可梦的最大数量
+                    int tradelength = maxnumber * 344;  //单次交换宝可梦信息的最大字节
                     if (tradelength < 344) tradelength = 344;
                     if (tradelength > 330240) tradelength = 330240;
                    
@@ -361,9 +375,11 @@ namespace SysBot.Pokemon.QQ
                                 File.WriteAllBytes(tradepath + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + $"第{count}只.pk9", pokemon.Data);
                                 //await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n第{i/344+1}只,{pokemon.Nickname}"));                      
                             }
-                            File.WriteAllBytes(userpath + @"\" + $"第{count}只.pk9", pokemon.Data);
-                        // await MessageManager.SendGroupMessageAsync(GroupId, $"\n即将交换第{count}只,{pokemon.Nickname}");
+                                File.WriteAllBytes(userpath + @"\" + $"第{count}只.pk9", pokemon.Data);
+                                // await MessageManager.SendGroupMessageAsync(GroupId, $"\n即将交换第{count}只,{pokemon.Nickname}");
                             binMessage += $"\n第{count}只,{pokemon.Nickname}";
+                            
+                            //防止qq单条消息过大发不出去
                             if(binMessage.Length > 1000)
                             {                               
                                 await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append(binMessage));
@@ -377,6 +393,7 @@ namespace SysBot.Pokemon.QQ
                     await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n全不合法，你换个头！"));
                     return;
                 }
+
                 await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
                 var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
                 var __ = AddToTradeQueue(new T(), code, ulong.Parse(receiver.Sender.Id), receiver.Sender.Name, RequestSignificance.Favored,
