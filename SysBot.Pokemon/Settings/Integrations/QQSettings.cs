@@ -36,6 +36,7 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("是否保存文字批量生成的文件，true为保存，false为不保存")]
         public bool BatchFile { get; set; } = true;
+
         [Category(Startup), Description("是否保存bin批量生成的文件，true为保存，false为不保存")]
         public bool BatchBinFile { get; set; } = true;
 
