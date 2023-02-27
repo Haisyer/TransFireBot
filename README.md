@@ -84,15 +84,20 @@
 ### Support-支持
 
 * Support [ALM-Showdown-Sets](https://github.com/architdate/PKHeX-Plugins/wiki/ALM-Showdown-Sets)
+  - It needs to add `$trade` in front of the code with ALM-Showdown-Sets
 * Support PK8 PB8 PA8 PK9 bin(only for SV)file upload
 * Support Customized Chinese to ALM-Showdown-Sets translation- Support 
-* Support using ps code to trade team 
+* Support using ALM-Showdown-Sets to trade the battle team 
+  - It needs to add `$team` or `队伍` in front of the code with ALM-Showdown-Sets
+* Support using ALM-Showdown-Sets to trade the battle team 
 ----------
 
 * 支持使用 [ALM-Showdown-Sets](https://github.com/architdate/PKHeX-Plugins/wiki/ALM-Showdown-Sets) 进行交换
+  - 需要在ALM-Showdown-Sets代码前添加 `$trade` 来进行交换
 * 支持 PK8、PB8、PA8、pk9、bin(目前只支持朱紫上传箱子文件)文件上传交换
 * 支持自定义的中文模版格式进行交换
-* 支持ps队伍代码交换
+* 支持使用ALM-Showdown-Sets组建的对战队伍交换
+  - 需要在ALM-Showdown-Sets的队伍代码前添加 `$team` 或者 `队伍` 来进行交换
 ----------
 
 ### Usage-使用
