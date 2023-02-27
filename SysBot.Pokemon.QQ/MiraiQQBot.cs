@@ -16,6 +16,7 @@ using Mirai.Net.Data.Events.Concretes.Group;
 using System.Net.Http;
 using System.IO;
 using Discord;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SysBot.Pokemon.QQ
 {
@@ -201,6 +202,11 @@ namespace SysBot.Pokemon.QQ
 
             if (showdownCodeArray.Length > 1)
             {
+                if (typeof(T) != typeof(PK9))
+                {
+                    await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n该版本不支持批量"));
+                    return;
+                }
                 if (Settings.BatchTradeSwitch == false)
                 {
                     await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n批量交换你把握不住的,洗洗睡吧\n"));
@@ -465,6 +471,88 @@ namespace SysBot.Pokemon.QQ
             }
             catch
             {
+                return;
+            }
+            
+            if(qqMsg.Trim().StartsWith("队伍")|| qqMsg.Trim().StartsWith("$team"))
+            {
+                if (Settings.PSTeamTradeSwitch == false)
+                {
+                   
+                    await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"你没有队伍交换的权限"));
+                    return;
+                }            
+               
+                if(typeof(T) != typeof(PK9))
+                {
+                   // await receiver.RecallAsync();
+                    await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"\n该版本不支持批量"));
+                    return;
+                }
+                qqMsg = qqMsg.Replace("队伍", "");
+                qqMsg = qqMsg.Replace("$team", "");
+                LogUtil.LogInfo($"队伍模式:\n{qqMsg}", "HandleCommand");
+                string qqNumberPath = receiver.Sender.Id;
+                string userpath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeFolder + @"\" + qqNumberPath;
+                //string tradepath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeSaveFile + @"\" + qqNumberPath;
+
+                if (Directory.Exists(userpath)) Directory.Delete(userpath, true);
+                Directory.CreateDirectory(userpath);
+
+                //if (Directory.Exists(tradepath)) Directory.Delete(tradepath, true);
+                //Directory.CreateDirectory(tradepath);
+                var psMessage = "";
+                var psArray = qqMsg.Split("\n\n");
+                int i;
+                int j = 0;
+                if (psArray.Length != 6)
+                {
+                   
+                    await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"\n队伍代码长度有问题"));
+                    return;
+                }
+
+                for(i = 0; i < psArray.Length; i++)
+                {
+                    var pkstring = psArray[i];
+                    var psCode = pkstring.Split('\n');
+                  
+                    string arr = "";
+                    string pkName = receiver.Sender.Name;
+                    string qqNum = receiver.Sender.Id;
+
+                    if(psCode.Length > 0)
+                    {
+                        for(int t = 0; t < psCode.Length; t++)
+                        {
+                            arr += psCode[t];
+                        }
+                    }
+                    var judge = MiraiQQCommandsHelper<T>.AddToWaitingList(arr, pkName, ulong.Parse(qqNum), out string msg, out var pkm, out var ModID);
+                    if(judge != false)
+                    {
+                        LogUtil.LogInfo($"队伍第{i + 1}只合法", "qqBot");
+                        File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", pkm.Data);
+                        psMessage += $"\n队伍第{i + 1}只,{pkm.Nickname}合法";
+                    }
+                    else
+                    {
+                        ++j;                        
+                        LogUtil.LogInfo($"队伍第{i + 1}只不合法", "qqBot");
+                        psMessage += $"\n队伍第{i + 1}只,不合法";
+                    }
+
+                }
+                if (i == j)
+                {
+                    await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n全不合法，你换个头！"));
+                    return;
+                }
+                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append(psMessage));
+                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"开始批量交换{i - j}只"));
+                var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
+                var __ = AddToTradeQueue(new T(), code, ulong.Parse(receiver.Sender.Id), receiver.Sender.Name, RequestSignificance.Favored,
+                  PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, false);           
                 return;
             }
 

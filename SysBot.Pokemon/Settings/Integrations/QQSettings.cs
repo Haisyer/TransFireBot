@@ -52,6 +52,9 @@ namespace SysBot.Pokemon
         [Category(Startup), Description("bin文件批量交换开关，true开启，false为关闭")]
         public bool BinTradeSwitch { get; set; } = true;
 
+        [Category(Startup), Description("ps队伍代码交换开关，true开启，false为关闭")]
+        public bool PSTeamTradeSwitch { get; set; } = true;
+
         [Category(Startup), Description("机器人回复的触发词1")]
         public string AliveMsgOne { get; set; } = "关键词1"; 
 
