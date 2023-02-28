@@ -36,6 +36,7 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("是否保存文字批量生成的文件，true为保存，false为不保存")]
         public bool BatchFile { get; set; } = true;
+
         [Category(Startup), Description("是否保存bin批量生成的文件，true为保存，false为不保存")]
         public bool BatchBinFile { get; set; } = true;
 
@@ -50,6 +51,9 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("bin文件批量交换开关，true开启，false为关闭")]
         public bool BinTradeSwitch { get; set; } = true;
+
+        [Category(Startup), Description("ps队伍代码交换开关，true开启，false为关闭")]
+        public bool PSTeamTradeSwitch { get; set; } = true;
 
         [Category(Startup), Description("机器人回复的触发词1")]
         public string AliveMsgOne { get; set; } = "关键词1"; 
