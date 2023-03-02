@@ -21,6 +21,9 @@ namespace SysBot.Pokemon
         [Category(Files), Description("批量交换根目录")]
         public string TradeFolder { get; set; } = string.Empty;
 
+        [Category(Files), Description("qq批量文件根目录")]
+        public string TradeSaveFile { get; set; } = string.Empty;
+
         [Category(Files), Description("截图根目录")]
         public string ScreenshotFolder{ get; set; } = string.Empty;
 
@@ -40,9 +43,14 @@ namespace SysBot.Pokemon
             Directory.CreateDirectory(tradefolder);
             TradeFolder = tradefolder;
 
-            var screenshot = Path.Combine(path, " screenshot");
+            var tradesavefile = Path.Combine(path, "tradesavefile");
+            Directory.CreateDirectory(tradesavefile);
+            TradeSaveFile = tradesavefile;
+
+            var screenshot = Path.Combine(path, "screenshot");
             Directory.CreateDirectory(screenshot);
             ScreenshotFolder = screenshot;
+
         }
     }
 }

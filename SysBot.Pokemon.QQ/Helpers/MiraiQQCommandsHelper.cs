@@ -7,8 +7,15 @@ namespace SysBot.Pokemon.QQ
 {
     public class MiraiQQCommandsHelper<T> where T : PKM, new()
     {
-        public static bool AddToWaitingList(string setstring, string username, ulong mUserId, out string msg)
+        public static bool AddToWaitingList(string setstring, string username, ulong mUserId, out string msg, out T outPkm, out bool ModID)
         {
+            outPkm = new T();
+            ModID = false;
+            if (setstring.Contains("\n初训家"))
+            {
+                ModID = true;
+                setstring = setstring.Replace("\n初训家", "");
+            }
             if (!MiraiQQBot<T>.Info.GetCanQueue())
             {
                 msg = "对不起，我目前不再接受队列请求!";
@@ -58,6 +65,7 @@ namespace SysBot.Pokemon.QQ
                         var tq = new MiraiQQQueue<T>(pk, new PokeTradeTrainerInfo(username, mUserId), mUserId);
                         MiraiQQBot<T>.QueuePool.RemoveAll(z => z.QQ == mUserId); // remove old requests if any
                         MiraiQQBot<T>.QueuePool.Add(tq);
+                        outPkm = pk;
                         msg =
                             $"@{username} - 已加入等待队列. 如果你选宝可梦的速度太慢，你的派送请求将被取消!";
                         return true;
