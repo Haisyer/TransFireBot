@@ -238,25 +238,25 @@ namespace SysBot.Pokemon.QQ
                     for (legalNumber = 0; legalNumber < showdownCodeArray.Length; legalNumber++)
                     {
                         var PokeInfo = ShowdownTranslator<T>.Chinese2Showdown(showdownCodeArray[legalNumber]);
-                        LogUtil.LogInfo($"收到命令\n第{legalNumber + 1}只\n{PokeInfo}\n", "qqBot");
+                        LogUtil.LogInfo($"收到文字命令:\n第{legalNumber + 1}只\n{PokeInfo}", "QQBot");
                         var flag = MiraiQQCommandsHelper<T>.AddToWaitingList(PokeInfo, receiver.Sender.Name, ulong.Parse(receiver.Sender.Id), out string mess, out var pkmsg, out var ModID);
                         selfswitch = ModID;
 
                     if (flag)
                         {
-                            LogUtil.LogInfo($" \n第{legalNumber + 1}只合法", "qqBot");
+                            LogUtil.LogInfo($"文字批量:第{legalNumber + 1}只,{pkmsg.Nickname}合法", "QQBot");
                             if (Settings.BatchFile != false)
                             {                           
-                             File.WriteAllBytes(tradepath + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + $"第{legalNumber + 1}只.pk9", pkmsg.Data);                            
+                                File.WriteAllBytes(tradepath + @"\" + DateTime.Now.ToString("yyyyMMddHHmmssffff") + $"第{legalNumber + 1}只.pk9", pkmsg.Data);                            
                             }
-                            File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
+                                File.WriteAllBytes(userpath + @"\" + $"第{legalNumber + 1}只.pk9", pkmsg.Data);
                         }
                         else
                         {
                             ++illegalNumber;
                             batchtradeMessage += $"\n第{legalNumber + 1}只不合法";
                            // await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n第{legalNumber + 1}只不合法"));                          
-                            LogUtil.LogInfo($" \n第{legalNumber + 1}只不合法", "qqBot");  
+                            LogUtil.LogInfo($"文字批量:第{legalNumber + 1}只不合法", "QQBot");  
                         
                             //防止qq单条消息过大发不出去
                             if (batchtradeMessage.Length > 1000)
@@ -270,7 +270,8 @@ namespace SysBot.Pokemon.QQ
                     if (legalNumber == illegalNumber)
                     {
                         await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n全不合法，你换个头！"));
-                        return;
+                        LogUtil.LogInfo($"文字批量:全不合法,结束交换", "QQBot");
+                    return;
                     }
 
                 var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
@@ -278,13 +279,15 @@ namespace SysBot.Pokemon.QQ
                   PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, selfswitch);
 
                 await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append(batchtradeMessage));
-                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"开始批量交换{legalNumber - illegalNumber}只"));
-                text = null;
+                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"\n开始批量交换{legalNumber - illegalNumber}只"));
+                LogUtil.LogInfo($"文字批量:开始批量交换{legalNumber - illegalNumber}只", "QQBot");
+                //text = null;
+                return;
             }
 
             string ps = ShowdownTranslator<T>.Chinese2Showdown(text);
             if (string.IsNullOrWhiteSpace(ps)) return;
-            LogUtil.LogInfo($"code\n{ps}", "HandlePokemonName");
+            LogUtil.LogInfo($"收到文字:\n{ps}", "QQbot");
             var _ = MiraiQQCommandsHelper<T>.AddToWaitingList(ps, receiver.Sender.Name,
                 ulong.Parse(receiver.Sender.Id), out string msg, out var pkm, out var ModID2);
             
@@ -298,7 +301,7 @@ namespace SysBot.Pokemon.QQ
 
             var fileMessage = receiver.MessageChain.OfType<FileMessage>()?.FirstOrDefault();
             if (fileMessage == null) return;
-            LogUtil.LogInfo("QQBot 文件模式", "HandleFileUpload");
+            LogUtil.LogInfo("文件模式", "QQBot");
             var fileName = fileMessage.Name;
 
 
@@ -329,18 +332,21 @@ namespace SysBot.Pokemon.QQ
                         return;
                     }
 
-                    LogUtil.LogInfo("QQBot bin文件模式", "HandleFileUpload");
+                    LogUtil.LogInfo("bin文件模式", "QQBot");
                     var bin = await FileManager.GetFileAsync(groupId, fileMessage.FileId, true);
                     string binUrl = bin.DownloadInfo.Url;
-                    using var binClient = new HttpClient();
-
+                    using var binClient = new HttpClient();                   
                     var downloadBinBytes = binClient.GetByteArrayAsync(binUrl).Result;
-                    if (downloadBinBytes.Length != 330240)
+
+                    bool binLengthJudge = false;
+                    if (downloadBinBytes.Length == 33240 || downloadBinBytes.Length == 10320) binLengthJudge = true;
+                    if ( binLengthJudge != true )
                     {
                         await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
-                        await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n你的bin文件有问题"));
+                        await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\nbin文件有问题"));
                         return;
-                    }                     
+                    }          
+                    
                     var copyBinBytes = new byte[400];
                     string binMessage = "\n可交换收到的:";
 
@@ -359,7 +365,7 @@ namespace SysBot.Pokemon.QQ
                     int tradelength = maxnumber * 344;  //单次交换宝可梦信息的最大字节
                     if (tradelength < 344) tradelength = 344;
                     if (tradelength > 330240) tradelength = 330240;
-                   
+                    if ( downloadBinBytes.Length == 10320 && tradelength > 10320) tradelength = 10320;
                     // for (int i = 0; i < downloadBinBytes.Length; i += 344)
                     for (int i = 0; i < tradelength; i += 344)
                     {
@@ -374,7 +380,7 @@ namespace SysBot.Pokemon.QQ
                         if (ans)
                         {
                             legalcount++;
-                             LogUtil.LogInfo($"bin模式:{pokemon.Nickname}", "HandleBinFile");
+                             LogUtil.LogInfo($"bin模式:文件第{i+1}只,{pokemon.Nickname}合法", "QQBot");
 
                             if (Settings.BatchBinFile != false)
                             {
@@ -397,6 +403,7 @@ namespace SysBot.Pokemon.QQ
                 {
                     await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
                     await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\n全不合法，你换个头！"));
+                    LogUtil.LogInfo($"bin模式:全不合法,结束交换", "QQBot");
                     return;
                 }
 
@@ -407,7 +414,8 @@ namespace SysBot.Pokemon.QQ
                
                 //await MessageManager.SendGroupMessageAsync(GroupId,binMessage);
                 await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append(binMessage));
-                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"开始批量交换合法的{legalcount}只"));
+                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"\n开始批量交换合法的{legalcount}只"));
+                LogUtil.LogInfo($"bin模式:开始批量交换{legalcount}只", "QQBot");
                 return;
             }
 
@@ -491,7 +499,7 @@ namespace SysBot.Pokemon.QQ
                 }
                 qqMsg = qqMsg.Replace("队伍", "");
                 qqMsg = qqMsg.Replace("$team", "");
-                LogUtil.LogInfo($"队伍模式:\n{qqMsg}", "HandleCommand");
+                LogUtil.LogInfo($"队伍模式:\n{qqMsg}", "QQBot");
                 string qqNumberPath = receiver.Sender.Id;
                 string userpath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeFolder + @"\" + qqNumberPath;
                 //string tradepath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeSaveFile + @"\" + qqNumberPath;
@@ -509,6 +517,7 @@ namespace SysBot.Pokemon.QQ
                 {
                    
                     await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"\n队伍代码长度有问题"));
+                    LogUtil.LogInfo($"队伍模式:代码有误,结束交换", "QQBot");
                     return;
                 }
 
@@ -531,14 +540,14 @@ namespace SysBot.Pokemon.QQ
                     var judge = MiraiQQCommandsHelper<T>.AddToWaitingList(arr, pkName, ulong.Parse(qqNum), out string msg, out var pkm, out var ModID);
                     if(judge != false)
                     {
-                        LogUtil.LogInfo($"队伍第{i + 1}只合法", "qqBot");
+                        LogUtil.LogInfo($"队伍:第{i + 1}只合法", "qqBot");
                         File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", pkm.Data);
                         psMessage += $"\n队伍第{i + 1}只,{pkm.Nickname}合法";
                     }
                     else
                     {
                         ++j;                        
-                        LogUtil.LogInfo($"队伍第{i + 1}只不合法", "qqBot");
+                        LogUtil.LogInfo($"队伍:第{i + 1}只不合法", "qqBot");
                         psMessage += $"\n队伍第{i + 1}只,不合法";
                     }
 
@@ -549,7 +558,9 @@ namespace SysBot.Pokemon.QQ
                     return;
                 }
                 await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append(psMessage));
-                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"开始批量交换{i - j}只"));
+                await MessageManager.SendGroupMessageAsync(GroupId, new AtMessage(receiver.Sender.Id).Append($"\n开始批量交换{i - j}只"));
+                LogUtil.LogInfo($"队伍:开始批量交换{i - j}只", "qqBot");
+
                 var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
                 var __ = AddToTradeQueue(new T(), code, ulong.Parse(receiver.Sender.Id), receiver.Sender.Name, RequestSignificance.Favored,
                   PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, false);           
@@ -558,7 +569,7 @@ namespace SysBot.Pokemon.QQ
 
             if (string.IsNullOrWhiteSpace(qqMsg) || !qqMsg.Trim().StartsWith("$trade")) return;
 
-            LogUtil.LogInfo($"qqMsg:{qqMsg}", "HandleCommand");
+            LogUtil.LogInfo($"Command模式:{qqMsg}", "QQBot");
             var split = qqMsg.Split('\n');
             string c = "";
             string args = "";
