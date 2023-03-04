@@ -339,7 +339,7 @@ namespace SysBot.Pokemon.QQ
                     var downloadBinBytes = binClient.GetByteArrayAsync(binUrl).Result;
 
                     bool binLengthJudge = false;
-                    if (downloadBinBytes.Length == 33240 || downloadBinBytes.Length == 10320) binLengthJudge = true;
+                    if (downloadBinBytes.Length == 330240 || downloadBinBytes.Length == 10320) binLengthJudge = true;
                     if ( binLengthJudge != true )
                     {
                         await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
