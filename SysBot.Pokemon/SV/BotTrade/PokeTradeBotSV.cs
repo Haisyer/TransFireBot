@@ -263,8 +263,17 @@ namespace SysBot.Pokemon
             }
 
             var toSend = poke.TradeData;
+            LogUtil.LogInfo($"尝试写入盒子,宝可梦种类id:{toSend.Species}", nameof(PokeTradeBotSV));
             if (toSend.Species != 0)
+            {
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
+                LogUtil.LogInfo($"已经写入盒子,宝可梦种类id:{toSend.Species}", nameof(PokeTradeBotSV));
+            }
+            var tempReadBoxPokemon = await ReadBoxPokemon(1, 1, token).ConfigureAwait(false);
+            if (toSend.Species != tempReadBoxPokemon.Species)
+            {
+                LogUtil.LogInfo($"！！！！计划写入的宝可梦种类id:{toSend.Species},读取出来的:{tempReadBoxPokemon.Species}", nameof(PokeTradeBotSV));
+            }
 
             // Assumes we're freshly in the Portal and the cursor is over Link Trade.
             Log("选择连接交换.");
@@ -628,9 +637,10 @@ namespace SysBot.Pokemon
 
             // Make sure we're at the bottom of the Main Menu.
             await Click(DRIGHT, 0_300, token).ConfigureAwait(false);
-            await PressAndHold(DDOWN, 1_000, 1_000, token).ConfigureAwait(false);
-            await Click(DUP, 0_200, token).ConfigureAwait(false);
-            await Click(DUP, 0_200, token).ConfigureAwait(false);
+            await PressAndHold(DUP, 3_000, 1_000, token).ConfigureAwait(false);
+            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
+            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
+            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
             await Click(A, 1_000, token).ConfigureAwait(false);
 
             return await SetUpPortalCursor(token).ConfigureAwait(false);
