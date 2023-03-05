@@ -637,10 +637,10 @@ namespace SysBot.Pokemon
 
             // Make sure we're at the bottom of the Main Menu.
             await Click(DRIGHT, 0_300, token).ConfigureAwait(false);
-            await PressAndHold(DUP, 3_000, 1_000, token).ConfigureAwait(false);
-            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
-            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
-            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
+            await PressAndHold(DDOWN, 3_000, 1_000, token).ConfigureAwait(false);
+            await Click(DUP, 0_200, token).ConfigureAwait(false);
+            await Click(DUP, 0_200, token).ConfigureAwait(false);
+            await Click(DUP, 0_200, token).ConfigureAwait(false);
             await Click(A, 1_000, token).ConfigureAwait(false);
 
             return await SetUpPortalCursor(token).ConfigureAwait(false);
