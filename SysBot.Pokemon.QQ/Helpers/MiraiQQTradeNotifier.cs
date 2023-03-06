@@ -7,9 +7,7 @@ using System.Linq;
 using Mirai.Net.Data.Messages;
 using Mirai.Net.Data.Messages.Concretes;
 using Mirai.Net.Utils.Scaffolds;
-using AHpx.Extensions.StringExtensions;
-using Flurl.Util;
-using Discord;
+
 
 namespace SysBot.Pokemon.QQ
 {
