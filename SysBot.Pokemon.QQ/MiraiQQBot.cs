@@ -76,7 +76,27 @@ namespace SysBot.Pokemon.QQ
                     {
                         TradeCodeDictionary[receiver.Sender.Id] = int.Parse(tradeCode);
                     }
+                    if (tradeCode.Contains("清除"))
+                    {
+                        TradeCodeDictionary.TryRemove(receiver.Sender.Id, out var value);
+                    }
                 });
+
+            Client.MessageReceived.OfType<FriendMessageReceiver>()
+                .Subscribe(receiver =>
+                {
+                    var tradeCode = receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text ?? "";
+                    if (Regex.IsMatch(tradeCode, "\\d{8}"))
+                    {
+                        TradeCodeDictionary[receiver.Sender.Id] = int.Parse(tradeCode);
+                    }
+                    if (tradeCode.Contains("清除"))
+                    {
+                        TradeCodeDictionary.TryRemove(receiver.Sender.Id, out var value);
+                    }
+
+                });
+
             Client.EventReceived.OfType<MemberKickedEvent>()
                 .Subscribe(receiver => { Info.ClearTrade(ulong.Parse(receiver.Member.Id)); });
             Client.EventReceived.OfType<MemberLeftEvent>()
