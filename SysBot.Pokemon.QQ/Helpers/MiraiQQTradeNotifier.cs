@@ -8,6 +8,7 @@ using Mirai.Net.Data.Messages;
 using Mirai.Net.Data.Messages.Concretes;
 using Mirai.Net.Utils.Scaffolds;
 
+
 namespace SysBot.Pokemon.QQ
 {
     public class MiraiQQTradeNotifier<T> : IPokeTradeNotifier<T> where T : PKM, new()
@@ -51,68 +52,165 @@ namespace SysBot.Pokemon.QQ
             LogUtil.LogText(line);
             SendMessage(new AtMessage($"{info.Trainer.ID}").Append(" 取消"));
         }
-
+        
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
         {        
             OnFinish?.Invoke(routine);
             var gender = result.OT_Gender == 0 ? "男" : "女";
-            var tradedToUser = Data.Species;
+            var tradedToUser = Data.Species;         
             //日志
             var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0
                 ? $"交换完成,享用你的:{(Species)tradedToUser}!收到:{result.Nickname} 性别:{gender} TID:{result.DisplayTID.ToString().PadLeft(6, '0')} SID:{result.DisplaySID.ToString().PadLeft(4, '0')}"
                 : "交换完成!");
             LogUtil.LogText(message);
-
-            //返回交换完成的提示并显示收到的最后一只宝可梦信息
-            var message1 = $" 完成\n";
-            var message2 = $"收到了：{result.Nickname}\n" +
+            var backMethod = Settings.TidAndSidMethod;
+            var message_finish = $" 完成\n";
+            var message_info = $"收到了：{result.Nickname}\n" +
                            $"原训练家：{result.OT_Name}\n" +
                            $"性别：{gender}\n" +
                            $"Trainer ID：{result.DisplayTID.ToString().PadLeft(6, '0')}\n" +
                            $" Secret ID：{result.DisplaySID.ToString().PadLeft(4, '0')}";
 
+            switch (backMethod)
+            {
+                //  全不发送
+                case 1:
+                    SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish));
+                    break;
+                //  全群发
+                case 2:
+                    SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish+message_info));
+                    break;
+                //  全私发
+                case 3:
+                    SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish));
+                    SendTempMessage(message_info);
+                    break;
+                //  好友私发，非好友不发
+                case 4:
+                    var qqNumber = info.Trainer.ID.ToString();
+                    var res = CheckIsMyFriend(qqNumber);
+                    if ( res == true )
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish));
+                        SendFriendMessage(message_info);
+                    }
+                    else
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish));
+                    }
+                    break;
+                //  好友私发，非好友群发
+                case 5:
+                    var qq = info.Trainer.ID.ToString();
+                    var iss = CheckIsMyFriend(qq);
+                    if ( iss == true )
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish));
+                        SendFriendMessage(message_info);
+                    }
+                    else
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish+message_info));
+                    }
+                    break;
+                //  其他情况默认不发送
+                default:
+                    SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_finish));
+                    break;
 
-            //群发收到的宝可梦信息以及交易完成的提示
-            if (Settings.TidAndSidMsg == false && Settings.TidAndSidSwitch == true)
-            {
-                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1+message2));
             }
-            //私发收到的宝可梦信息,群发交易完成的提示
-            else if (Settings.TidAndSidMsg == true && Settings.TidAndSidSwitch == true)
-            {
-                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
-                SendTempMessage(message2);
-            }
-            //群发发送完成提示,不发送收到的宝可梦信息
-            else
-            {
-                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message1));
-            }
+           
         }
 
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
-            var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
+            var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";          
             var msg =
                 $"@{info.Trainer.TrainerName} (ID: {info.ID}): 正在准备交换给你的:{receive}. 请准备.";
             msg += $" 你的交换密码是: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
 
             //发送交换密码
-            var message_temp = $"交换的宝可梦:{Data.Nickname}\n连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";
-            var message_group = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
+            var method = Settings.TradeCodeMethod;
+            var message_group = $"准备交换\n连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";
+            var message_temp = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
+            var message_friend = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
+            var message_code = $" 准备交换\n连接密码是你私信我的\n我的名字: { routine.InGameName}";
+            var message_password = $" 连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";
+            var ans = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(info.Trainer.ID.ToString());
+            
+            // 下面所有模式均可以私聊机器人交换密码，机器人将使用你发送的交换密码
+            switch (method)
+            {
+                //由机器人群发交换密码
+                case 1:
+                    if (ans)
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_code));
+                    }
+                    else
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_group));
+                    }
+                    break;
+                //由机器人向所有人私发交换密码
+                case 2:
+                    if (ans)
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_code));
+                    }
+                    else
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_temp));
+                        SendTempMessage(message_password);
+                    }
+                    break;
+                //由机器人向其好友私发交换密码，未加好友会取消交易
+                case 3:
+                    if (ans)
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_code));
+                    }
+                    else
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_friend));
+                        SendTempMessage(message_password);
+                    }
+                    break;
+                //由机器人向其好友私发交换密码，未加好友会发群聊
+                case 4:          
+                    if (ans)
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_code));
+                    }
+                    else
+                    {                     
+                        var qqNumber = info.Trainer.ID.ToString();
+                        var flag = CheckIsMyFriend(qqNumber);
+                        if( flag == true )
+                        {
+                            SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_friend));
+                            SendFriendMessage(message_password);
+                        }
+                        else
+                        {
+                            SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_group));
+                        }
 
-            if (!Settings.PrivateChatMsg)
-            {
-                SendMessage(MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(info.Trainer.ID.ToString())
-              ? new AtMessage($"{info.Trainer.ID}").Append($" 准备交换\n连接密码是你私信我的\n我的名字:{routine.InGameName}")
-              : new AtMessage($"{info.Trainer.ID}").Append(
-                  $" 准备交换\n连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}"));
-            }
-            else
-            {
-                SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_group));
-                SendTempMessage(message_temp);
+                    }
+                    break;
+                //其他情况默认群发
+                default:
+                    if (ans)
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_code));
+                    }
+                    else
+                    {
+                        SendMessage(new AtMessage($"{info.Trainer.ID}").Append(message_group));
+                    }
+                    break;
             }
         }
 
@@ -157,6 +255,30 @@ namespace SysBot.Pokemon.QQ
         {
             var qqNumber = Info.ID.ToString();
             var _ = MessageManager.SendTempMessageAsync(qqNumber, GroupId, message).Result;
+        }
+
+        private void SendFriendMessage(string message)
+        {
+            var qqNumber = Info.ID.ToString();
+            var _ = MessageManager.SendFriendMessageAsync(qqNumber, message).Result;       
+        }
+
+        private bool CheckIsMyFriend(string qq)
+        {
+            var qqNumber =qq;
+            var allFriends = AccountManager.GetFriendsAsync().Result;
+            var eachFriend = allFriends.GetEnumerator();
+            //var flag = false;
+            while (eachFriend.MoveNext())
+            {
+                var friendInfo = eachFriend.Current;
+                var eachId = friendInfo.Id;               
+                if(eachId == qqNumber)
+                {
+                    return true;
+                }
+            }
+                return false;
         }
     }
 }
