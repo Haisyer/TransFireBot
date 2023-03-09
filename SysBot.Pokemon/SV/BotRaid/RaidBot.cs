@@ -198,7 +198,7 @@ namespace SysBot.Pokemon
                         if (nid == 0)
                             continue;
 
-                        var pointer = new long[] { 0x437ECE0, 0x48, 0xE0 + (i * 0x30), 0x0 };
+                        var pointer = new long[] { 0x44A3528, 0x48, 0xE0 + (i * 0x30), 0x0 };
                         var trainer = await GetTradePartnerMyStatus(pointer, token).ConfigureAwait(false);
 
                         if (string.IsNullOrWhiteSpace(trainer.OT))
@@ -322,7 +322,8 @@ namespace SysBot.Pokemon
                     return false;
             }
 
-            await Click(B, 0_500, token).ConfigureAwait(false);
+            for (int i = 0; i < 5; i++)
+                await Click(B, 0_500, token).ConfigureAwait(false);
 
             // If not in the overworld, we've been attacked so quit earlier.
             if (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
@@ -417,7 +418,7 @@ namespace SysBot.Pokemon
                         nid = BitConverter.ToUInt64(data, 0);
                     }
 
-                    var pointer = new long[] { 0x437ECE0, 0x48, 0xE0 + (i * 0x30), 0x0 };
+                    var pointer = new long[] { 0x44A3528, 0x48, 0xE0 + (i * 0x30), 0x0 };
                     var trainer = await GetTradePartnerMyStatus(pointer, token).ConfigureAwait(false);
 
                     while (trainer.OT.Length == 0 && (DateTime.Now < endTime))

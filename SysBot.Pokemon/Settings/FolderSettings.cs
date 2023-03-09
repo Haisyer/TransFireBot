@@ -18,7 +18,7 @@ namespace SysBot.Pokemon
         [Category(Files), Description("Destination文件夹:所有接收到的PKM文件被转储到的地方\nDestination folder: where all received PKM files are dumped to.")]
         public string DumpFolder { get; set; } = string.Empty;
 
-        [Category(Files), Description("批量交换根目录")]
+        [Category(Files), Description("dodo批量交换根目录")]
         public string TradeFolder { get; set; } = string.Empty;
 
         [Category(Files), Description("qq批量文件根目录")]
