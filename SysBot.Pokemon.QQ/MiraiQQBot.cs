@@ -366,12 +366,9 @@ namespace SysBot.Pokemon.QQ
                         await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append($"\nbin文件有问题"));
                         return;
                     }          
-                    
-                    var copyBinBytes = new byte[400];
+                                     
                     string binMessage = "\n可交换收到的:";
 
-                    int count = 0;  //交换的总宝可梦数量
-                    int legalcount = 0; //能够合法交换的宝可梦数量
                     string qqNumberPath = receiver.Sender.Id;
                     string userpath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeFolder + @"\" + qqNumberPath;
                     string tradepath = MiraiQQBot<T>.Info.Hub.Config.Folder.TradeSaveFile + @"\" + qqNumberPath;
@@ -381,18 +378,21 @@ namespace SysBot.Pokemon.QQ
                     if (Directory.Exists(tradepath)) Directory.Delete(tradepath, true);
                     Directory.CreateDirectory(tradepath);
 
+                    int count = 0;  //交换的总宝可梦数量
+                    int legalcount = 0; //能够合法交换的宝可梦数量
                     int maxnumber = Settings.qqBinTradeMaxNumber;   //单次交换宝可梦的最大数量
                     int tradelength = maxnumber * 344;  //单次交换宝可梦信息的最大字节
+
                     if (tradelength < 344) tradelength = 344;
                     if (tradelength > 330240) tradelength = 330240;
                     if ( downloadBinBytes.Length == 10320 && tradelength > 10320) tradelength = 10320;
-                    // for (int i = 0; i < downloadBinBytes.Length; i += 344)
+                    
                     for (int i = 0; i < tradelength; i += 344)
                     {
-                        count++;
-                        Buffer.BlockCopy(downloadBinBytes, i, copyBinBytes, 0, 344);
-                        var eachdata = copyBinBytes;
-                   
+                        count++;                      
+                        int j = i + 344;
+                        Range r = i..j;
+                        var eachdata = downloadBinBytes[r];
                         PKM pokemon;
                         pokemon = new PK9(eachdata);
                         var ans = MiraiQQCommandsHelper<T>.AddToWaitingList(pokemon, receiver.Sender.Name,
