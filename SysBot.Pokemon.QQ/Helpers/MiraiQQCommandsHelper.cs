@@ -60,7 +60,7 @@ namespace SysBot.Pokemon.QQ
                 if (pkm is T pk)
                 {
                     var valid = new LegalityAnalysis(pkm).Valid;
-                    if (valid)
+                    if (valid || MiraiQQBot<T>.Info.Hub.Config.Legality.CommandillegalMod)
                     {
                         var tq = new MiraiQQQueue<T>(pk, new PokeTradeTrainerInfo(username, mUserId), mUserId);
                         MiraiQQBot<T>.QueuePool.RemoveAll(z => z.QQ == mUserId); // remove old requests if any
@@ -105,7 +105,7 @@ namespace SysBot.Pokemon.QQ
                 if (pkm is T pk)
                 {
                     var valid = new LegalityAnalysis(pkm).Valid;
-                    if (valid)
+                    if (valid || MiraiQQBot<T>.Info.Hub.Config.Legality.FileillegalMod)
                     {
                         var tq = new MiraiQQQueue<T>(pk, new PokeTradeTrainerInfo(username, mUserId), mUserId);
                         MiraiQQBot<T>.QueuePool.RemoveAll(z => z.QQ == mUserId); // remove old requests if any
