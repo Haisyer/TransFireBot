@@ -145,7 +145,7 @@ namespace SysBot.Pokemon
             {"特大尺寸","Super"},
             {"解放","Unbound"},
             {"啪滋啪滋风格","Pom-Pom"},
-            {"呼拉呼拉风格","Pa'u"},
+            {"呼拉呼拉风格","Pa’u"},
             {"轻盈轻盈风格","Sensu"},
             {"黑夜","Midnight"},
             {"黄昏","Dusk"},
