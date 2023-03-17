@@ -21,6 +21,8 @@ namespace SysBot.Pokemon.QQ
 
         private readonly QQSettings Settings;
 
+        private bool DetectionFlag = false;
+
         public MiraiQQTradeNotifier(T data, PokeTradeTrainerInfo info, int code, string username, string groupId,QQSettings settings)
         {
             Data = data;
@@ -70,7 +72,12 @@ namespace SysBot.Pokemon.QQ
                            $"性别：{gender}\n" +
                            $"Trainer ID：{result.DisplayTID.ToString().PadLeft(6, '0')}\n" +
                            $" Secret ID：{result.DisplaySID.ToString().PadLeft(4, '0')}";
-
+            
+            if(DetectionFlag == true)
+            {
+                SendMessage(new AtMessage($"{info.Trainer.ID}").Append($"检测完成"));
+                return;
+            }
             switch (backMethod)
             {
                 //  全不发送
@@ -230,14 +237,51 @@ namespace SysBot.Pokemon.QQ
             if (message.Details.Count > 0)
                 msg += ", " + string.Join(", ", message.Details.Select(z => $"{z.Heading}: {z.Detail}"));
             LogUtil.LogText(msg);
-            SendMessage(msg);
+           // SendMessage(msg);
         }
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
             var msg = $"它的详情: {result.FileName}: " + message;
             LogUtil.LogText(msg);
-            SendMessage(msg);
+            // SendMessage(msg);
+
+            string IVstring = "";
+            string Abilitystring;
+            string GenderString;
+            if (message.Contains("检测"))
+            {
+                DetectionFlag = true;
+                if (result.IV_ATK == 0)
+                    IVstring = "(0攻)";
+                if (result.IV_SPE == 0)
+                    IVstring += "(0速)";
+                if (result.IVs[0] + result.IVs[1] + result.IVs[2] + result.IVs[3] + result.IVs[4] + result.IVs[5] == 186)
+                    IVstring = "(6V)";
+                Abilitystring = result.AbilityNumber switch
+                {
+                    1 => "特性一",
+                    2 => "特性二",
+                    4 => "梦特",
+                    _ => "错误",
+                };
+                GenderString = result.Gender switch
+                {
+                    0 => "公",
+                    1 => "母",
+                    2 => "无性别",
+                    _ => "错误",
+                };
+                if (result.Species != 0 && info.Type == PokeTradeType.Dump)
+                {
+                    var text = message +
+                        $"\n宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}({GenderString})\n" +
+                        $"个体值:{result.IV_HP},{result.IV_ATK},{result.IV_DEF},{result.IV_SPA},{result.IV_SPD},{result.IV_SPE}" + IVstring + "\n" +
+                        $"特性:{Abilitystring}\n" +
+                        $"闪光:{(result.IsShiny ? "!!!闪光闪光闪光!!!" : "否")}";
+                    SendMessage(text);
+                }
+            }
         }
 
         private void SendMessage(string message)
