@@ -16,7 +16,7 @@ using Mirai.Net.Data.Events.Concretes.Group;
 using System.Net.Http;
 using System.IO;
 using Discord;
-using static System.Net.Mime.MediaTypeNames;
+using MathNet.Numerics.LinearAlgebra.Factorization;
 
 namespace SysBot.Pokemon.QQ
 {
@@ -56,10 +56,11 @@ namespace SysBot.Pokemon.QQ
 
                         await HandleAliveMessage(receiver);
                         await HandleFileUpload(receiver);
-                        await HandleCommand(receiver);
+                        await HandleCommand(receiver);                     
                         await HandlePokemonName(receiver);
                         await HandleCancel(receiver);
                         await HandlePosition(receiver);
+                        await HandleEggDetection(receiver);
                     }
                     catch (Exception ex)
                     {
@@ -186,6 +187,21 @@ namespace SysBot.Pokemon.QQ
             var result = Info.CheckPosition(ulong.Parse(receiver.Sender.Id));
             await receiver.SendMessageAsync(
                 new AtMessage(receiver.Sender.Id).Append($" {GetQueueCheckResultMessage(result)}"));
+        }
+
+        private async Task HandleEggDetection(GroupMessageReceiver receiver)
+        {
+            if (receiver.MessageChain.OfType<AtMessage>().All(x => x.Target != Settings.QQ)) return;
+            bool isEggDetectionMsg = (receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text ?? "").Trim()
+                 .StartsWith("检测");
+            if (!isEggDetectionMsg) return;
+            LogUtil.LogInfo($"开始检测", "QQBot");
+            var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
+            var __ = AddToTradeQueue(new T(), code, ulong.Parse(receiver.Sender.Id),receiver.Sender.Name,RequestSignificance.Favored,
+                PokeRoutineType.Dump, out string message,"",true,false);
+           // LogUtil.LogInfo($"{message}", "QQBot");
+            await receiver.SendMessageAsync(new AtMessage(receiver.Sender.Id).Append(message));
+          
         }
 
         public string GetQueueCheckResultMessage(QueueCheckResult<T> result)
@@ -663,7 +679,7 @@ namespace SysBot.Pokemon.QQ
                 LogUtil.LogError($"{ex.Message}", nameof(MiraiQQBot<T>));
             }
         }
-
+        
         private bool AddToTradeQueue(T pk, int code, ulong qq, string displayName, RequestSignificance sig,
             PokeRoutineType type, out string msg, string path, bool deletFile,bool ModID)
         {
@@ -672,7 +688,11 @@ namespace SysBot.Pokemon.QQ
 
             var trainer = new PokeTradeTrainerInfo(name, userID);
             var notifier = new MiraiQQTradeNotifier<T>(pk, trainer, code, name, GroupId,Settings);
-            var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed : PokeTradeType.Specific;
+            //var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed : PokeTradeType.Specific;
+            var tt = type == PokeRoutineType.SeedCheck ? PokeTradeType.Seed :
+                (type == PokeRoutineType.Dump ? PokeTradeType.Dump :
+                (type == PokeRoutineType.MutiTrade ? PokeTradeType.MutiTrade :
+                PokeTradeType.Specific));
             var detail = new PokeTradeDetail<T>(pk, trainer, notifier, tt, code, sig == RequestSignificance.Favored,path,ModID,deletFile);
             var trade = new TradeEntry<T>(detail, userID, type, name);
 
