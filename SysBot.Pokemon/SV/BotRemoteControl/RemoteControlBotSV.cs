@@ -15,10 +15,10 @@ namespace SysBot.Pokemon
         {
             try
             {
-                Log("Identifying trainer data of the host console.");
+                Log("正在识别主机控制台的数据...");
                 await IdentifyTrainer(token).ConfigureAwait(false);
 
-                Log("Starting main loop, then waiting for commands.");
+                Log("正在启动主循环，然后等待命令.");
                 Config.IterateNextRoutine();
                 while (!token.IsCancellationRequested)
                 {
@@ -33,7 +33,7 @@ namespace SysBot.Pokemon
                 Log(e.Message);
             }
 
-            Log($"Ending {nameof(PokeTradeBot)} loop.");
+            Log($"结束 {nameof(PokeTradeBot)} 循环.");
             await HardStop().ConfigureAwait(false);
         }
 

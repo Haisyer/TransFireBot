@@ -15,9 +15,9 @@ namespace SysBot.Pokemon.ConsoleApp
 
         private static void Main(string[] args)
         {
-            Console.WriteLine("Starting up...");
+            Console.WriteLine("正在启动...");
             if (args.Length > 1)
-                Console.WriteLine("This program does not support command line arguments.");
+                Console.WriteLine("该程序不支持命令行参数。");
 
             if (!File.Exists(ConfigPath))
             {

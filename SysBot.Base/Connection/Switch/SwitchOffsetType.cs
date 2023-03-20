@@ -36,7 +36,7 @@ namespace SysBot.Base
             SwitchOffsetType.Heap => (o, c) => SwitchCommand.Peek((uint)o, c, crlf),
             SwitchOffsetType.Main => (o, c) => SwitchCommand.PeekMain(o, c, crlf),
             SwitchOffsetType.Absolute => (o, c) => SwitchCommand.PeekAbsolute(o, c, crlf),
-            _ => throw new IndexOutOfRangeException("Invalid offset type."),
+            _ => throw new IndexOutOfRangeException("无效的偏移量类型."),
         };
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace SysBot.Base
             SwitchOffsetType.Heap => d => SwitchCommand.PeekMulti(d, crlf),
             SwitchOffsetType.Main => d => SwitchCommand.PeekMainMulti(d, crlf),
             SwitchOffsetType.Absolute => d => SwitchCommand.PeekAbsoluteMulti(d, crlf),
-            _ => throw new IndexOutOfRangeException("Invalid offset type."),
+            _ => throw new IndexOutOfRangeException("无效的偏移量类型."),
         };
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace SysBot.Base
             SwitchOffsetType.Heap => (o, b) => SwitchCommand.Poke((uint)o, b, crlf),
             SwitchOffsetType.Main => (o, b) => SwitchCommand.PokeMain(o, b, crlf),
             SwitchOffsetType.Absolute => (o, b) => SwitchCommand.PokeAbsolute(o, b, crlf),
-            _ => throw new IndexOutOfRangeException("Invalid offset type."),
+            _ => throw new IndexOutOfRangeException("无效的偏移量类型."),
         };
     }
 }

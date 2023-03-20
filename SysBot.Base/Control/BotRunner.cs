@@ -14,7 +14,7 @@ namespace SysBot.Base
         public virtual void Add(RoutineExecutor<T> bot)
         {
             if (Bots.Any(z => z.Bot.Connection.Equals(bot.Connection)))
-                throw new ArgumentException($"{nameof(bot.Connection)} has already been added.");
+                throw new ArgumentException($"{nameof(bot.Connection)} 已经添加。");
             Bots.Add(new BotSource<T>(bot));
         }
 

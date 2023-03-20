@@ -26,15 +26,15 @@ namespace SysBot.Pokemon.SV
                     BannedList = JsonConvert.DeserializeObject<List<BannedRaider>>(jsonContent)!;
                     if (BannedList.Count == 0)
                     {
-                        LogUtil.LogError("Global ban list has no entries.", connectionLabel);
+                        LogUtil.LogError("全部被Ban列表没有条目。", connectionLabel);
                         return (false, "");
                     }
-                    else LogUtil.LogInfo($"Fetched the global ban list. It has {BannedList.Count} entries.", connectionLabel);
+                    else LogUtil.LogInfo($"获取全部被Ban列表。 It has {BannedList.Count} entries.", connectionLabel);
                 }
             }
             catch (Exception e)
             {
-                LogUtil.LogError($"Error retrieving ban list from PA: {e.Message}", connectionLabel);
+                LogUtil.LogError($"检索被Ban列表时出错 PA: {e.Message}", connectionLabel);
                 return (false, "");
             }
 
@@ -105,7 +105,7 @@ namespace SysBot.Pokemon.SV
 
                 var lang = languages.FirstOrDefault(x => x.Language == bannedUser.Language);
                 if (lang == default)
-                    throw new Exception($"No language in table matches with banned user. Banned User Language: {bannedUser.Language}.");
+                    throw new Exception($"表中没有与被Ban用户匹配的语言。被Ban用户语言: {bannedUser.Language}.");
 
                 var dt = new DataTable();
                 var weight = (double)dt.Compute(lang.Weight, "");
