@@ -24,7 +24,7 @@ namespace SysBot.Pokemon.QQ
                 return;
             }
 
-            StartTradeWithoutCheck(pkm, qq, nickName, groupId);
+            StartTradeWithoutCheck(pkm, qq, nickName, groupId,modid);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace SysBot.Pokemon.QQ
                 return;
             }
 
-            StartTradeWithoutCheck(pkm, qq, nickName, groupId);
+            StartTradeWithoutCheck(pkm, qq, nickName, groupId,false);
         }
 
         /// <summary>
@@ -266,14 +266,14 @@ namespace SysBot.Pokemon.QQ
         /// <summary>
         /// 不经过合法检查的交换
         /// </summary>
-        public static void StartTradeWithoutCheck(T pkm, string qq, string nickName, string groupId)
+        public static void StartTradeWithoutCheck(T pkm, string qq, string nickName, string groupId,bool ModID)
         {
             // var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
             var code = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(qq)
                      ? MiraiQQBot<T>.TradeCodeDictionary[qq]
                      : MiraiQQBot<T>.Info.GetRandomTradeCode(); 
             var __ = AddToTradeQueue(pkm, code, ulong.Parse(qq), nickName, groupId, RequestSignificance.Favored,
-                PokeRoutineType.LinkTrade, out string message, "", false, false);
+                PokeRoutineType.LinkTrade, out string message, "", false, ModID);
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(message).Build());
         }
 
