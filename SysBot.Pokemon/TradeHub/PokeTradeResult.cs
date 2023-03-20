@@ -28,7 +28,7 @@ namespace SysBot.Pokemon
         RoutineCancel,
         [Description("异常连接")]
         ExceptionConnection,
-        [Description("机器人主机异常")]
+        [Description("内部异常")]
         ExceptionInternal,
         [Description("重新启动")]
         RecoverStart,

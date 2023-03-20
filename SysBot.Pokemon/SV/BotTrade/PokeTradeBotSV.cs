@@ -1013,7 +1013,7 @@ namespace SysBot.Pokemon
             if (cooldown != null)
             {
                 var delta = DateTime.Now - cooldown.Time;
-                Log($"在 {delta.TotalMinutes:F1} 分钟前连接过这个DoDo用户：{user.TrainerName}(游戏名称: {TrainerName})");
+                Log($"在 {delta.TotalMinutes:F1} 分钟前连接过：{user.TrainerName}(游戏名称: {TrainerName})");
 
                 var cd = AbuseSettings.TradeCooldown;
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
