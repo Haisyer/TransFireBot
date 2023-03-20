@@ -108,9 +108,9 @@ namespace SysBot.Pokemon.QQ
                 //  好友私发，非好友不发
                 case 4:
                     var qqNumber = info.Trainer.ID.ToString();
-                    //var res = CheckIsMyFriend(qqNumber);
-                    var res = MiraiQQBot<T>.IsMyFriend();
-                    if (res)
+                    var res = CheckIsMyFriend(qqNumber);
+                    
+                    if (res == true)
                     {
                         MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_finish).Build());
                         //SendFriendMessage(message_info);
@@ -124,8 +124,8 @@ namespace SysBot.Pokemon.QQ
                 //  好友私发，非好友群发
                 case 5:
                     var qq = info.Trainer.ID.ToString();
-                    // var iss = CheckIsMyFriend(qq);
-                    var iss = MiraiQQBot<T>.IsMyFriend();
+                    var iss = CheckIsMyFriend(qq);
+                    
                     if (iss == true)
                     {
                         MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_finish).Build());
@@ -201,8 +201,8 @@ namespace SysBot.Pokemon.QQ
                     {
                         var qqNumber = info.Trainer.ID.ToString();
                         //var flag = CheckIsMyFriend(qqNumber);
-                        bool flag = MiraiQQBot<T>.IsMyFriend();
-                        if (flag)
+                        bool flag = CheckIsMyFriend(qqNumber);
+                        if (flag == true)
                         {
                             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_friend).Build());
                             MiraiQQBot<T>.SendFriendMessage(Info.ID.ToString(), message_password);
@@ -227,6 +227,28 @@ namespace SysBot.Pokemon.QQ
                     }
                     break;
             }
+        }
+        /// <summary>
+        /// 是否为bot账号好友
+        /// </summary>
+        /// <param name="qq"></param>
+        /// <returns></returns>
+        private bool CheckIsMyFriend(string qq)
+        {
+            var qqNumber = qq;
+            var allFriends = AccountManager.GetFriendsAsync().Result;
+            var eachFriend = allFriends.GetEnumerator();
+            //var flag = false;
+            while (eachFriend.MoveNext())
+            {
+                var friendInfo = eachFriend.Current;
+                var eachId = friendInfo.Id;
+                if (eachId == qqNumber)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         /// <summary>
         /// 寻找交换对象

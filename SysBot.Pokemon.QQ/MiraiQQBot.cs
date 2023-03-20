@@ -24,7 +24,6 @@ namespace SysBot.Pokemon.QQ
 
         internal static TradeQueueInfo<T> Info => Hub.Queues.Info;
         private readonly MiraiBot Client;
-        private static bool frendFlag = false;
         internal static QQSettings Settings = default!;
         internal static ConcurrentDictionary<string, int> TradeCodeDictionary = new();
 
@@ -51,9 +50,7 @@ namespace SysBot.Pokemon.QQ
                 new PsModule<T>()
             };
             Client.MessageReceived.SubscribeGroupMessage(receiver =>
-            {
-                if (Client.IsFriend(receiver.Sender.Id))
-                    frendFlag = true;
+            {           
                 if (receiver.GroupId == Settings.GroupId)
                     modules.Raise(receiver);
             });
@@ -154,15 +151,6 @@ namespace SysBot.Pokemon.QQ
         {
             if (string.IsNullOrEmpty(tempId) || string.IsNullOrEmpty(Settings.GroupId)) return;
             await MessageManager.SendTempMessageAsync(tempId, Settings.GroupId, mc);
-        }
-
-        /// <summary>
-        /// 检测是否为机器人账号好友
-        /// </summary>
-        /// <returns>true or false</returns>
-        public static bool IsMyFriend()
-        {
-            return frendFlag;
         }
     }
 }

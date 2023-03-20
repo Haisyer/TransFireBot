@@ -15,9 +15,10 @@ namespace SysBot.Pokemon.QQ
         /// <summary>
         /// 精灵交换
         /// </summary>
-        public static void StartTrade(string ps, string qq, string nickName, string groupId)
+        public static void StartTrade(string ps, string qq, string nickName, string groupId,out string psCode)
         {
-            var _ = CheckAndGetPkm(ps, qq, out var msg, out var pkm,out var modid);
+            var _ = CheckAndGetPkm(ps, qq, out var msg, out var pkm,out var modid, out var pss);
+            psCode = pss;
             if (!_)
             {
                 MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(msg).Build());
@@ -71,7 +72,7 @@ namespace SysBot.Pokemon.QQ
             for (var i = 0; i < chinesePss.Count; i++)
             {
                 var ps = ShowdownTranslator<T>.Chinese2Showdown(chinesePss[i]);
-                var _ = CheckAndGetPkm(ps, qq, out var msg, out var pkm, out var modid);
+                var _ = CheckAndGetPkm(ps, qq, out var msg, out var pkm, out var modid,out var pss);
                 modId = modid;
                 if (!_)
                 {
@@ -87,7 +88,7 @@ namespace SysBot.Pokemon.QQ
                 }
                 else
                 {
-                    LogUtil.LogInfo($"中文批量:第{i + 1}只:\n{ps}", nameof(MiraiQQHelper<T>));
+                    LogUtil.LogInfo($"中文批量:第{i + 1}只:\n{pss}", nameof(MiraiQQHelper<T>));
                     File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", pkm.Data);
                    
                 }
@@ -218,7 +219,7 @@ namespace SysBot.Pokemon.QQ
             for (var i = 0; i < psArray.Count; i++)
             {
                 var ps = psArray[i];
-                var _ = CheckAndGetPkm(ps, qq, out var msg, out var pkm,out var modid);
+                var _ = CheckAndGetPkm(ps, qq, out var msg, out var pkm,out var modid, out var pss);
                 if (!_)
                 {
                     LogUtil.LogInfo($"ps批量:第{i + 1}只宝可梦有问题:{msg}", nameof(MiraiQQHelper<T>));
@@ -233,7 +234,7 @@ namespace SysBot.Pokemon.QQ
                 }
                 else
                 {
-                    LogUtil.LogInfo($"ps批量:第{i + 1}只:\n{ps}", nameof(MiraiQQHelper<T>));
+                    LogUtil.LogInfo($"ps批量:第{i + 1}只:\n{pss}", nameof(MiraiQQHelper<T>));
                     File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", pkm.Data);
                 }
             }
@@ -337,7 +338,7 @@ namespace SysBot.Pokemon.QQ
         /// <summary>
         /// 检查宝可梦合法性
         /// </summary>
-        public static bool CheckAndGetPkm(string setstring, string username, out string msg, out T outPkm,out bool ModID)
+        public static bool CheckAndGetPkm(string setstring, string username, out string msg, out T outPkm,out bool ModID,out string pss)
         {
             outPkm = new T();
             ModID = false;
@@ -346,7 +347,7 @@ namespace SysBot.Pokemon.QQ
                 ModID = true;
                 setstring = setstring.Replace("\n初训家", "");
             }
-            
+            pss = setstring;
             if (!MiraiQQBot<T>.Info.GetCanQueue())
             {
                 msg = "对不起, 我不再接受队列请求!";
