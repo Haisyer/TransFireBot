@@ -150,7 +150,7 @@ namespace SysBot.Pokemon.WinForms
                         await Task.Delay(10).ConfigureAwait(false);
                 }
 
-                // Try to let all bots hard-stop before ending execution of the entire program.
+                // 在结束整个程序的执行之前，尝试让所有机器人强行停止。
                 WindowState = FormWindowState.Minimized;
                 ShowInTaskbar = false;
                 bots.StopAll();
@@ -195,13 +195,13 @@ namespace SysBot.Pokemon.WinForms
         {
             SaveCurrentConfig();
 
-            LogUtil.LogInfo("开启全部机器人...", "Form");
+            LogUtil.LogInfo("正在开启全部机器人...", "Form");
             RunningEnvironment.InitializeStart();
             SendAll(BotControlCommand.Start);
             Tab_Logs.Select();
 
             if (Bots.Count == 0)
-                WinFormsUtil.Alert("没有配置机器人，但所有支持服务都已启动\nNo bots configured, but all supporting services have been started.");
+                WinFormsUtil.Alert("没有配置机器人，但所有支持服务都已启动.");
         }
 
         private void SendAll(BotControlCommand cmd)
@@ -209,7 +209,7 @@ namespace SysBot.Pokemon.WinForms
             foreach (var c in FLP_Bots.Controls.OfType<BotController>())
                 c.SendCommand(cmd, false);
 
-            EchoUtil.Echo($"所有的机器人都已被下达命令{cmd}\nAll bots have been issued a command to {cmd}.");
+            EchoUtil.Echo($"所有的机器人都已被下达命令{cmd}.");
         }
 
         private void B_Stop_Click(object sender, EventArgs e)
@@ -244,7 +244,7 @@ namespace SysBot.Pokemon.WinForms
             var cfg = CreateNewBotConfig();
             if (!AddBot(cfg))
             {
-                WinFormsUtil.Alert("无法添加机器人;确保详细是有效的，并且不会与现有的机器人重复\nUnable to add bot; ensure details are valid and not duplicate with an already existing bot.");
+                WinFormsUtil.Alert("无法添加机器人;确保信息是有效的，并且不会与现有的机器人重复。");
                 return;
             }
             System.Media.SystemSounds.Asterisk.Play();
@@ -261,7 +261,7 @@ namespace SysBot.Pokemon.WinForms
             PokeRoutineExecutorBase newBot;
             try
             {
-                Console.WriteLine($"当前（{Config.Mode}）模式,不支持（{cfg.CurrentRoutineType}）机器人\nCurrent Mode ({Config.Mode}) does not support this type of bot ({cfg.CurrentRoutineType}).");
+                Console.WriteLine($"当前（{Config.Mode}）模式,不支持（{cfg.CurrentRoutineType}）机器人.");
                 newBot = RunningEnvironment.CreateBotFromConfig(cfg);
             }
             catch

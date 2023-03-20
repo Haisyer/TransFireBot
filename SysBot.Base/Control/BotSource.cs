@@ -61,14 +61,14 @@ namespace SysBot.Base
             var ae = finishedTask.Exception;
             if (ae == null)
             {
-                LogUtil.LogError("Bot has stopped without error.", ident);
+                LogUtil.LogError("机器人已经正常停止。", ident);
                 return;
             }
 
-            LogUtil.LogError("Bot has crashed!", ident);
+            LogUtil.LogError("机器人崩溃了!", ident);
 
             if (!string.IsNullOrEmpty(ae.Message))
-                LogUtil.LogError("Aggregate message: " + ae.Message, ident);
+                LogUtil.LogError("全部信息: " + ae.Message, ident);
 
             var st = ae.StackTrace;
             if (!string.IsNullOrEmpty(st))
@@ -77,7 +77,7 @@ namespace SysBot.Base
             foreach (var e in ae.InnerExceptions)
             {
                 if (!string.IsNullOrEmpty(e.Message))
-                    LogUtil.LogError("Inner message: " + e.Message, ident);
+                    LogUtil.LogError("内部消息: " + e.Message, ident);
                 LogUtil.LogError("Inner stacktrace: " + e.StackTrace, ident);
             }
         }

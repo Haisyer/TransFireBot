@@ -16,10 +16,10 @@ namespace SysBot.Base
 
         public override void Connect()
         {
-            Log("Connecting to device...");
+            Log("正在连接到设备...");
             Connection.Connect(Info.IP, Info.Port);
           
-            Log("Connected!");
+            Log("已连接!");
         }
 
         public override void Reset()
@@ -30,10 +30,10 @@ namespace SysBot.Base
 
         public override void Disconnect()
         {
-            Log("Disconnecting from device...");
+            Log("正在断开设备连接...");
             Connection.Disconnect(false);
            
-            Log("Disconnected!");
+            Log("连接已断开!");
         }
 
         private int Read(byte[] buffer) => Connection.Receive(buffer);

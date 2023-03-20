@@ -200,7 +200,7 @@ namespace SysBot.Pokemon
         {
             lock (_sync)
             {
-                LogUtil.LogInfo($"Removing {detail.Trade.Trainer.TrainerName}", nameof(TradeQueueInfo<T>));
+                LogUtil.LogInfo($"正在与{detail.Trade.Trainer.TrainerName}断开连接...", nameof(TradeQueueInfo<T>));
                 return UsersInQueue.Remove(detail);
             }
         }

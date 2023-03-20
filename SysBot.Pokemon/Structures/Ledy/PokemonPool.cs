@@ -80,13 +80,13 @@ namespace SysBot.Pokemon
 
                 if (dest.Species == 0)
                 {
-                    LogUtil.LogInfo("SKIPPED: Provided file is not valid: " + dest.FileName, nameof(PokemonPool<T>));
+                    LogUtil.LogInfo("放弃: 提供的文件无效: " + dest.FileName, nameof(PokemonPool<T>));
                     continue;
                 }
 
                 if (!dest.CanBeTraded())
                 {
-                    LogUtil.LogInfo("SKIPPED: Provided file cannot be traded: " + dest.FileName, nameof(PokemonPool<T>));
+                    LogUtil.LogInfo("放弃: 提供的文件不能进行交易: " + dest.FileName, nameof(PokemonPool<T>));
                     continue;
                 }
                 if (!Settings.Legality.PokemonPoolillegalMod)
@@ -94,13 +94,13 @@ namespace SysBot.Pokemon
                 if (!la.Valid)
                 {
                     var reason = la.Report();
-                    LogUtil.LogInfo($"SKIPPED: Provided file is not legal: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
+                    LogUtil.LogInfo($"放弃:提供的文件不合法: {dest.FileName} -- {reason}", nameof(PokemonPool<T>));
                     continue;
                 }
 
                 if (DisallowRandomRecipientTrade(dest, la.EncounterMatch))
                 {
-                    LogUtil.LogInfo("Provided file was loaded but can't be Surprise Traded: " + dest.FileName, nameof(PokemonPool<T>));
+                    LogUtil.LogInfo("提供的文件已加载，但不能被交易: " + dest.FileName, nameof(PokemonPool<T>));
                     surpriseBlocked++;
                 }
                 }
@@ -119,7 +119,7 @@ namespace SysBot.Pokemon
                 }
                 else
                 {
-                    LogUtil.LogInfo("Provided file was not added due to duplicate name: " + dest.FileName, nameof(PokemonPool<T>));
+                    LogUtil.LogInfo("由于名称重复，未添加所提供的文件: " + dest.FileName, nameof(PokemonPool<T>));
                 }
                 loadedAny = true;
             }
@@ -133,7 +133,7 @@ namespace SysBot.Pokemon
             }
 
             if (surpriseBlocked == Count)
-                LogUtil.LogInfo("Surprise trading will fail; failed to load any compatible files.", nameof(PokemonPool<T>));
+                LogUtil.LogInfo("交易将会失败;加载兼容文件失败。", nameof(PokemonPool<T>));
 
             return loadedAny;
         }

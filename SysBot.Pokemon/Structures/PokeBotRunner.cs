@@ -110,11 +110,11 @@ namespace SysBot.Pokemon
 
             var path = Hub.Config.Folder.DistributeFolder;
             if (!Directory.Exists(path))
-                LogUtil.LogError("没有找到派送文件夹。请验证它是否存在\nThe distribution folder was not found. Please verify that it exists!", "Hub");
+                LogUtil.LogError("没有找到派送文件夹。请验证它是否存在!", "Hub");
 
             var pool = Hub.Ledy.Pool;
             if (!pool.Reload(Hub.Config.Folder.DistributeFolder))
-                LogUtil.LogError("没有东西可以分发给空的派送队列\nNothing to distribute for Empty Trade Queues!", "Hub");
+                LogUtil.LogError("没有东西可以分发给空的派送队列!", "Hub");
         }
 
         public PokeRoutineExecutorBase CreateBotFromConfig(PokeBotState cfg) => Factory.CreateBot(Hub, cfg);

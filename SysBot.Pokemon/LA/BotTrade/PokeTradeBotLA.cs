@@ -63,12 +63,12 @@ namespace SysBot.Pokemon
             {
                 await InitializeHardware(Hub.Config.Trade, token).ConfigureAwait(false);
 
-                Log("Identifying trainer data of the host console.");
+                Log("正在识别主机控制台的数据...");
                 var sav = await IdentifyTrainer(token).ConfigureAwait(false);
                 RecentTrainerCache.SetRecentTrainer(sav);
                 await InitializeSessionOffsets(token).ConfigureAwait(false);
 
-                Log($"Starting main {nameof(PokeTradeBotLA)} loop.");
+                Log($"开始主 {nameof(PokeTradeBotLA)} 循环.");
                 await InnerLoop(sav, token).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -76,7 +76,7 @@ namespace SysBot.Pokemon
                 Log(e.Message);
             }
 
-            Log($"Ending {nameof(PokeTradeBotLA)} loop.");
+            Log($"结束 {nameof(PokeTradeBotLA)} 循环.");
             await HardStop().ConfigureAwait(false);
         }
 
@@ -114,7 +114,7 @@ namespace SysBot.Pokemon
             while (!token.IsCancellationRequested && Config.NextRoutineType == PokeRoutineType.Idle)
             {
                 if (waitCounter == 0)
-                    Log("No task assigned. Waiting for new task assignment.");
+                    Log("没有分配任务。等待新的任务分配。");
                 waitCounter++;
                 if (waitCounter % 10 == 0 && Hub.Config.AntiIdle)
                     await Click(B, 1_000, token).ConfigureAwait(false);
@@ -140,7 +140,7 @@ namespace SysBot.Pokemon
 
                 detail.IsProcessing = true;
                 string tradetype = $" ({detail.Type})";
-                Log($"Starting next {type}{tradetype} Bot Trade. Getting data...");
+                Log($"开始下一个 {type}{tradetype} 交换. 正在获取数据...");
                 Hub.Config.Stream.StartTrade(this, detail, Hub);
                 Hub.Queues.StartTrade(this, detail);
 
@@ -154,7 +154,7 @@ namespace SysBot.Pokemon
             {
                 // Updates the assets.
                 Hub.Config.Stream.IdleAssets(this);
-                Log("Nothing to check, waiting for new users...");
+                Log("没有检查,正在等待新用户...");
             }
 
             const int interval = 10;
@@ -205,11 +205,11 @@ namespace SysBot.Pokemon
             {
                 detail.IsRetry = true;
                 Hub.Queues.Enqueue(type, detail, Math.Min(priority, PokeTradePriorities.Tier2));
-                detail.SendNotification(this, "Oops! Something happened. I'll requeue you for another attempt.");
+                detail.SendNotification(this, "哦!发生了一些意外。我会安排您再试一次。");
             }
             else
             {
-                detail.SendNotification(this, $"Oops! Something happened. Canceling the trade: {result}.");
+                detail.SendNotification(this, $"哦!发生了一些意外。正在取消交易: {result}.");
                 detail.TradeCanceled(this, result);
             }
         }
@@ -235,12 +235,12 @@ namespace SysBot.Pokemon
             }
 
             // Speak to the NPC to start a trade.
-            Log("Speaking to Simona to start a trade.");
+            Log("与Simona对话开始交换.");
             await Click(A, 1_000, token).ConfigureAwait(false);
             await Click(A, 0_600, token).ConfigureAwait(false);
             await Click(A, 1_500, token).ConfigureAwait(false);
 
-            Log("Selecting Link Trade.");
+            Log("选择连接交换.");
             await Click(DRIGHT, 0_500, token).ConfigureAwait(false);
             await Click(A, 1_500, token).ConfigureAwait(false);
             await Click(A, 2_000, token).ConfigureAwait(false);
@@ -251,7 +251,7 @@ namespace SysBot.Pokemon
             await Task.Delay(Hub.Config.Timings.ExtraTimeOpenCodeEntry, token).ConfigureAwait(false);
 
             var code = poke.Code;
-            Log($"Entering Link Trade code: {code:0000 0000}...");
+            Log($"正在输入连接交换密码: {code:0000 0000}");
             await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
 
             // Wait for Barrier to trigger all bots simultaneously.
@@ -283,7 +283,7 @@ namespace SysBot.Pokemon
             var trainerNID = await GetTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
             tradePartner.NID = trainerNID;
             RecordUtil<PokeTradeBot>.Record($"Initiating\t{trainerNID:X16}\t{tradePartner.TrainerName}\t{poke.Trainer.TrainerName}\t{poke.Trainer.ID}\t{poke.ID}\t{toSend.EncryptionConstant:X8}");
-            Log($"Found Link Trade partner: {tradePartner.TrainerName}-{tradePartner.TID7} (ID: {trainerNID})");
+            Log($"找到Link交易对象: {tradePartner.TrainerName}-{tradePartner.TID7} (ID: {trainerNID})");
 
             var partnerCheck = CheckPartnerReputation(poke, trainerNID, tradePartner.TrainerName);
             if (partnerCheck != PokeTradeResult.Success)
@@ -292,7 +292,7 @@ namespace SysBot.Pokemon
                 return partnerCheck;
             }
 
-            poke.SendNotification(this, $"Found Link Trade partner: {tradePartner.TrainerName}. Waiting for a Pokémon...");
+            poke.SendNotification(this, $"找到连接交换对象: {tradePartner.TrainerName}. 正在等待提供一只宝可梦...");
 
             if (poke.Type == PokeTradeType.Dump)
             {
@@ -309,14 +309,14 @@ namespace SysBot.Pokemon
                 return PokeTradeResult.TrainerTooSlow;
             }
 
-            Log("Checking offered Pokémon.");
+            Log("正在查询提供的宝可梦...");
             // If we got to here, we can read their offered Pokémon.
 
             // Wait for user input... Needs to be different from the previously offered Pokémon.
             var offered = await ReadUntilPresentPointer(Offsets.LinkTradePartnerPokemonPointer, 3_000, 0_050, BoxFormatSlotSize, token).ConfigureAwait(false);
             if (offered == null || offered.Species < 1 || !offered.ChecksumValid)
             {
-                Log("Trade ended because trainer offer was rescinded too quickly.");
+                Log("交易结束，因为训练家取消得太快了.");
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerOfferCanceledQuick;
             }
@@ -335,12 +335,12 @@ namespace SysBot.Pokemon
                 await SetBoxPkmWithSwappedIDDetailsPLA(toSend, tradePartner, sav, token);
             }
 
-            Log("Confirming trade.");
+            Log("正在确认交易...");
             var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
             if (tradeResult != PokeTradeResult.Success)
             {
                 if (tradeResult == PokeTradeResult.TrainerLeft)
-                    Log("Trade canceled because trainer left the trade.");
+                    Log("交易取消，因为训练家离开了.");
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return tradeResult;
             }
@@ -356,13 +356,13 @@ namespace SysBot.Pokemon
             // Pokémon in b1s1 is same as the one they were supposed to receive (was never sent).
             if (SearchUtil.HashByDetails(received) == SearchUtil.HashByDetails(toSend) && received.Checksum == toSend.Checksum)
             {
-                Log("User did not complete the trade.");
+                Log("用户没有完成交易.");
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
             }
 
             // As long as we got rid of our inject in b1s1, assume the trade went through.
-            Log("User completed the trade.");
+            Log("用户完成交易.");
             poke.TradeFinished(this, received);
 
             // Only log if we completed the trade.
@@ -422,7 +422,7 @@ namespace SysBot.Pokemon
 
         protected virtual async Task<bool> WaitForTradePartner(CancellationToken token)
         {
-            Log("Waiting for trainer...");
+            Log("正在等待交换对象...");
             int ctr = (Hub.Config.Trade.TradeWaitTime * 1_000) - 2_000;
             await Task.Delay(2_000, token).ConfigureAwait(false);
             while (ctr > 0)
@@ -444,7 +444,7 @@ namespace SysBot.Pokemon
         private async Task ExitTrade(bool unexpected, CancellationToken token)
         {
             if (unexpected)
-                Log("Unexpected behavior, recovering position.");
+                Log("发生意外行为，正在恢复位置.");
 
             int ctr = 120_000;
             while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
@@ -475,7 +475,7 @@ namespace SysBot.Pokemon
         // These don't change per session and we access them frequently, so set these each time we start.
         private async Task InitializeSessionOffsets(CancellationToken token)
         {
-            Log("Caching session offsets...");
+            Log("正在缓存会话偏移量...");
             BoxStartOffset = await SwitchConnection.PointerAll(Offsets.BoxStartPokemonPointer, token).ConfigureAwait(false);
             SoftBanOffset = await SwitchConnection.PointerAll(Offsets.SoftbanPointer, token).ConfigureAwait(false);
             OverworldOffset = await SwitchConnection.PointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
@@ -527,15 +527,15 @@ namespace SysBot.Pokemon
 
                 var la = new LegalityAnalysis(pk);
                 var verbose = $"```{la.Report(true)}```";
-                Log($"Shown Pokémon is: {(la.Valid ? "Valid" : "Invalid")}.");
+                Log($"显示宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
 
                 ctr++;
                 var msg = Hub.Config.Trade.DumpTradeLegalityCheck ? verbose: $"File {ctr}";
-                msg += pk.IsShiny ? "\n***This Pokémon is shiny!***" : string.Empty;
+                msg += pk.IsShiny ? "\n**这只宝可梦是闪光!**" : string.Empty;
                 detail.SendNotification(this, pk, msg);
             }
 
-            Log($"Ended Dump loop after processing {ctr} Pokémon.");
+            Log($"处理{ctr}宝可梦后，结束Dump循环。");
             if (ctr == 0)
                 return PokeTradeResult.TrainerTooSlow;
 
@@ -781,12 +781,12 @@ namespace SysBot.Pokemon
                     if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                     {
                         AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "in-game block for multiple accounts") });
-                        Log($"Added {TrainerNID} to the BannedIDs list.");
+                        Log($"添加{TrainerNID}到BannedIDs列表.");
                     }
                     quit = true;
                 }
 
-                var msg = $"Found {user.TrainerName}{useridmsg} using multiple accounts.\nPreviously encountered {previous.Name} ({previous.RemoteID}) {delta.TotalMinutes:F1} minutes ago on OT: {TrainerName}.";
+                var msg = $"发现 {user.TrainerName}{useridmsg} 使用多个帐号。\n几分钟前遇到过 {previous.Name} ({previous.RemoteID}) {delta.TotalMinutes:F1}  训练家: {TrainerName}.";
                 if (AbuseSettings.EchoNintendoOnlineIDMulti)
                     msg += $"\nID: {TrainerNID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiAbuseEchoMention))
@@ -800,9 +800,9 @@ namespace SysBot.Pokemon
             var entry = AbuseSettings.BannedIDs.List.Find(z => z.ID == TrainerNID);
             if (entry != null)
             {
-                var msg = $"{user.TrainerName}{useridmsg} is a banned user, and was encountered in-game using OT: {TrainerName}.";
+                var msg = $"{user.TrainerName}{useridmsg} 是一个被禁止的用户，并且在游戏中遇到使用训练家: {TrainerName}.";
                 if (!string.IsNullOrWhiteSpace(entry.Comment))
-                    msg += $"\nUser was banned for: {entry.Comment}";
+                    msg += $"\n用户被禁止: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
                 EchoUtil.Echo(msg);
@@ -839,12 +839,12 @@ namespace SysBot.Pokemon
             var tradela = new LegalityAnalysis(cln);
             if (tradela.Valid)
             {
-                Log($"Pokemon is valid, use trade partnerInfo");
+                Log($"宝可梦有效，使用交换对象对象信息。");
                 await SetBoxPokemonAbsolute(BoxStartOffset, cln, token, sav).ConfigureAwait(false);
             }
             else
             {
-                Log($"Pokemon not valid, do nothing to trade Pokemon");
+                Log($"宝可梦无效，不做任何交易。");
             }
 
             return tradela.Valid;

@@ -24,14 +24,14 @@ namespace SysBot.Base
         {
             if (Connected)
             {
-                Log("之前已经连接，跳过初始连接Already connected prior, skipping initial connection.");
+                Log("之前已经连接，跳过初始连接。");
                 return;
             }
 
-            Log("连接到设备Connecting to device...");
+            Log("正在连接到设备...");
             Connection.Connect(Info.IP, Info.Port);
            
-            Log("已连接Connected!");
+            Log("已连接!");
             Label = Name;
         }
 
@@ -42,7 +42,7 @@ namespace SysBot.Base
                 Disconnect();
 
             InitializeSocket();
-            Log("连接到设备Connecting to device...");
+            Log("正在连接到设备...");
             var address = Dns.GetHostAddresses(ip);
             foreach (IPAddress adr in address)
             {
@@ -55,13 +55,13 @@ namespace SysBot.Base
                 {
                     return;
                 }
-                Log("已连接Connected!");
+                Log("已连接!");
             }
         }
 
         public override void Disconnect()
         {
-            Log("与设备断开连接Disconnecting from device...");
+            Log("正在与设备断开连接...");
             Connection.Shutdown(SocketShutdown.Both);
             try
             {
@@ -72,7 +72,7 @@ namespace SysBot.Base
                 return;
             }
 
-            Log("断线了! 重新设置插座Disconnected! Resetting Socket.");
+            Log("断线了! 重新设置插座。");
             InitializeSocket();
         }
 
@@ -243,7 +243,7 @@ namespace SysBot.Base
                 }
                 catch (Exception ex)
                 {
-                    LogError($"Socket exception thrown while receiving screenshot data:\n{ex.Message}");
+                    LogError($"接收截图数据时发出的插座异常:\n{ex.Message}");
                     return null;
                 }
 
@@ -259,7 +259,7 @@ namespace SysBot.Base
             }
             catch (Exception e)
             {
-                LogError($"Malformed screenshot data received:\n{e.Message}");
+                LogError($"接收到的截图数据格式错误:\n{e.Message}");
                 result = null;
             }
 

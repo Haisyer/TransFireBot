@@ -7,15 +7,15 @@ namespace SysBot.Pokemon
     {
         private const string FeatureToggle = nameof(FeatureToggle);
         private const string Files = nameof(Files);
-        public override string ToString() => "文件夹/转储设置Folder / Dumping Settings";
+        public override string ToString() => "文件夹/转储设置";
 
-        [Category(FeatureToggle), Description("启用后，将接收到的所有PKM文件(交易结果)转储到DumpFolder\nWhen enabled, dumps any received PKM files (trade results) to the DumpFolder.")]
+        [Category(FeatureToggle), Description("启用后，将接收到的所有PKM文件(交易结果)转储到DumpFolder")]
         public bool Dump { get; set; }
 
-        [Category(Files), Description("Source文件夹:选择要分发的PKM文件的地方\nSource folder: where PKM files to distribute are selected from.")]
+        [Category(Files), Description("Source文件夹:选择要分发的PKM文件的地方")]
         public string DistributeFolder { get; set; } = string.Empty;
 
-        [Category(Files), Description("Destination文件夹:所有接收到的PKM文件被转储到的地方\nDestination folder: where all received PKM files are dumped to.")]
+        [Category(Files), Description("Destination文件夹:所有接收到的PKM文件被转储到的地方")]
         public string DumpFolder { get; set; } = string.Empty;
 
         [Category(Files), Description("dodo批量交换根目录")]
