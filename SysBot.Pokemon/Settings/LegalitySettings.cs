@@ -68,10 +68,10 @@ namespace SysBot.Pokemon
         public bool EnableEasterEggs { get; set; } = false;
 
         [Category(Generate), Description("允许用户在Showdown sets中提交自定义的OT, TID, SID和OT Gender,即允许用户使用PS代码实现自ID\nAllow users to submit custom OT, TID, SID, and OT Gender in Showdown sets.")]
-        public bool AllowTrainerDataOverride { get; set; } = false;
+        public bool AllowTrainerDataOverride { get; set; } = true;
 
         [Category(Generate), Description("允许用户使用Pkhex批处理编辑命令实现进一步的定制\nAllow users to submit further customization with Batch Editor commands.")]
-        public bool AllowBatchCommands { get; set; } = false;
+        public bool AllowBatchCommands { get; set; } = true;
 
         [Category(Generate), Description("在取消之前生成SET代码时所花费的最大时间(以秒为单位)。这可以防止复杂的代码冻结机器人\nMaximum time in seconds to spend when generating a set before canceling. This prevents difficult sets from freezing the bot.")]
         public int Timeout { get; set; } = 15;
@@ -90,6 +90,6 @@ namespace SysBot.Pokemon
         public bool ResetHOMETracker { get; set; } = true;
 
         [Category(Misc), Description("由交换对象重写训练家信息，自id\nOverride trainer data by trade partner")]
-        public bool UseTradePartnerInfo { get; set; } = false;
+        public bool UseTradePartnerInfo { get; set; } = true;
     }
 }

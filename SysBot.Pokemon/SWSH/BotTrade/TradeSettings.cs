@@ -21,10 +21,10 @@ namespace SysBot.Pokemon
         public int MaxTradeConfirmTime { get; set; } = 25;
 
         [Category(TradeCode), Description("最小链接密码(0-99999999)\nMinimum Link Code.")]
-        public int MinTradeCode { get; set; } = 8180;
+        public int MinTradeCode { get; set; } = 0;
 
         [Category(TradeCode), Description("最大链接密码(0-99999999)\nMaximum Link Code.")]
-        public int MaxTradeCode { get; set; } = 8199;
+        public int MaxTradeCode { get; set; } = 99999999;
 
         [Category(Dumping), Description("Dump交易:倾销程序将在单个用户的最大倾销次数后停止\nDump Trade: Dumping routine will stop after a maximum number of dumps from a single user.")]
         public int MaxDumpsPerTrade { get; set; } = 20;

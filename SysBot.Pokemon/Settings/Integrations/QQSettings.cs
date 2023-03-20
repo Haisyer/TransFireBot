@@ -25,32 +25,14 @@ namespace SysBot.Pokemon
         [Category(Startup), Description("发送消息的QQ群号")]
         public string GroupId { get; set; } = string.Empty;
 
-        [Category(Startup), Description("发送交换密码的模式：1为群发；2为私发；3仅为好友私发,非好友取消交易；4为好友私发,非好友群发；其他数字为群发")]
+        [Category(Startup), Description("发送交换密码的模式：1为群发；2为私发；3为好友私发,非好友群发；其他数字为群发")]
         public int TradeCodeMethod { get; set; } = 1;
 
         [Category(Startup), Description("发送交换得到精灵信息(精灵名字、训练家、表id、里id)的方式：1为全不发送；2为群聊发送；3为私聊发送；4为好友私发，非好友不发送；5为好友私发,非好友群发；其他数字为不发送")]
         public int TidAndSidMethod { get; set; } = 2;
 
-        [Category(Startup), Description("是否保存文字批量生成的文件，true为保存，false为不保存")]
-        public bool BatchFile { get; set; } = true;
-
-        [Category(Startup), Description("是否保存bin批量生成的文件，true为保存，false为不保存")]
-        public bool BatchBinFile { get; set; } = true;
-
-        [Category(Startup), Description("文字批量宝可梦数量限制，最小为2")]
-        public int qqBatchTradeMaxNumber { get; set; } = 3;
-
-        [Category(Startup), Description("bin批量文件中宝可梦数量限制，最小为1，最大为960")]
-        public int qqBinTradeMaxNumber { get; set; } = 3;
-
-        [Category(Startup), Description("qq文字批量交换开关，true开启，false为关闭")]
-        public bool BatchTradeSwitch { get; set; } = true;
-
-        [Category(Startup), Description("bin文件批量交换开关，true开启，false为关闭")]
-        public bool BinTradeSwitch { get; set; } = true;
-
-        [Category(Startup), Description("ps队伍代码交换开关，true开启，false为关闭")]
-        public bool PSTeamTradeSwitch { get; set; } = true;
+        [Category(Startup), Description("批量交换宝可梦数量限制，最小为2，最大为960")]
+        public int qqTradeMaxNumber { get; set; } = 3;     
 
         [Category(Startup), Description("机器人回复的触发词1")]
         public string AliveMsgOne { get; set; } = "关键词1"; 
