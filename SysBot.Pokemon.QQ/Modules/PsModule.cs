@@ -45,7 +45,7 @@ namespace SysBot.Pokemon.QQ
             if (pss.Length > 1)
                 MiraiQQHelper<T>.StartTradeMultiPs(text, qq, nickName, groupId);
             else
-                MiraiQQHelper<T>.StartTrade(text, qq, nickName, groupId);
+                MiraiQQHelper<T>.StartTrade(text, qq, nickName, groupId,out string psCode);
         }
 
         private void ProcessChinesePS(string text, string qq, string nickName, string groupId)
@@ -57,8 +57,9 @@ namespace SysBot.Pokemon.QQ
             else
             {
                 string ps = ShowdownTranslator<T>.Chinese2Showdown(text);
-                LogUtil.LogInfo($"中文转换后ps代码:\n{ps}", nameof(PsModule<T>));
-                MiraiQQHelper<T>.StartTrade(ps, qq, nickName, groupId);
+                
+                MiraiQQHelper<T>.StartTrade(ps, qq, nickName, groupId,out string psCode);
+                LogUtil.LogInfo($"中文转换后ps代码:\n{psCode}", nameof(PsModule<T>));
             }
 
         }
