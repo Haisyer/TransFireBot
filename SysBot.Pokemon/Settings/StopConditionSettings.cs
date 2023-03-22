@@ -9,42 +9,42 @@ namespace SysBot.Pokemon
     public class StopConditionSettings
     {
         private const string StopConditions = nameof(StopConditions);
-        public override string ToString() => "停止条件设置Stop Condition Settings";
+        public override string ToString() => "停止条件设置";
 
-        [Category(StopConditions), Description("只停在这个物种的神奇宝贝上。如果设置为 \"无 \"则没有限制\nStops only on Pokémon of this species. No restrictions if set to \"None\".")]
+        [Category(StopConditions), Description("只停在这个种类的宝可梦上。如果设置为 \"None \"则没有限制。")]
         public Species StopOnSpecies { get; set; }
 
-        [Category(StopConditions), Description("只停在具有FormID的神奇宝贝上。如果留空则没有限制\nStops only on Pokémon with this FormID. No restrictions if left blank.")]
+        [Category(StopConditions), Description("只停在具有形态ID的宝可梦上。如果留空则没有限制。")]
         public int? StopOnForm { get; set; }
 
-        [Category(StopConditions), Description("只停在指定性格的神奇宝贝上\nStop only on Pokémon of the specified nature.")]
+        [Category(StopConditions), Description("只停在指定性格的宝可梦上")]
         public Nature TargetNature { get; set; } = Nature.Random;
 
-        [Category(StopConditions), Description("最小接受的IV，格式为HP/Atk/Def/SpA/SpD/Spe。使用 \"x\"表示未检查的IV，使用 \"/\"作为分隔符\nMinimum accepted IVs in the format HP/Atk/Def/SpA/SpD/Spe. Use \"x\" for unchecked IVs and \"/\" as a separator.")]
+        [Category(StopConditions), Description("最小可接受的个体值格式为HP/Atk/Def/SpA/SpD/Spe 使用 \"x\"表示不检查的个体值，使用 \"/\"作为分隔符。")]
         public string TargetMinIVs { get; set; } = "";
 
-        [Category(StopConditions), Description("最大接受的IV的格式为HP/Atk/Def/SpA/SpD/Spe。使用 \"x\"表示未选中的IV，使用 \"/\"作为分隔符\nMaximum accepted IVs in the format HP/Atk/Def/SpA/SpD/Spe. Use \"x\" for unchecked IVs and \"/\" as a separator.")]
+        [Category(StopConditions), Description("最大可接受的个体值格式为HP/Atk/Def/SpA/SpD/Spe 使用 \"x\"表示不检查的个体值，使用 \"/\"作为分隔符。")]
         public string TargetMaxIVs { get; set; } = "";
 
-        [Category(StopConditions), Description("选择闪亮的类型来停止\nSelects the shiny type to stop on.")]
+        [Category(StopConditions), Description("选择宝可梦的闪光类型来停止")]
         public TargetShinyType ShinyTarget { get; set; } = TargetShinyType.DisableOption;
 
-        [Category(StopConditions), Description("只停在有证章的神奇宝贝上\nStop only on Pokémon that have a mark.")]
+        [Category(StopConditions), Description("只停在有证章的宝可梦上")]
         public bool MarkOnly { get; set; } = false;
 
-        [Category(StopConditions), Description("用逗号分隔的要忽略的标记列表。使用全称，例如：\"Uncommon Mark, Dawn Mark, Prideful Mark/\"\nList of marks to ignore separated by commas. Use the full name, e.g. \"Uncommon Mark, Dawn Mark, Prideful Mark\".")]
+        [Category(StopConditions), Description("需要忽略的证章列表，用逗号分隔。使用全称，例如：\"Uncommon Mark, Dawn Mark, Prideful Mark\"。")]
         public string UnwantedMarks { get; set; } = "";
 
-        [Category(StopConditions), Description("当遭遇机器人或化石机器人(仅在剑/盾中起作用)发现匹配的神奇宝贝时，按住捕获按钮，录制30秒的片段\nHolds Capture button to record a 30 second clip when a matching Pokémon is found by EncounterBot or Fossilbot.")]
+        [Category(StopConditions), Description("当遭遇机器人或化石机器人(仅在剑/盾中起作用)在发现匹配的宝可梦后，按住截图按钮，录制30秒的片段。")]
         public bool CaptureVideoClip { get; set; }
 
-        [Category(StopConditions), Description("遭遇机器人或化石机器人(仅在剑/盾中起作用)在匹配后，在按下捕获键之前要等待的额外时间，单位为毫秒\nExtra time in milliseconds to wait after an encounter is matched before pressing Capture for EncounterBot or Fossilbot.")]
+        [Category(StopConditions), Description("当遭遇机器人或化石机器人(仅在剑/盾中起作用)在发现匹配的宝可梦后，按下截图按钮之前要等待的额外时间（毫秒）。")]
         public int ExtraTimeWaitCaptureVideo { get; set; } = 10000;
 
-        [Category(StopConditions), Description("如果设置为TRUE，则同时匹配闪光类型和目标个体值设置。否则，寻找闪光类型或目标个体值的匹配\nIf set to TRUE, matches both ShinyTarget and TargetIVs settings. Otherwise, looks for either ShinyTarget or TargetIVs match.")]
+        [Category(StopConditions), Description("如果设置为True，则同时匹配闪光类型和目标个体值设置。否则，只寻找目标闪光类型或目标个体值的宝可梦。")]
         public bool MatchShinyAndIV { get; set; } = true;
 
-        [Category(StopConditions), Description("如果不是空的，所提供的字符串将被添加到发现结果的日志信息中，以对你指定的人进行Echo提醒。对于Discord，使用<@userIDnumber>来提及\nIf not empty, the provided string will be prepended to the result found log message to Echo alerts for whomever you specify. For Discord, use <@userIDnumber> to mention.")]
+        [Category(StopConditions), Description("如果不为空，则提供的字符串将添加在您指定对象的Echo警报结果日志消息中。对于Discord用户，使用<@userIDnumber>来提及。")]
         public string MatchFoundEchoMention { get; set; } = string.Empty;
 
         public static bool EncounterFound<T>(T pk, int[] targetminIVs, int[] targetmaxIVs, StopConditionSettings settings, IReadOnlyList<string>? marklist) where T : PKM
@@ -148,7 +148,7 @@ namespace SysBot.Pokemon
             {
                 var rstring = GetMarkName(r);
                 if (!string.IsNullOrEmpty(rstring))
-                    set += $"\nPokémon found to have ***{GetMarkName(r)}***!\n发现有证章的神奇宝贝";
+                    set += $"\n发现宝可梦携带证章：**{GetMarkName(r)}**!";
             }
             return set;
         }

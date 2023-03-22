@@ -13,14 +13,14 @@ namespace SysBot.Pokemon
         [Browsable(false)]
         public override bool Shuffled => Distribution.Shuffled;
 
-        [Category(FeatureToggle), Description("在这里设置您的交换机控制台语言，以便SWSH机器人正常工作。所有的控制台都应该使用相同的语言。")]
+        [Category(FeatureToggle), Description("在这里设置您的Switch主机语言，以便剑盾机器人正常工作。所有的控制台都应该使用相同的语言。")]
         public ConsoleLanguageParameter ConsoleLanguage { get; set; }
 
         [Category(Operation)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public QueueSettings Queues { get; set; } = new();
 
-        [Category(Operation), Description("增加额外的时间。\nAdd extra time for slower Switches.")]
+        [Category(Operation), Description("增加额外的时间")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public TimingSettings Timings { get; set; } = new();
 
@@ -30,7 +30,7 @@ namespace SysBot.Pokemon
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public TradeSettings Trade { get; set; } = new();
 
-        [Category(BotTrade), Description("闲置分配交易的设置\nSettings for idle distribution trades.")]
+        [Category(BotTrade), Description("闲置派送交易设置")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public DistributionSettings Distribution { get; set; } = new();
 
@@ -63,7 +63,7 @@ namespace SysBot.Pokemon
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public EggSettings Egg { get; set; } = new();
 
-        [Category(BotEncounter), Description("EggBot, FossilBot和EncounterBot的停止条件。\nStop conditions for EggBot, FossilBot, and EncounterBot.")]
+        [Category(BotEncounter), Description("蛋机器人，化石机器人和遭遇机器人的停止条件。")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public StopConditionSettings StopConditions { get; set; } = new();
 
@@ -72,11 +72,11 @@ namespace SysBot.Pokemon
         // Integration
 
 
-        [Category(Integration), Description("配置流资源的生成。\nConfigure generation of assets for streaming.")]
+        [Category(Integration), Description("配置流资源的生成")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public StreamSettings Stream { get; set; } = new();
 
-        [Category(Integration), Description("允许喜欢的用户以比不喜欢的用户更有利的位置加入队列。\nAllows favored users to join the queue with a more favorable position than unfavored users.")]
+        [Category(Integration), Description("允许受欢迎的用户以比不受欢迎的用户更有利的位置加入队列。")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public FavoredPrioritySettings Favoritism { get; set; } = new();
 

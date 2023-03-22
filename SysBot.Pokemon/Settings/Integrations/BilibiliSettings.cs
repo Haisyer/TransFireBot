@@ -8,7 +8,7 @@ namespace SysBot.Pokemon
     {
         private const string Startup = nameof(Startup);
 
-        public override string ToString() => "BILIBILI集成设置";
+        public override string ToString() => "bilibili整合设置";
 
         // Startup
 

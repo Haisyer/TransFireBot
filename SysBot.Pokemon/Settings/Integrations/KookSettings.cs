@@ -8,7 +8,7 @@ namespace SysBot.Pokemon
     {
         private const string Startup = nameof(Startup);
 
-        public override string ToString() => "Kook Integration Settings";
+        public override string ToString() => "Kook整合设置";
 
         // Startup
         [Category(Startup), Description("机器人鉴权Token")]

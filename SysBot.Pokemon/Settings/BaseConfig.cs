@@ -11,10 +11,10 @@ namespace SysBot.Pokemon
         protected const string Operation = nameof(Operation);
         private const string Debug = nameof(Debug);
 
-        [Category(FeatureToggle), Description("当启用时，机器人会在不处理任何东西时偶尔按下B按钮(以避免睡眠)。\nWhen enabled, the bot will press the B button occasionally when it is not processing anything (to avoid sleep).")]
+        [Category(FeatureToggle), Description("当启用时，机器人会在不处理任何东西时偶尔按下B按钮(以避免睡眠)。")]
         public bool AntiIdle { get; set; }
 
-        [Category(Debug), Description("在程序启动时跳过创建机器人;有助于测试集成。\nnSkips creating bots when the program is started; helpful for testing integrations.")]
+        [Category(Debug), Description("在程序启动时跳过创建机器人；有助于测试集成。")]
         public bool SkipConsoleBotCreation { get; set; }
 
         [Category(Operation)]
