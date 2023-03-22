@@ -9,35 +9,35 @@ namespace SysBot.Pokemon
     {
         private const string Counts = nameof(Counts);
         private const string Encounter = nameof(Encounter);
-        public override string ToString() => "Encounter Bot SWSH Settings";
+        public override string ToString() => "剑盾遭遇机器人设置";
 
-        [Category(Encounter), Description("The method by which the Line bot will encounter Pokémon.")]
+        [Category(Encounter), Description("Line机器人遇到宝可梦的方法。")]
         public EncounterMode EncounteringType { get; set; } = EncounterMode.VerticalLine;
 
-        [Category(Encounter), Description("When enabled, the bot will continue after finding a suitable match.")]
+        [Category(Encounter), Description("当启用后，机器人将在找到合适的匹配后继续工作。")]
         public ContinueAfterMatch ContinueAfterMatch { get; set; } = ContinueAfterMatch.StopExit;
 
-        [Category(Encounter), Description("When enabled, the screen will be turned off during normal bot loop operation to save power.")]
+        [Category(Encounter), Description("当启用后，在正常的机器人操作循环中，屏幕将被关闭，以节省电力。")]
         public bool ScreenOff { get; set; } = false;
 
         private int _completedWild;
         private int _completedLegend;
 
-        [Category(Counts), Description("Encountered Wild Pokémon")]
+        [Category(Counts), Description("遭遇的野生宝可梦")]
         public int CompletedEncounters
         {
             get => _completedWild;
             set => _completedWild = value;
         }
 
-        [Category(Counts), Description("Encountered Legendary Pokémon")]
+        [Category(Counts), Description("遭遇的传说宝可梦")]
         public int CompletedLegends
         {
             get => _completedLegend;
             set => _completedLegend = value;
         }
 
-        [Category(Counts), Description("When enabled, the counts will be emitted when a status check is requested.")]
+        [Category(Counts), Description("当启用后，当要求进行状态检查时，将发出计数。")]
         public bool EmitCountsOnStatusCheck { get; set; }
 
         public int AddCompletedEncounters() => Interlocked.Increment(ref _completedWild);
