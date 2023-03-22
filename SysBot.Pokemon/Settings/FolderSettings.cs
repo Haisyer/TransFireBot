@@ -18,11 +18,8 @@ namespace SysBot.Pokemon
         [Category(Files), Description("目的文件夹（dump）：所有接收到的PKM文件被转储到的地方。")]
         public string DumpFolder { get; set; } = string.Empty;
 
-        [Category(Files), Description("dodo批量交换根目录（tradefolder）")]
+        [Category(Files), Description("批量交换根目录（tradefolder）")]
         public string TradeFolder { get; set; } = string.Empty;
-
-        [Category(Files), Description("qq批量文件根目录（tradesavefile）")]
-        public string TradeSaveFile { get; set; } = string.Empty;
 
         [Category(Files), Description("截图根目录（screenshot）")]
         public string ScreenshotFolder{ get; set; } = string.Empty;
@@ -42,10 +39,6 @@ namespace SysBot.Pokemon
             var tradefolder = Path.Combine(path, "tradefolder");
             Directory.CreateDirectory(tradefolder);
             TradeFolder = tradefolder;
-
-            var tradesavefile = Path.Combine(path, "tradesavefile");
-            Directory.CreateDirectory(tradesavefile);
-            TradeSaveFile = tradesavefile;
 
             var screenshot = Path.Combine(path, "screenshot");
             Directory.CreateDirectory(screenshot);
