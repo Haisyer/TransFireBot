@@ -380,7 +380,9 @@ namespace SysBot.Pokemon.QQ
             {
                 var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
                 var pkm = sav.GetLegal(template, out var result);
-
+                var nickname = pkm.Nickname.ToLower();
+                if (nickname == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
+                    TradeExtensions<T>.EggTrade(pkm, template);
                 if (!pkm.CanBeTraded())
                 {
                     msg = $"取消派送, 官方禁止该宝可梦交易!";

@@ -207,9 +207,10 @@ namespace SysBot.Pokemon
          // pk = TrashBytes(pk);
             var la = new LegalityAnalysis(pk);
             var enc = la.EncounterMatch;
-          
 
-            pk.RelearnMoves = (ushort[])enc.GetSuggestedRelearn(pk);
+            Span<ushort> mov = stackalloc ushort[4];
+            enc.GetSuggestedRelearn(pk, mov);
+            pk.RelearnMoves = mov.ToArray();
             pk.SetSuggestedMoves();
 
             pk.Move1_PPUps = pk.Move2_PPUps = pk.Move3_PPUps = pk.Move4_PPUps = 0;
