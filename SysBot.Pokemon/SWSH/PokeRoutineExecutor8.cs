@@ -1,10 +1,10 @@
-﻿using System;
+﻿using PKHeX.Core;
+using SysBot.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using PKHeX.Core;
-using SysBot.Base;
+using System.Threading;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Pokemon.PokeDataOffsets;
 
@@ -15,6 +15,7 @@ namespace SysBot.Pokemon
     /// </summary>
     public abstract class PokeRoutineExecutor8 : PokeRoutineExecutor<PK8>
     {
+        protected PokeDataOffsets Offsets { get; } = new();
         protected PokeRoutineExecutor8(PokeBotState cfg) : base(cfg) { }
 
         private static uint GetBoxSlotOffset(int box, int slot) => BoxStartOffset + (uint)(BoxFormatSlotSize * ((30 * box) + slot));
@@ -80,17 +81,25 @@ namespace SysBot.Pokemon
 
         public async Task<SAV8SWSH> IdentifyTrainer(CancellationToken token)
         {
+            // Check if botbase is on the correct version or later.
+            await VerifyBotbaseVersion(token).ConfigureAwait(false);
+
             // Check title so we can warn if mode is incorrect.
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             if (title is not (SwordID or ShieldID))
                 throw new Exception($"{title} is not a valid SWSH title. Is your mode correct?");
+
+            // Verify the game version.
+            var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
+            if (!game_version.SequenceEqual(SWSHGameVersion))
+                throw new Exception($"Game version is not supported. Expected version {SWSHGameVersion}, and current game version is {game_version}.");
 
             Log("Grabbing trainer data of host console...");
             var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
             InitSaveData(sav);
 
             if (!IsValidTrainerData())
-                throw new Exception("Trainer data is not valid. Refer to the SysBot.NET wiki for bad or no trainer data.");
+                throw new Exception("Trainer data is not valid. Refer to the SysBot.NET wiki (https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting) to fix this error.");
             if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
                 throw new Exception("Text speed should be set to FAST. Fix this for correct operation.");
 
@@ -143,12 +152,12 @@ namespace SysBot.Pokemon
             // Confirm Code outside of this method (allow synchronization)
         }
 
-        public async Task EnsureConnectedToYComm(PokeTradeHubConfig config, CancellationToken token)
+        public async Task EnsureConnectedToYComm(ulong overworldOffset, PokeTradeHubConfig config, CancellationToken token)
         {
             if (!await IsGameConnectedToYComm(token).ConfigureAwait(false))
             {
                 Log("Reconnecting to Y-Comm...");
-                await ReconnectToYComm(config, token).ConfigureAwait(false);
+                await ReconnectToYComm(overworldOffset, config, token).ConfigureAwait(false);
             }
         }
 
@@ -159,13 +168,13 @@ namespace SysBot.Pokemon
             return data[0] == 1;
         }
 
-        public async Task ReconnectToYComm(PokeTradeHubConfig config, CancellationToken token)
+        public async Task ReconnectToYComm(ulong overworldOffset, PokeTradeHubConfig config, CancellationToken token)
         {
             // Press B in case a Error Message is Present
             await Click(B, 2000, token).ConfigureAwait(false);
 
             // Return to Overworld
-            if (!await IsOnOverworld(config, token).ConfigureAwait(false))
+            if (!await IsOnOverworld(overworldOffset, token).ConfigureAwait(false))
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -252,7 +261,7 @@ namespace SysBot.Pokemon
                 await Click(A, 1_000, token).ConfigureAwait(false);
 
             var timer = 60_000;
-            while (!await IsOnOverworld(config, token).ConfigureAwait(false) && !await IsInBattle(token).ConfigureAwait(false))
+            while (!await IsOnOverworldTitle(token).ConfigureAwait(false) && !await IsInBattle(token).ConfigureAwait(false))
             {
                 await Task.Delay(0_200, token).ConfigureAwait(false);
                 timer -= 0_250;
@@ -261,7 +270,7 @@ namespace SysBot.Pokemon
                 if (timer <= 0 && !timing.AvoidSystemUpdate)
                 {
                     Log("Still not in the game, initiating rescue protocol!");
-                    while (!await IsOnOverworld(config, token).ConfigureAwait(false) && !await IsInBattle(token).ConfigureAwait(false))
+                    while (!await IsOnOverworldTitle(token).ConfigureAwait(false) && !await IsInBattle(token).ConfigureAwait(false))
                         await Click(A, 6_000, token).ConfigureAwait(false);
                     break;
                 }
@@ -295,10 +304,18 @@ namespace SysBot.Pokemon
             return dataint is CurrentScreen_Box1 or CurrentScreen_Box2;
         }
 
-        public async Task<bool> IsOnOverworld(PokeTradeHubConfig config, CancellationToken token)
+        // Only used to check if we made it off the title screen.
+        private async Task<bool> IsOnOverworldTitle(CancellationToken token)
         {
-            // Uses an appropriate OverworldOffset for the console language.
-            var data = await Connection.ReadBytesAsync(GetOverworldOffset(config.ConsoleLanguage), 1, token).ConfigureAwait(false);
+            var (valid, offset) = await ValidatePointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
+            if (!valid)
+                return false;
+            return await IsOnOverworld(offset, token).ConfigureAwait(false);
+        }
+
+        public async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
+        {
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
             return data[0] == 1;
         }
 
@@ -313,6 +330,23 @@ namespace SysBot.Pokemon
             var textSpeedByte = await Connection.ReadBytesAsync(TextSpeedOffset, 1, token).ConfigureAwait(false);
             var data = new[] { (byte)((textSpeedByte[0] & 0xFC) | (int)speed) };
             await Connection.WriteBytesAsync(data, TextSpeedOffset, token).ConfigureAwait(false);
+        }
+
+        // Switches to box 1, then clears slot1 to prep fossil and egg bots.
+        public async Task SetupBoxState(IDumper DumpSetting, CancellationToken token)
+        {
+            await SetCurrentBox(0, token).ConfigureAwait(false);
+
+            var existing = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
+            if (existing.Species != 0 && existing.ChecksumValid)
+            {
+                Log("Destination slot is occupied! Dumping the Pokémon found there...");
+                DumpPokemon(DumpSetting.DumpFolder, "saved", existing);
+            }
+
+            Log("Clearing destination slot to start the bot.");
+            PK8 blank = new();
+            await SetBoxPokemon(blank, 0, 0, token).ConfigureAwait(false);
         }
     }
 }

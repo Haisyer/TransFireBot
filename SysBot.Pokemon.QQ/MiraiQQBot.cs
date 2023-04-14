@@ -24,8 +24,7 @@ namespace SysBot.Pokemon.QQ
 
         internal static TradeQueueInfo<T> Info => Hub.Queues.Info;
         private readonly MiraiBot Client;
-        internal static QQSettings Settings = default!;
-        internal static ConcurrentDictionary<string, int> TradeCodeDictionary = new();
+        internal static QQSettings Settings = default!;   
 
         /// <summary>
         /// QQBot初始化
@@ -54,34 +53,6 @@ namespace SysBot.Pokemon.QQ
                 if (receiver.GroupId == Settings.GroupId)
                     modules.Raise(receiver);
             });
-
-            Client.MessageReceived.SubscribeFriendMessage(receiver =>
-            {
-                var tradeCode = receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text ?? "";
-                if (Regex.IsMatch(tradeCode, "\\d{8}"))
-                {
-                    TradeCodeDictionary[receiver.Sender.Id] = int.Parse(tradeCode);
-                }
-                if (tradeCode.Contains("清除"))
-                {
-                    TradeCodeDictionary.TryRemove(receiver.Sender.Id, out var value);
-                }
-            });
-
-            Client.MessageReceived.OfType<TempMessageReceiver>()
-                .Subscribe(receiver =>
-                {
-                    var tradeCode = receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text ?? "";
-                    if (Regex.IsMatch(tradeCode, "\\d{8}"))
-                    {
-                        TradeCodeDictionary[receiver.Sender.Id] = int.Parse(tradeCode);
-                    }
-                    if (tradeCode.Contains("清除"))
-                    {
-                        TradeCodeDictionary.TryRemove(receiver.Sender.Id, out var value);
-                    }
-                });
-
 
             var GroupId = Settings.GroupId;
             Task.Run(async () =>

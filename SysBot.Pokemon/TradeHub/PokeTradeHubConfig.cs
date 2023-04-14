@@ -13,9 +13,6 @@ namespace SysBot.Pokemon
         [Browsable(false)]
         public override bool Shuffled => Distribution.Shuffled;
 
-        [Category(FeatureToggle), Description("在这里设置您的Switch主机语言，以便剑盾机器人正常工作。所有的控制台都应该使用相同的语言。")]
-        public ConsoleLanguageParameter ConsoleLanguage { get; set; }
-
         [Category(Operation)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public QueueSettings Queues { get; set; } = new();
@@ -55,15 +52,7 @@ namespace SysBot.Pokemon
         [Category(BotEncounter)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public RaidSettingsSV RaidSV { get; set; } = new();
-        [Category(BotEncounter)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public FossilSettings FossilSWSH { get; set; } = new();
 
-        [Category(BotEncounter)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public EggSettings Egg { get; set; } = new();
-
-        [Category(BotEncounter), Description("蛋机器人，化石机器人和遭遇机器人的停止条件。")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public StopConditionSettings StopConditions { get; set; } = new();
 

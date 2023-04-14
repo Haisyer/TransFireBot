@@ -111,9 +111,7 @@ namespace SysBot.Pokemon.QQ
             }
 
             //var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
-            var code = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(qq)
-                   ? MiraiQQBot<T>.TradeCodeDictionary[qq]
-                   : MiraiQQBot<T>.Info.GetRandomTradeCode();
+            var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
             var __ = AddToTradeQueue(new T(), code, ulong.Parse(qq), nickName, groupId, RequestSignificance.Favored,
                 PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, modId);
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(message).Build());
@@ -183,9 +181,7 @@ namespace SysBot.Pokemon.QQ
                 MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain($"\n开始批量交换{rawPkms.Count}只").Build());
             }
             // var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
-            var code = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(qq)
-                    ? MiraiQQBot<T>.TradeCodeDictionary[qq]
-                    : MiraiQQBot<T>.Info.GetRandomTradeCode();
+            var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
             var __ = AddToTradeQueue(new T(), code, ulong.Parse(qq), nickName, groupId, RequestSignificance.Favored,
              PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, false);
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(message).Build());
@@ -256,9 +252,7 @@ namespace SysBot.Pokemon.QQ
             }
 
             // var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
-            var code = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(qq)
-                    ? MiraiQQBot<T>.TradeCodeDictionary[qq]
-                    : MiraiQQBot<T>.Info.GetRandomTradeCode();
+            var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
             var __ = AddToTradeQueue(new T(), code, ulong.Parse(qq), nickName, groupId, RequestSignificance.Favored,
                PokeRoutineType.LinkTrade, out string message, qqNumberPath, true, false);
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(message).Build());
@@ -270,9 +264,7 @@ namespace SysBot.Pokemon.QQ
         public static void StartTradeWithoutCheck(T pkm, string qq, string nickName, string groupId,bool ModID)
         {
             // var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
-            var code = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(qq)
-                     ? MiraiQQBot<T>.TradeCodeDictionary[qq]
-                     : MiraiQQBot<T>.Info.GetRandomTradeCode(); 
+            var code = MiraiQQBot<T>.Info.GetRandomTradeCode(); 
             var __ = AddToTradeQueue(pkm, code, ulong.Parse(qq), nickName, groupId, RequestSignificance.Favored,
                 PokeRoutineType.LinkTrade, out string message, "", false, ModID);
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(message).Build());
@@ -284,9 +276,7 @@ namespace SysBot.Pokemon.QQ
         public static void StartDump(string qq, string nickName, string groupId)
         {
             //var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
-            var code = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(qq)
-                   ? MiraiQQBot<T>.TradeCodeDictionary[qq]
-                   : MiraiQQBot<T>.Info.GetRandomTradeCode();
+            var code = MiraiQQBot<T>.Info.GetRandomTradeCode();
             var __ = AddToTradeQueue(new T(), code, ulong.Parse(qq), nickName, groupId, RequestSignificance.Favored,
                 PokeRoutineType.Dump, out string message, "", false, false);
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(qq).Plain(message).Build());

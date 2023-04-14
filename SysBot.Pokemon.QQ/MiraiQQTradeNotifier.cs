@@ -162,47 +162,26 @@ namespace SysBot.Pokemon.QQ
             var message_temp = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
             var message_friend = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
             var message_code = $" 准备交换\n连接密码是你私信我的\n我的名字: {routine.InGameName}";
-            var message_password = $" 连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";
-            var ans = MiraiQQBot<T>.TradeCodeDictionary.ContainsKey(info.Trainer.ID.ToString());
+            var message_password = $" 连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";        
 
             // 下面所有模式均可以私聊机器人交换密码，机器人将使用你发送的交换密码
             switch (method)
             {
                 //由机器人群发交换密码
-                case 1:
-                    if (ans)
-                    {
-                        MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_code).Build());
-                    }
-                    else
-                    {
+                case 1:           
                         MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_group).Build());
-                    }
-                    break;
+                        break;
                 //由机器人向所有人私发交换密码
-                case 2:
-                    if (ans)
-                    {
-                        MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_code).Build());
-                    }
-                    else
-                    {
+                case 2:                   
                         MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_temp).Build());
                         MiraiQQBot<T>.SendTempMessage(Info.ID.ToString(), message_password);
-                    }
-                    break;
+                        break;
                 //由机器人向其好友私发交换密码，未加好友会发群聊
                 case 3:
-                    if (ans)
-                    {
-                        MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_code).Build());
-                    }
-                    else
-                    {
                         var qqNumber = info.Trainer.ID.ToString();
                         //var flag = CheckIsMyFriend(qqNumber);
                         bool flag = CheckIsMyFriend(qqNumber);
-                        if (flag == true)
+                        if (flag)
                         {
                             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_friend).Build());
                             MiraiQQBot<T>.SendFriendMessage(Info.ID.ToString(), message_password);
@@ -212,20 +191,12 @@ namespace SysBot.Pokemon.QQ
                             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain($"不是好友").Build());
                             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_group).Build());
                         }
-
-                    }
-                    break;
+                        break;
                 //其他情况默认群发
                 default:
-                    if (ans)
-                    {
-                        MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_code).Build());
-                    }
-                    else
-                    {
+
                         MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At($"{info.Trainer.ID}").Plain(message_group).Build());
-                    }
-                    break;
+                        break;
             }
         }
         /// <summary>

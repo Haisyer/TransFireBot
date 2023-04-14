@@ -1,10 +1,10 @@
-﻿using System;
+﻿using PKHeX.Core;
+using SysBot.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using PKHeX.Core;
-using SysBot.Base;
+using System.Threading;
 using static SysBot.Pokemon.PokeDataOffsetsSV;
 using static SysBot.Base.SwitchButton;
 
@@ -72,16 +72,24 @@ namespace SysBot.Pokemon
 
         public async Task<SAV9SV> IdentifyTrainer(CancellationToken token)
         {
+            // Check if botbase is on the correct version or later.
+            await VerifyBotbaseVersion(token).ConfigureAwait(false);
+
             // Check title so we can warn if mode is incorrect.
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             if (title is not (ScarletID or VioletID))
-                throw new Exception($"{title} is not a valid SV title. Is your mode correct?");
+                throw new Exception($"{title} 不是有效的SV标题.你的模式选择正确吗?");
+
+            // Verify the game version.
+            var game_version = await SwitchConnection.GetGameInfo("version", token).ConfigureAwait(false);
+            if (!game_version.SequenceEqual(SVGameVersion))
+                throw new Exception($"游戏版本不支持. 期望的版本 {SVGameVersion},当前的游戏版本 {game_version}.");
 
             var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
             InitSaveData(sav);
 
             if (!IsValidTrainerData())
-                throw new Exception("训练家数据无效.请参考SysBot.NET维基，了解不良或无训练家数据的情况。");
+                throw new Exception("训练家数据无效 请参考SysBot.NET维基(https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting)来了修复这个错误.");
             if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
                 throw new Exception("文本速度应设置为快速。为了正确的操作，请修复这个问题。");
 

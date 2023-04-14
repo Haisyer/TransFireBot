@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using PKHeX.Core;
+﻿using PKHeX.Core;
+using SysBot.Base;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
-using SysBot.Base;
 
 namespace SysBot.Pokemon
 {
@@ -13,8 +13,8 @@ namespace SysBot.Pokemon
         private const string FeatureToggle = nameof(FeatureToggle);
         public override string ToString() => "剑盾团体战机器人设置";
 
-        [Category(Hosting), Description("团体战开始前等待的最小秒数。取值范围是0 ~ 180秒。")]
-        public int MinTimeToWait { get; set; } = 90;
+        [Category(Hosting), Description("团体战开始前等待的秒数。取值范围是0 ~ 180秒。")]
+        public int TimeToWait { get; set; } = 90;
 
         [Category(Hosting), Description("团体战的最小连接密码. 将其设置为-1，则表示没有连接密码。")]
         public int MinRaidCode { get; set; } = 8180;
