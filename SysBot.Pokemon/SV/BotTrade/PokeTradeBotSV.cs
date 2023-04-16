@@ -250,7 +250,7 @@ namespace SysBot.Pokemon
             if (!StartFromOverworld && !await IsConnectedOnline(ConnectedOffset, token).ConfigureAwait(false))
             {
                 await RecoverToOverworld(token).ConfigureAwait(false);
-                 if (!await ConnectAndEnterPortal(token).ConfigureAwait(false))
+                if (!await ConnectAndEnterPortal(token).ConfigureAwait(false))
                 {
                     await RecoverToOverworld(token).ConfigureAwait(false);
                     return PokeTradeResult.RecoverStart;
@@ -289,8 +289,8 @@ namespace SysBot.Pokemon
                 if (poke.Type != PokeTradeType.Random)
                     Hub.Config.Stream.StartEnterCode(this);
                 await Task.Delay(Hub.Config.Timings.ExtraTimeOpenCodeEntry, token).ConfigureAwait(false);
-               
-               var code = poke.Code;
+
+                var code = poke.Code;
                 Log($"正在输入连接交换密码: {code:0000 0000}");
                 await EnterLinkCode(code, Hub.Config, token).ConfigureAwait(false);
                 if (Hub.Config.Dodo.DodoScreenshot)
@@ -362,7 +362,7 @@ namespace SysBot.Pokemon
             var trainerNID = await GetTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
             RecordUtil<PokeTradeBot>.Record($"找到连接交换对象\tNID:{trainerNID:X16}\tOT_Name:{tradePartner.TrainerName}\t平台昵称:{poke.Trainer.TrainerName}\t平台ID:{poke.Trainer.ID}\t序列号:{poke.ID}\tEC:{toSend.EncryptionConstant:X8}");
             Log($"找到连接交换对象: {tradePartner.TrainerName}-TID:{tradePartner.TID7}-SID:{tradePartner.SID7}(任天堂网络ID: {trainerNID})");
-          
+
             var partnerCheck = CheckPartnerReputation(poke, trainerNID, tradePartner.TrainerName);
             if (partnerCheck != PokeTradeResult.Success)
             {
@@ -384,16 +384,17 @@ namespace SysBot.Pokemon
             }
             int waittime = 25_000;
             List<PK9> ls = new List<PK9>();
-            if (poke.Type == PokeTradeType.MutiTrade|| poke.DeletFile)
+            if (poke.Type == PokeTradeType.MutiTrade || poke.DeletFile)
             {
                 waittime = 375_000;
                 string directory = Path.Combine(TradeF, poke.Path);
                 string[] fileEntries = Directory.GetFiles(directory);
-                Log($"{fileEntries.Length}");
+                Array.Sort(fileEntries);
+                Log($"读取到的文件数量:{fileEntries.Length}");
                 foreach (string fileName in fileEntries)
                 {
                     var data = File.ReadAllBytes(fileName);
-
+                   // LogUtil.LogInfo($"读取到文件:{fileName}",nameof(PokeTradeBotSV));
                     var pkt = EntityFormat.GetFromBytes(data);
                     if (pkt != null)
                     {
@@ -402,7 +403,7 @@ namespace SysBot.Pokemon
                             ls.Add(pk2);
                     }
                 }
-                if (Directory.Exists(directory)&&poke.DeletFile)
+                if (Directory.Exists(directory) && poke.DeletFile)
                 {
                     foreach (var item in Directory.GetFiles(directory))
                     {
@@ -423,9 +424,14 @@ namespace SysBot.Pokemon
                 counting++;
                 toSend = send;
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);//先写一次箱子
+                //if (ls.Count > 1)
+                //{
+                //  poke.SendNotification(this, $"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}");
+                //  LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}",nameof(PokeTradeBotSV));
+                //}
                 if (Hub.Config.Legality.UseTradePartnerInfo)
                 {
-                    await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav,poke.MODID, token);
+                    await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, poke.MODID, token);
                 }
                 Log("正在等待对方提供一只宝可梦...");
                 // Wait for user input...
@@ -454,7 +460,11 @@ namespace SysBot.Pokemon
                     await ExitTradeToPortal(false, token).ConfigureAwait(false);
                     return tradeResult;
                 }
-
+                if (ls.Count > 1)
+                {
+                    poke.SendNotification(this, $"批量:第{counting}只宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}，交换完成");
+                    LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}", nameof(PokeTradeBotSV));
+                }
                 if (token.IsCancellationRequested)
                 {
                     StartFromOverworld = true;
@@ -767,7 +777,7 @@ namespace SysBot.Pokemon
                     Log("加载宝可站失败，重新启动游戏。");
                     if (!await RecoverToOverworld(token).ConfigureAwait(false))
                         await RestartGameSV(token).ConfigureAwait(false);
-                    await ConnectAndEnterPortal( token).ConfigureAwait(false);
+                    await ConnectAndEnterPortal(token).ConfigureAwait(false);
                     return;
                 }
             }
@@ -830,9 +840,9 @@ namespace SysBot.Pokemon
                     DumpPokemon(DumpSetting.DumpFolder, subfolder, pk); // received
                 }
 
-            //    var la = new LegalityAnalysis(pk);
-            //    var verbose = $"```{la.Report(true)}```";
-            //    Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
+                //    var la = new LegalityAnalysis(pk);
+                //    var verbose = $"```{la.Report(true)}```";
+                //    Log($"显示的宝可梦是: {(la.Valid ? "Valid" : "Invalid")}.");
 
                 ctr++;
                 var msg = $"检测第{n}只";
@@ -1107,7 +1117,7 @@ namespace SysBot.Pokemon
             Name = name,
             Comment = $"自动添加在 {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
         };
-        private  string GetDodoURL(byte[] bytes)
+        private string GetDodoURL(byte[] bytes)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -1116,14 +1126,14 @@ namespace SysBot.Pokemon
                 contentFormData.Add(new ByteArrayContent(bytes), "file", "image.jpg");
                 var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
                 var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
-                var a=result.Split("https");
+                var a = result.Split("https");
                 var b = a[1].Split("jpg");
                 var c = "https" + b[0] + "jpg";
                 return c;
             }
-            
+
         }
-        private async Task<bool> SetBoxPkmWithSwappedIDDetailsSV(PK9 toSend, TradeMyStatus tradePartner, SAV9SV sav,bool ModId, CancellationToken token)
+        private async Task<bool> SetBoxPkmWithSwappedIDDetailsSV(PK9 toSend, TradeMyStatus tradePartner, SAV9SV sav, bool ModId, CancellationToken token)
         {
             if (toSend.Species == (ushort)Species.Ditto)
             {
@@ -1145,7 +1155,7 @@ namespace SysBot.Pokemon
             {
                 if (toSend.Species == (ushort)Species.Koraidon)
                 {
-                    cln.Version =(int) GameVersion.SL;
+                    cln.Version = (int)GameVersion.SL;
                     Log($"故勒顿，强制修改版本为朱");
 
                 }
@@ -1176,7 +1186,7 @@ namespace SysBot.Pokemon
                 };
                 Log($"是蛋,修改昵称");
             }
-            if(toSend.Met_Location==Locations.TeraCavern9&&toSend.IsShiny)
+            if (toSend.Met_Location == Locations.TeraCavern9 && toSend.IsShiny)
             {
                 cln.PID = (((uint)(cln.TID16 ^ cln.SID16) ^ (cln.PID & 0xFFFF) ^ 1u) << 16) | (cln.PID & 0xFFFF);
             }
