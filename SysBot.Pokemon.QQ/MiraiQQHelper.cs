@@ -89,7 +89,7 @@ namespace SysBot.Pokemon.QQ
                 else
                 {
                     LogUtil.LogInfo($"中文批量:第{i + 1}只:\n{pss}", nameof(MiraiQQHelper<T>));
-                    File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", pkm.Data);
+                    File.WriteAllBytes(userpath + @"\" + $"第{i + 1:000}只.pk9", pkm.Data);
                    
                 }
             }
@@ -152,7 +152,7 @@ namespace SysBot.Pokemon.QQ
                 else
                 {
                     LogUtil.LogInfo($"文件批量:第{i + 1}只:\n{GameInfo.GetStrings("zh").Species[rawPkms[i].Species]}", nameof(MiraiQQHelper<T>));
-                    File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", rawPkms[i].Data);
+                    File.WriteAllBytes(userpath + @"\" + $"第{i + 1:000}只.pk9", rawPkms[i].Data);
                     pokemonMessage += $"\n第{i + 1}只,{GameInfo.GetStrings("zh").Species[rawPkms[i].Species]}";
                     
                     //防止qq单条消息字数过多发送失败
@@ -231,7 +231,7 @@ namespace SysBot.Pokemon.QQ
                 else
                 {
                     LogUtil.LogInfo($"ps批量:第{i + 1}只:\n{pss}", nameof(MiraiQQHelper<T>));
-                    File.WriteAllBytes(userpath + @"\" + $"第{i + 1}只.pk9", pkm.Data);
+                    File.WriteAllBytes(userpath + @"\" + $"第{i + 1:000}只.pk9", pkm.Data);
                 }
             }
             if (invalidCount == psArray.Count)
@@ -259,7 +259,7 @@ namespace SysBot.Pokemon.QQ
         }
 
         /// <summary>
-        /// 不经过合法检查的交换
+        /// 还未经过合法检查的交换
         /// </summary>
         public static void StartTradeWithoutCheck(T pkm, string qq, string nickName, string groupId,bool ModID)
         {

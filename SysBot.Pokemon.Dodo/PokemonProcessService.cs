@@ -81,7 +81,7 @@ namespace SysBot.Pokemon.Dodo
                 islandid = eventBody.IslandSourceId,
                 nickName = eventBody.Personal.NickName,
             };
-            if (Count>100)
+            if (Count > 100)
             {
                 Count = 0;
             }
@@ -93,6 +93,10 @@ namespace SysBot.Pokemon.Dodo
             var Roleoutput = DodoBot<TP>.OpenApiService.GetMemberRoleList(Roleinput);
             bool VipRole = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Dodo.VipRole);
             bool BatchRole = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Dodo.BatchRole);
+            string fileType = "";
+            long fileSize;
+            List<PK9> pkms = new(); 
+
             if (eventBody.MessageBody is MessageBodyFile messageBodyFile)
             {
                 if (!DodoBot<TP>.Info.Hub.Config.Legality.AllowUseFile)
@@ -102,26 +106,60 @@ namespace SysBot.Pokemon.Dodo
                 }
                 else
                 {
-                    if (!ValidFileSize(messageBodyFile.Size ?? 0) || !ValidFileName(messageBodyFile.Name))
+
+                    fileType = ValidFileName(messageBodyFile.Name);
+                    fileSize = messageBodyFile.Size ?? 0;
+                    if (!JudgeFile(fileType, fileSize))
                     {
                         DodoBot<TP>.SendChannelMessage("非法文件", eventBody.ChannelId);
                         return;
                     }
+
                     using var client = new HttpClient();
                     var downloadBytes = client.GetByteArrayAsync(messageBodyFile.Url).Result;
-                    var p = GetPKM(downloadBytes);
-                    if (p is TP pkm)
+                    var rawPkms = bin2List(downloadBytes);
+                    if (rawPkms.Count <1)
                     {
-                        if (VipRole)
-                        {
-                            DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                            DodoHelper<TP>.StartTrade(pkm, parameter, false, Count);
-                            Count++;
-                        }
-                        else
-                            DodoHelper<TP>.StartTrade(pkm, parameter);
+                        DodoBot<TP>.SendChannelMessage("不要发空箱子！", eventBody.ChannelId);
+                        return;
                     }
-
+                    else if (rawPkms.Count > 1  && !BatchRole)
+                   {
+                        DodoBot<TP>.SendChannelMessage("你不是VIP不能批量！", eventBody.ChannelId);
+                        return;
+                   }
+                   else if (rawPkms.Count == 1)
+                   {
+                        var p = GetPKM(downloadBytes);
+                        if (p is TP pkm)
+                        {
+                            if (VipRole)
+                            {
+                                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
+                                DodoHelper<TP>.StartTrade(pkm, parameter, false, Count);
+                                Count++;
+                            }
+                            else
+                            {
+                                DodoHelper<TP>.StartTrade(pkm, parameter);
+                            }
+                        }
+                            return;
+                   }
+                    else if(DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber <= 1)
+                    {
+                        DodoBot<TP>.SendChannelMessage("请联系群主将MutiMaxNumber设为大于1的数", eventBody.ChannelId);
+                        return;
+                    }
+                    else if (rawPkms.Count > DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber)
+                    {
+                        DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"超出数量限制{DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber}", eventBody.ChannelId);
+                        return;
+                    }
+                    var subpath = eventBody.DodoSourceId;
+                    string userpath = DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder + @"\" + subpath;
+                           DodoHelper<TP>.MultiFileTrade(rawPkms, parameter, userpath);
+                    
                     return;
                 }
             }
@@ -144,16 +182,16 @@ namespace SysBot.Pokemon.Dodo
                 if (VipRole)
                 {
                     DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
-                    DodoHelper<TP>.StartTrade(content, parameter, false,Count);
+                    DodoHelper<TP>.StartTrade(content, parameter, false, Count);
                     Count++;
                 }
                 else
                 {
                     DodoHelper<TP>.StartTrade(content, parameter);
-                    
+
                 }
                 return;
-            } 
+            }
             else if (content.Trim().StartsWith("检测"))
             {
                 DodoHelper<TP>.StartDump(parameter);
@@ -161,7 +199,7 @@ namespace SysBot.Pokemon.Dodo
             }
             else if (content.Trim().StartsWith("批量"))
             {
-                if(!BatchRole)
+                if (!BatchRole)
                 {
                     DodoBot<TP>.SendChannelMessage($"你不是VIP不能批量！", eventBody.ChannelId);
                     return;
@@ -176,7 +214,14 @@ namespace SysBot.Pokemon.Dodo
                         if (fileEntries.Length > 0)
                         {
                             DodoBot<TP>.SendChannelMessage($"找到{r[1]}", eventBody.ChannelId);
-                            DodoHelper<TP>.StartMutiTrade(parameter, r[1],false);
+                            if (VipRole)
+                            {
+                                DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), "尊贵的VIP用户,请走VIP通道", eventBody.ChannelId);
+                                DodoHelper<TP>.StartMutiTrade(parameter, r[1], false, false, Count);
+                                Count++;
+                            }
+                            else
+                                DodoHelper<TP>.StartMutiTrade(parameter, r[1], false);
                         }
                         else
                         {
@@ -225,46 +270,17 @@ namespace SysBot.Pokemon.Dodo
             #endregion
             //   LogUtil.LogInfo(content, LogIdentity);
             var Mutips = Regex.Split(content, "[+]+"); ;
-            if (Mutips.Length > 1) 
+            if (Mutips.Length > 1)
             {
                 if (!BatchRole)
                 {
                     DodoBot<TP>.SendChannelMessage($"你不是VIP不能批量！", eventBody.ChannelId);
                     return;
                 }
-                int i = 0;
-                int j = 0;
                 var subpath = eventBody.DodoSourceId;
                 var userpath = DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder + @"\" + subpath;
-                Directory.CreateDirectory(DodoBot<TP>.Info.Hub.Config.Folder.TradeFolder+@"\"+ subpath);
-                foreach (var p in Mutips)
-                {
-                    i++;
-                    var pss = ShowdownTranslator<TP>.Chinese2Showdown(p);
-                    LogUtil.LogInfo($"收到命令\n{pss}\n", LogIdentity);
-                    if (DodoHelper<TP>.CheckAndGetPkm(pss, subpath, out var msg, out var pk, out var id))
-                    {
-                        File.WriteAllBytes(userpath + @"\" + $"第{i}只.pk9", pk.Data);
-                        LogUtil.LogInfo(msg, LogIdentity);
-                    }
-                    else
-                    {
-                        DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"第{i}只非法", eventBody.ChannelId);
-                        j++;
-                    }
-                    if(i> DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber)
-                    {
-                        DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"超出数量限制{DodoBot<TP>.Info.Hub.Config.Queues.MutiMaxNumber}",eventBody.ChannelId);
-                        return;
-                    }
-                }
-                if(i==j)
-                {
-                    DodoBot<TP>.SendChannelAtMessage(ulong.Parse(eventBody.DodoSourceId), $"全非法,换个屁", eventBody.ChannelId);
-                    return;
-                }
-                DodoHelper<TP>.StartTrade(parameter, subpath, true);
-                content = null;
+                DodoHelper<TP>.MultiChineseCommandTrade(Mutips,parameter,subpath,userpath);
+                return;
             }
             var ps = ShowdownTranslator<TP>.Chinese2Showdown(content);
             if (!string.IsNullOrWhiteSpace(ps))
@@ -299,7 +315,7 @@ namespace SysBot.Pokemon.Dodo
                 DodoBot<TP>.SendChannelMessage($"{Welcome}", eventBody.ChannelId);
             }
         }
-      
+
         public string GetQueueCheckResultMessage(QueueCheckResult<TP> result)
         {
             if (!result.InQueue || result.Detail is null)
@@ -337,14 +353,35 @@ namespace SysBot.Pokemon.Dodo
             return false;
         }
 
-        private static bool ValidFileName(string fileName)
+        private static string ValidFileName(string fileName)
         {
-            return (typeof(TP) == typeof(PK8) && fileName.EndsWith("pk8", StringComparison.OrdinalIgnoreCase)
-                    || typeof(TP) == typeof(PB8) && fileName.EndsWith("pb8", StringComparison.OrdinalIgnoreCase)
-                    || typeof(TP) == typeof(PA8) && fileName.EndsWith("pa8", StringComparison.OrdinalIgnoreCase)
-                    || typeof(TP) == typeof(PK9) && fileName.EndsWith("pk9", StringComparison.OrdinalIgnoreCase));
+            string fileType = "error";
+            if (typeof(TP) == typeof(PK8) && fileName.EndsWith("pk8", StringComparison.OrdinalIgnoreCase))
+                fileType = "pk8";
+            if (typeof(TP) == typeof(PB8) && fileName.EndsWith("pb8", StringComparison.OrdinalIgnoreCase))
+                fileType = "pb8";
+            if (typeof(TP) == typeof(PA8) && fileName.EndsWith("pa8", StringComparison.OrdinalIgnoreCase))
+                fileType = "pa8";
+            if (typeof(TP) == typeof(PK9) && fileName.EndsWith("pk9", StringComparison.OrdinalIgnoreCase))
+                fileType = "pk9";
+            if (typeof(TP) == typeof(PK9) && fileName.EndsWith("bin", StringComparison.OrdinalIgnoreCase))
+                fileType = "bin9";
+            return fileType;
         }
+        private static bool JudgeFile(string filetype, long filesize)
+        {
+            if (filetype == "pk8" || filetype == "pb8" || filetype == "pk9")
+                return filesize.Equals(344);
+            if (filetype == "pa8")
+                return filesize.Equals(376);
+            if (filetype == "bin9")
+            {
+                if (filesize.Equals(10320) || filesize.Equals(330240))
+                    return true;
+            }
 
+            return false;
+        }
         private static PKM GetPKM(byte[] bytes)
         {
             if (typeof(TP) == typeof(PK8)) return new PK8(bytes);
@@ -353,11 +390,34 @@ namespace SysBot.Pokemon.Dodo
             else if (typeof(TP) == typeof(PK9)) return new PK9(bytes);
             return null;
         }
-
+       
         public override void MessageReactionEvent(
             EventSubjectOutput<EventSubjectDataBusiness<EventBodyMessageReaction>> input)
         {
             // Do nothing
+        }
+
+
+        //test
+         private static List<PK9> bin2List(byte[] bb)
+        {
+            int count = 344;
+            int times = bb.Length % count == 0 ? (bb.Length / count) : (bb.Length / count + 1);
+            List<PK9> pkms = new();
+            for (var i = 0; i < times; i++)
+            {
+                int start = i * count;
+                int end = (start + count) > bb.Length ? bb.Length : (start + count);
+                PK9 pk9 = new(bb[start..end]);
+
+                if (pk9.Species > 0)
+                {
+                    if (pk9.Valid || DodoBot<TP>.Info.Hub.Config.Legality.FileillegalMod)
+                        pkms.Add(pk9);
+                }
+
+            }
+            return pkms;
         }
     }
 }

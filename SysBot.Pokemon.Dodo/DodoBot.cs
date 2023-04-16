@@ -44,7 +44,7 @@ namespace SysBot.Pokemon.Dodo
             {
                 StartDistribution();
                 await openEventService.ReceiveAsync();
-                
+
             });
         }
 
@@ -64,7 +64,7 @@ namespace SysBot.Pokemon.Dodo
                 Msg = "本频道可以上传文件";
             }
             Task.Delay(1_000).ConfigureAwait(false);
-            
+
 
             if (typeof(T) == typeof(PK8))
             {
@@ -83,8 +83,8 @@ namespace SysBot.Pokemon.Dodo
                 SendChannelMessage($"当前版本为朱紫,{Msg}", channelId);
             }
         }
-     
-            public static void SendChannelMessage(string message, string channelId)
+
+        public static void SendChannelMessage(string message, string channelId)
         {
             if (string.IsNullOrEmpty(message)) return;
             OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyText>
@@ -110,7 +110,7 @@ namespace SysBot.Pokemon.Dodo
             });
         }
 
-        public static void SendChannelMessageAll( string message, string channelId)
+        public static void SendChannelMessageAll(string message, string channelId)
         {
             if (string.IsNullOrEmpty(message)) return;
             OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyText>
