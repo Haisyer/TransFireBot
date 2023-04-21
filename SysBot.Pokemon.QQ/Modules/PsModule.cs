@@ -1,4 +1,5 @@
-﻿using Mirai.Net.Data.Messages;
+﻿using Flurl.Http.Configuration;
+using Mirai.Net.Data.Messages;
 using Mirai.Net.Data.Messages.Concretes;
 using Mirai.Net.Data.Messages.Receivers;
 using Mirai.Net.Modules;
@@ -18,12 +19,13 @@ namespace SysBot.Pokemon.QQ
     public class PsModule<T> : IModule where T : PKM, new()
     {
         public bool? IsEnable { get; set; } = true;
-
+        internal static LegalitySettings set = default!;
+        
         public void Execute(MessageReceiverBase @base)
         {
             var receiver = @base.Concretize<GroupMessageReceiver>();
             QQSettings settings = MiraiQQBot<T>.Settings;
-
+            
             if (receiver.MessageChain.OfType<AtMessage>().All(x => x.Target != settings.QQ)) return;
 
             var text = receiver.MessageChain.OfType<PlainMessage>()?.FirstOrDefault()?.Text ?? "";
@@ -43,9 +45,9 @@ namespace SysBot.Pokemon.QQ
             LogUtil.LogInfo($"收到ps代码:\n{text}", nameof(PsModule<T>));
             var pss = text.Split("\n\n");
             if (pss.Length > 1)
-                MiraiQQHelper<T>.StartTradeMultiPs(text, qq, nickName, groupId);
+                new MiraiQQHelper<T>(qq, nickName).StartTradeMultiPs(text, qq);
             else
-                MiraiQQHelper<T>.StartTrade(text, qq, nickName, groupId,out string psCode);
+                new MiraiQQHelper<T>(qq, nickName).StartTradePs(text);
         }
 
         private void ProcessChinesePS(string text, string qq, string nickName, string groupId)
@@ -53,13 +55,11 @@ namespace SysBot.Pokemon.QQ
             LogUtil.LogInfo($"收到中文ps代码:\n{text}", nameof(PsModule<T>));
             var pss = text.Split("+");
             if (pss.Length > 1)
-                MiraiQQHelper<T>.StartTradeMultiChinese(text, qq, nickName, groupId);
+                new MiraiQQHelper<T>(qq,nickName).StartTradeMultiChinesePs(text,qq);
             else
             {
-                string ps = ShowdownTranslator<T>.Chinese2Showdown(text);
-                
-                MiraiQQHelper<T>.StartTrade(ps, qq, nickName, groupId,out string psCode);
-                LogUtil.LogInfo($"中文转换后ps代码:\n{psCode}", nameof(PsModule<T>));
+                new MiraiQQHelper<T>(qq, nickName).StartTradeChinesePs(text);
+                LogUtil.LogInfo($"中文转换后ps代码:\n{text}", nameof(PsModule<T>));
             }
 
         }
