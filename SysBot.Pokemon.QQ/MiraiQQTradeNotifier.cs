@@ -242,7 +242,7 @@ namespace SysBot.Pokemon.QQ
             if (message.Details.Count > 0)
                 msg += ", " + string.Join(", ", message.Details.Select(z => $"{z.Heading}: {z.Detail}"));
             LogUtil.LogText(msg);
-            // SendMessage(msg);
+            //  MiraiQQBot<T>.SendGroupMessage(msg);
         }
         /// <summary>
         /// 详情记录以及蛋信息的发送
@@ -251,7 +251,7 @@ namespace SysBot.Pokemon.QQ
         {
             var msg = $"它的详情: {result.FileName}: " + message;
             LogUtil.LogText(msg);
-            // SendMessage(msg);
+           
 
             string IVstring = "";
             string Abilitystring;

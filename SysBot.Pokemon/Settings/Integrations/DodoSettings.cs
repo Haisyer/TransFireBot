@@ -33,7 +33,10 @@ namespace SysBot.Pokemon
         [Category(Startup), Description("可以插队的身份组")]
         public string VipRole { get; set; } = "1111111";
 
-        [Category(Startup), Description("可以批量的身分组")]
+        [Category(Startup), Description("可以批量的身份组")]
         public string BatchRole { get; set; } = "1111111";
+
+        [Category(Startup), Description("是否撤回交换消息")]
+        public bool WithdrawTradeMessage { get; set; } = false;
     }
 }

@@ -26,7 +26,7 @@ namespace SysBot.Pokemon.QQ
 
             else if (text.Trim().StartsWith("检测"))
             {
-                MiraiQQHelper<T>.StartDump(qq, nickName, groupId);
+                new MiraiQQHelper<T>(qq, nickName).StartDump();
                 return;
             }
         }

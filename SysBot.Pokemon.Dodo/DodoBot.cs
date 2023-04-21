@@ -32,7 +32,7 @@ namespace SysBot.Pokemon.Dodo
                 Token = settings.Token
             });
             //事件处理服务，可自定义，只要继承EventProcessService抽象类即可
-            var eventProcessService = new PokemonProcessService<T>(OpenApiService, settings.ChannelId);
+            var eventProcessService = new PokemonProcessService<T>(OpenApiService, settings);
             //开放事件服务
             var openEventService = new OpenEventService(OpenApiService, eventProcessService, new OpenEventOptions
             {

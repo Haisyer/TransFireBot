@@ -1,4 +1,5 @@
 ﻿using PKHeX.Core;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace SysBot.Pokemon
@@ -566,5 +567,8 @@ namespace SysBot.Pokemon
 
             return result;
         }
+
+        public static bool IsPS(string str) => GameStringsEn.Species.Skip(1).Any(str.Contains);
+
     }
 }

@@ -84,7 +84,10 @@ namespace SysBot.Pokemon
 
         [Category(Generate), Description("派送文件合法检测开关。\ntrue=非法模式，false=合法模式")]
         public bool PokemonPoolillegalMod { get; set; } = false;
-        // Misc
+
+        [Category(Generate), Description("交换非法宝可梦开关。\ntrue=非法模式，false=合法模式")]
+        public bool PokemonTradeillegalMod { get; set; } = false;
+       
 
         [Category(Misc), Description("将HOME跟踪器归零，不管当前跟踪器的值. 同样适用于用户要求的PKM文件。")]
         public bool ResetHOMETracker { get; set; } = true;

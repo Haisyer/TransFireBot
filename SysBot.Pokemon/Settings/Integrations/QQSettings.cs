@@ -31,9 +31,6 @@ namespace SysBot.Pokemon
         [Category(Startup), Description("发送交换得到精灵信息(精灵名字、训练家、表id、里id)的方式：1为全不发送；2为群聊发送；3为私聊发送；4为好友私发，非好友不发送；5为好友私发,非好友群发；其他数字为不发送。")]
         public int TidAndSidMethod { get; set; } = 2;
 
-        [Category(Startup), Description("批量交换宝可梦数量限制，最小为2，最大为960")]
-        public int qqTradeMaxNumber { get; set; } = 3;     
-
         [Category(Startup), Description("机器人回复的触发词1")]
         public string AliveMsgOne { get; set; } = "关键词1"; 
 
