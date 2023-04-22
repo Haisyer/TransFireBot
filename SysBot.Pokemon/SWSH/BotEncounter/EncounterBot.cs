@@ -77,7 +77,6 @@ namespace SysBot.Pokemon
             Log($"Encounter: {encounterCount}{Environment.NewLine}{print}{Environment.NewLine}");
 
             var folder = IncrementAndGetDumpFolder(pk);
-
             if (DumpSetting.Dump && !string.IsNullOrEmpty(DumpSetting.DumpFolder))
                 DumpPokemon(DumpSetting.DumpFolder, folder, pk);
 
@@ -97,6 +96,7 @@ namespace SysBot.Pokemon
                 ContinueAfterMatch.PauseWaitAcknowledge => "Waiting for instructions to continue.",
                 ContinueAfterMatch.StopExit             => "Stopping routine execution; restart the bot to search again.",
                 _ => throw new ArgumentOutOfRangeException("Match result type was invalid.", nameof(ContinueAfterMatch)),
+
             };
 
             if (!string.IsNullOrWhiteSpace(Hub.Config.StopConditions.MatchFoundEchoMention))
@@ -116,7 +116,7 @@ namespace SysBot.Pokemon
 
         private string IncrementAndGetDumpFolder(PK8 pk)
         {
-            var legendary = Legal.Legends.Contains(pk.Species) || Legal.Mythicals.Contains(pk.Species) || Legal.SubLegends.Contains(pk.Species);
+            var legendary = SpeciesCategory.IsLegendary(pk.Species) || SpeciesCategory.IsMythical(pk.Species) || SpeciesCategory.IsSubLegendary(pk.Species);
             if (legendary)
             {
                 Settings.AddCompletedLegends();
