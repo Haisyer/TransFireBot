@@ -1,4 +1,4 @@
-﻿using PKHeX.Core;
+using PKHeX.Core;
 using PKHeX.Core.Searching;
 using SysBot.Base;
 using System;

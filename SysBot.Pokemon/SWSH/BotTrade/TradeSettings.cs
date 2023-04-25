@@ -32,7 +32,7 @@ namespace SysBot.Pokemon
         [Category(Dumping), Description("Dump交易：在交易中等待x秒后，Dump程序将停止。")]
         public int MaxDumpTradeTime { get; set; } = 180;
 
-        [Category(Dumping), Description("Dump交易的合法性检查(F/T)。")]
+        [Category(Dumping), Description("如果启用，Dump程序将向用户输出合法性检查信息")]
         public bool DumpTradeLegalityCheck { get; set; } = true;
 
         [Category(TradeConfig), Description("当启用后，在正常的机器人操作循环中，屏幕将被关闭，以节省电力。")]
