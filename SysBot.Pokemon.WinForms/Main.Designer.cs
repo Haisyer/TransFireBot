@@ -232,7 +232,7 @@ namespace SysBot.Pokemon.WinForms
             // 
             this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "传火机器人";
+            this.notifyIcon1.Text = "SysBot: Pokémon";
             this.notifyIcon1.Visible = true;
             this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
@@ -262,7 +262,7 @@ namespace SysBot.Pokemon.WinForms
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "传火机器人";
+            this.Text = "SysBot: Pokémon";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.TC_Main.ResumeLayout(false);
             this.Tab_Bots.ResumeLayout(false);
