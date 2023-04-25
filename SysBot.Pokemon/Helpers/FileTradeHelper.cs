@@ -1,8 +1,11 @@
-﻿using PKHeX.Core;
+﻿using MathNet.Numerics.LinearAlgebra.Factorization;
+using PKHeX.Core;
+using SysBot.Base;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-
 namespace SysBot.Pokemon.Helpers
 {
     /// <summary>
@@ -10,11 +13,6 @@ namespace SysBot.Pokemon.Helpers
     /// </summary>
     public class FileTradeHelper<T> where T : PKM, new()
     {
-
-        internal static LegalitySettings set = default!;
-        //private static LegalitySettings Settings = default!;
-        //public FileTradeHelper(LegalitySettings settings) => Settings = settings;
-
         /// <summary>
         /// 得到对应版本的宝可梦实例
         /// </summary>
@@ -65,7 +63,7 @@ namespace SysBot.Pokemon.Helpers
         /// <param name="bindata">存储宝可梦数据的数组</param>
         /// <returns></returns>
         public static List<T> BinToList(byte[] binData)
-        {
+        {  
             int size = pokemonSizeInBin[typeof(T)];
             int times = binData.Length % size == 0 ? (binData.Length / size) : (binData.Length / size + 1);
             List<T> pkmBytes = new();
@@ -75,16 +73,53 @@ namespace SysBot.Pokemon.Helpers
                 int end = (start + size) > binData.Length ? binData.Length : (start + size);
                 var tp = GetPokemon(binData[start..end]);
 
-                if (tp != null && tp is T pkm && tp.Species > 0)
+                if (tp != null && tp is T pkm && tp.Species > 0 && tp.Valid)
                 {
-                    if (tp.Valid || set.PokemonTradeillegalMod)
-                    {
-                        pkmBytes.Add(pkm);
-                    }
+                        pkmBytes.Add(pkm); 
                 }
             }
             return pkmBytes;
         }
+
+        /// <summary>
+        ///  将pk文件数据转换成对应版本的PKM实例并存到List中
+        /// </summary>
+        /// <param name="fileData">存储宝可梦数据的数组</param>
+        /// <returns></returns>
+        public static List<T> SingleToList(byte[] fileData)
+        {  
+            List<T> pkmBytes = new();
+            
+            var pk = GetPokemon(fileData);
+            if (pk != null && pk is T pkm && pk.Species > 0 && pk.Valid)
+            {
+                    pkmBytes.Add(pkm);
+            }
+
+            return pkmBytes;
+        }
+        /// <summary>
+        /// 将文件数据转换成对应版本的PKM实例并存到List中
+        /// </summary>
+        /// <param name="bufferData">存储宝可梦数据的数组</param>
+        /// <returns></returns>
+        public static List<T> DataToList(byte[] bufferData)
+        {  
+            long length = bufferData.Length;
+            List<T> pkmBytes = new();
+
+            if (IsValidPokemonFileSize(length))
+            {
+                pkmBytes = SingleToList(bufferData);
+            }
+            else
+            {
+                pkmBytes = BinToList(bufferData);
+            }
+
+            return pkmBytes;
+        }
+
 
         /// <summary>
         /// 文件名称是否有效
