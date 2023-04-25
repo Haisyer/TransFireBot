@@ -320,6 +320,21 @@ namespace SysBot.Pokemon
                     result += "\nIVs: 0 Spe / 0 Atk";
                     zh = zh.Replace("4V0攻0速", "");
                 }
+                else if (zh.ToUpper().Contains("5V0A"))
+                {
+                    result += "\nIVs: 0 Atk ";
+                    zh = zh.Replace("5V0A", "");
+                }
+                else if (zh.ToUpper().Contains("5V0S"))
+                {
+                    result += "\nIVs: 0 Spe ";
+                    zh = zh.Replace("5V0S", "");
+                }
+                else if (zh.ToUpper().Contains("4V0A0S"))
+                {
+                    result += "\nIVs: 0 Spe / 0 Atk";
+                    zh = zh.Replace("4V0A0S", "");
+                }
             }
 
             // 添加努力值
@@ -517,7 +532,7 @@ namespace SysBot.Pokemon
                 else if (zh.Contains("疏忽之证")) { result += "\n.RibbonMarkZonedOut=True"; }
                 else if (zh.Contains("宝主之证")) { result += "\n.RibbonMarkTitan=True"; }
                 if (zh.Contains("大个子之证")) { result += "\n.Scale=255\n.RibbonMarkJumbo=True"; }
-                else if (zh.Contains("小个子之证")) { result += "\n.Scale=0\n.RibbonMarkMini=True"; }
+                else if (zh.Contains("小不点之证")) { result += "\n.Scale=0\n.RibbonMarkMini=True"; }
 
             }
 
