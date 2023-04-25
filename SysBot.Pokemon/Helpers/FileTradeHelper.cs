@@ -1,11 +1,11 @@
 ﻿using MathNet.Numerics.LinearAlgebra.Factorization;
 using PKHeX.Core;
+using SysBot.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-
 namespace SysBot.Pokemon.Helpers
 {
     /// <summary>
@@ -13,11 +13,6 @@ namespace SysBot.Pokemon.Helpers
     /// </summary>
     public class FileTradeHelper<T> where T : PKM, new()
     {
-
-        internal static LegalitySettings set = default!;
-        //private static LegalitySettings Settings = default!;
-        //public FileTradeHelper(LegalitySettings settings) => Settings = settings;
-
         /// <summary>
         /// 得到对应版本的宝可梦实例
         /// </summary>
@@ -78,12 +73,9 @@ namespace SysBot.Pokemon.Helpers
                 int end = (start + size) > binData.Length ? binData.Length : (start + size);
                 var tp = GetPokemon(binData[start..end]);
 
-                if (tp != null && tp is T pkm && tp.Species > 0)
+                if (tp != null && tp is T pkm && tp.Species > 0 && tp.Valid)
                 {
-                    if (tp.Valid || set.PokemonTradeillegalMod)
-                    {
-                        pkmBytes.Add(pkm);
-                    }
+                        pkmBytes.Add(pkm); 
                 }
             }
             return pkmBytes;
@@ -97,15 +89,11 @@ namespace SysBot.Pokemon.Helpers
         public static List<T> SingleToList(byte[] fileData)
         {  
             List<T> pkmBytes = new();
-
+            
             var pk = GetPokemon(fileData);
-            if (pk != null && pk is T pkm && pk.Species > 0)
+            if (pk != null && pk is T pkm && pk.Species > 0 && pk.Valid)
             {
-                if (pk.Valid || set.PokemonTradeillegalMod)
-                {
                     pkmBytes.Add(pkm);
-                }
-               
             }
 
             return pkmBytes;

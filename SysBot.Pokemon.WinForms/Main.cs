@@ -40,6 +40,7 @@ namespace SysBot.Pokemon.WinForms
                 Config = new ProgramConfig();
                 RunningEnvironment = GetRunner(Config);
                 Config.Hub.Folder.CreateDefaults(Program.WorkingDirectory);
+                Config.Hub.Legality.CreateDefaults(Program.WorkingDirectory);
             }
 
             RTB_Logs.MaxLength = 32_767; // character length
