@@ -45,7 +45,7 @@ namespace SysBot.Pokemon.QQ
                 var f = await FileManager.GetFileAsync(groupId, fileMessage.FileId, true);
                 using var client = new HttpClient();
                 byte[] data = client.GetByteArrayAsync(f.DownloadInfo.Url).Result;
-                pkms = FileTradeHelper<T>.BinToList(data);
+                pkms = FileTradeHelper<T>.DataToList(data);
                 await FileManager.DeleteFileAsync(groupId, fileMessage.FileId);
             }
             catch (Exception ex)

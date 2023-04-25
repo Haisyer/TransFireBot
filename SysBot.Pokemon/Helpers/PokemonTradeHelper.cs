@@ -253,7 +253,7 @@ namespace SysBot.Pokemon.Helpers
             {
                 SendMessage($"期望交换的{totalCount}只宝可梦中，有{invalidCount}只不合法，仅交换合法的{totalCount - invalidCount}只");
             }
-            else
+            else if(invalidCount == 0)
             {
                 SendMessage($"交换合法的{totalCount}只");
             }
@@ -276,7 +276,7 @@ namespace SysBot.Pokemon.Helpers
                 var _ = CheckAndGetPkm(ps, out var msg, out var pk,out var modid);
                 if (!_)
                 {
-                    invalidCount = 0;
+                    invalidCount ++;
                     LogUtil.LogInfo($"批量第{i + 1}只宝可梦有问题:{msg}", nameof(PokemonTradeHelper<T>));
                     pokeMessage += $"\n第{i + 1}只有问题";
                 }

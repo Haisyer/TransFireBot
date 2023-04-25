@@ -435,7 +435,8 @@ namespace SysBot.Pokemon
                 }
                 Log("正在等待对方提供一只宝可梦...");
                 // Wait for user input...
-                offered = await ReadUntilPresentMutiTrade(TradePartnerOfferedOffset, offered, counting, waittime, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
+                offered = await ReadUntilPresentMutiTrade(TradePartnerOfferedOffset, offered, counting, waittime, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false)
+                    ?? throw new InvalidOperationException("ReadUntilPresentMutiTrade方法返回结果为null.");
                 var oldEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);
                 if (offered == null || offered.Species < 1 || !offered.ChecksumValid)
                 {

@@ -2,6 +2,8 @@
 using PKHeX.Core.Searching;
 using SysBot.Base;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
@@ -29,7 +31,7 @@ namespace SysBot.Pokemon
         /// </summary>
         /// <remarks>If null, will skip dumping.</remarks>
         private readonly IDumper DumpSetting;
-
+        private readonly string TradeF;
         /// <summary>
         /// Synchronized start for multiple bots.
         /// </summary>
@@ -46,6 +48,7 @@ namespace SysBot.Pokemon
             TradeSettings = hub.Config.Trade;
             AbuseSettings = hub.Config.TradeAbuse;
             DumpSetting = hub.Config.Folder;
+            TradeF = hub.Config.Folder.TradeFolder;
             lastOffered = new byte[8];
         }
 
@@ -250,7 +253,11 @@ namespace SysBot.Pokemon
 
             var toSend = poke.TradeData;
             if (toSend.Species != 0)
+            {
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
+                LogUtil.LogInfo($"写入{ShowdownTranslator<PB8>.GameStringsZh.Species[toSend.Species]}",nameof(PokeTradeBotBS));
+            }
+              
 
             // Enter Union Room. Shouldn't do anything if we're already there.
             if (!await EnterUnionRoomWithCode(poke.Type, poke.Code, token).ConfigureAwait(false))
@@ -320,12 +327,12 @@ namespace SysBot.Pokemon
 
             await Task.Delay(2_000 + Hub.Config.Timings.ExtraTimeOpenBox, token).ConfigureAwait(false);
 
-            // Confirm Box 1 Slot 1
-            if (poke.Type == PokeTradeType.Specific)
-            {
-                for (int i = 0; i < 5; i++)
-                    await Click(A, 0_500, token).ConfigureAwait(false);
-            }
+            //// Confirm Box 1 Slot 1
+            //if (poke.Type == PokeTradeType.Specific)
+            //{
+            //    for (int i = 0; i < 5; i++)
+            //        await Click(A, 0_500, token).ConfigureAwait(false);
+            //}
 
             poke.SendNotification(this, $"Found Link Trade partner: {tradePartner.TrainerName}. Waiting for a Pokémon...");
 
@@ -340,25 +347,82 @@ namespace SysBot.Pokemon
             if (!tradeOffered)
                 return PokeTradeResult.TrainerTooSlow;
 
-            // If we detected a change, they offered something.
-            var offered = await ReadPokemon(LinkTradePokemonOffset, BoxFormatSlotSize, token).ConfigureAwait(false);
-            if (offered.Species == 0 || !offered.ChecksumValid)
-                return PokeTradeResult.TrainerTooSlow;
-            lastOffered = await SwitchConnection.ReadBytesAbsoluteAsync(LinkTradePokemonOffset, 8, token).ConfigureAwait(false);
 
-            PokeTradeResult update;
-            var trainer = new PartnerDataHolder(0, tradePartner.TrainerName, tradePartner.TID7);
-            (toSend, update) = await GetEntityToSend(sav, poke, offered, toSend, trainer, token).ConfigureAwait(false);
-            if (update != PokeTradeResult.Success)
-                return update;
+            List<PB8> ls = new List<PB8>();
 
-            var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
-            if (tradeResult != PokeTradeResult.Success)
-                return tradeResult;
+            if (poke.Type == PokeTradeType.MutiTrade || poke.DeletFile)
+            {
 
-            if (token.IsCancellationRequested)
-                return PokeTradeResult.RoutineCancel;
+                string directory = Path.Combine(TradeF, poke.Path);
+                string[] fileEntries = Directory.GetFiles(directory);
+                Array.Sort(fileEntries);
+                Log($"读取到的文件数量:{fileEntries.Length}");
+                foreach (string fileName in fileEntries)
+                {
+                    var data = File.ReadAllBytes(fileName);
+                    LogUtil.LogInfo($"读取到文件:{fileName}", nameof(PokeTradeBotBS));
+                    var pkt = EntityFormat.GetFromBytes(data);
+                    if (pkt != null)
+                    {
+                        pkt.RefreshChecksum();
+                        if (EntityConverter.ConvertToType(pkt, typeof(PB8), out _) is PB8 pk2)
+                            ls.Add(pk2);
+                    }
+                }
+                if (Directory.Exists(directory) && poke.DeletFile)
+                {
+                    foreach (var item in Directory.GetFiles(directory))
+                    {
+                        File.Delete(item);
+                    }
+                    Directory.Delete(directory);
+                }
 
+            }
+            else
+            {
+                ls.Add(poke.TradeData);
+            }
+           
+            PB8 offered = toSend;
+            int counting = 0;
+            foreach (var send in ls)
+            {
+                counting++;
+                toSend = send;
+               
+                await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false); 
+                   
+                
+                
+                if (ls.Count > 1) LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PB8>.GameStringsZh.Species[toSend.Species]}", nameof(PokeTradeBotBS));
+
+                // If we detected a change, they offered something.
+                offered = await ReadPokemon(LinkTradePokemonOffset, BoxFormatSlotSize, token).ConfigureAwait(false);
+                if (offered.Species == 0 || !offered.ChecksumValid)
+                    return PokeTradeResult.TrainerTooSlow;
+               //lastOffered = await SwitchConnection.ReadBytesAbsoluteAsync(LinkTradePokemonOffset, 8, token).ConfigureAwait(false);
+
+                PokeTradeResult update;
+                var trainer = new PartnerDataHolder(0, tradePartner.TrainerName, tradePartner.TID7);
+                (toSend, update) = await GetEntityToSend(sav, poke, offered, toSend, trainer, token).ConfigureAwait(false);
+                if (update != PokeTradeResult.Success)
+                    return update;
+
+                var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
+                if (tradeResult != PokeTradeResult.Success)
+                    return tradeResult;
+
+                if (ls.Count > 1)
+                {
+                    poke.SendNotification(this, $"批量:第{counting}只宝可梦{ShowdownTranslator<PB8>.GameStringsZh.Species[toSend.Species]}，交换完成");
+                   
+                    LogUtil.LogInfo($"批量:第{counting}个宝可梦{ShowdownTranslator<PB8>.GameStringsZh.Species[toSend.Species]}交换完成", nameof(PokeTradeBotSV));
+                }
+
+                if (token.IsCancellationRequested)
+                    return PokeTradeResult.RoutineCancel;
+            }
             // Trade was Successful!
             var received = await ReadPokemon(BoxStartOffset, BoxFormatSlotSize, token).ConfigureAwait(false);
             // Pokémon in b1s1 is same as the one they were supposed to receive (was never sent).
@@ -392,8 +456,7 @@ namespace SysBot.Pokemon
 
             return PokeTradeResult.Success;
         }
-
-        private static ulong GetFakeNID(string trainerName, uint trainerID)
+            private static ulong GetFakeNID(string trainerName, uint trainerID)
         {
             var nameHash = trainerName.GetHashCode();
             return ((ulong)trainerID << 32) | (uint)nameHash;
