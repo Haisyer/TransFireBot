@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using System.ComponentModel;
+using System.IO;
 
 namespace SysBot.Pokemon
 {
@@ -76,11 +77,11 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("在取消之前生成SET代码时所花费的最大时间(秒)。这可以防止复杂的代码冻结机器人。")]
         public int Timeout { get; set; } = 15;
 
-        [Category(Generate), Description("允许指令合法检测开关。\ntrue=非法模式，false=合法模式")]
-        public bool CommandillegalMod { get; set; } = false;
+        //[Category(Generate), Description("允许指令合法检测开关。\ntrue=非法模式，false=合法模式")]
+        //public bool CommandillegalMod { get; set; } = false;
 
-        [Category(Generate), Description("允许文件合法检测开关。\ntrue=非法模式，false=合法模式")]
-        public bool FileillegalMod { get; set; } = false;
+        //[Category(Generate), Description("允许文件合法检测开关。\ntrue=非法模式，false=合法模式")]
+        //public bool FileillegalMod { get; set; } = false;
 
         [Category(Generate), Description("派送文件合法检测开关。\ntrue=非法模式，false=合法模式")]
         public bool PokemonPoolillegalMod { get; set; } = false;
@@ -94,5 +95,12 @@ namespace SysBot.Pokemon
 
         [Category(Misc), Description("由交换对象重写训练家信息。")]
         public bool UseTradePartnerInfo { get; set; } = true;
+
+        public void CreateDefaults(string path)
+        {
+            var mgdb = Path.Combine(path, "mgdb");
+            Directory.CreateDirectory(mgdb);
+            MGDBPath = mgdb;
+        }
     }
 }

@@ -435,7 +435,8 @@ namespace SysBot.Pokemon
                 }
                 Log("正在等待对方提供一只宝可梦...");
                 // Wait for user input...
-                offered = await ReadUntilPresentMutiTrade(TradePartnerOfferedOffset, offered, counting, waittime, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false);
+                offered = await ReadUntilPresentMutiTrade(TradePartnerOfferedOffset, offered, counting, waittime, 1_000, BoxFormatSlotSize, token).ConfigureAwait(false)
+                    ?? throw new InvalidOperationException("ReadUntilPresentMutiTrade方法返回结果为null.");
                 var oldEC = await SwitchConnection.ReadBytesAbsoluteAsync(TradePartnerOfferedOffset, 8, token).ConfigureAwait(false);
                 if (offered == null || offered.Species < 1 || !offered.ChecksumValid)
                 {
@@ -463,7 +464,7 @@ namespace SysBot.Pokemon
                 if (ls.Count > 1)
                 {
                     poke.SendNotification(this, $"批量:第{counting}只宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}，交换完成");
-                    LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}", nameof(PokeTradeBotSV));
+                    LogUtil.LogInfo($"", nameof(PokeTradeBotSV));//批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}
                 }
                 if (token.IsCancellationRequested)
                 {

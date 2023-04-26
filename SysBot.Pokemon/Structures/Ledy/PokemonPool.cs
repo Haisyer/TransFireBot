@@ -89,8 +89,8 @@ namespace SysBot.Pokemon
                     LogUtil.LogInfo("放弃: 提供的文件不能进行交易: " + dest.FileName, nameof(PokemonPool<T>));
                     continue;
                 }
-
-                var la = new LegalityAnalysis(dest);
+                if (!Settings.Legality.PokemonPoolillegalMod)
+                { var la = new LegalityAnalysis(dest);
                 if (!la.Valid)
                 {
                     var reason = la.Report();
@@ -102,6 +102,7 @@ namespace SysBot.Pokemon
                 {
                     LogUtil.LogInfo("提供的文件已加载，但不能被交易: " + dest.FileName, nameof(PokemonPool<T>));
                     surpriseBlocked++;
+                }
                 }
 
                 if (Settings.Legality.ResetHOMETracker && dest is IHomeTrack h)
@@ -158,7 +159,6 @@ namespace SysBot.Pokemon
                 return true;
             if (SpeciesCategory.IsMythical(pk.Species))
                 return true;
-
             // Can't surprise trade fused stuff.
             if (FormInfo.IsFusedForm(pk.Species, pk.Form, pk.Format))
                 return true;

@@ -40,6 +40,7 @@ namespace SysBot.Pokemon.WinForms
                 Config = new ProgramConfig();
                 RunningEnvironment = GetRunner(Config);
                 Config.Hub.Folder.CreateDefaults(Program.WorkingDirectory);
+                Config.Hub.Legality.CreateDefaults(Program.WorkingDirectory);
             }
 
             RTB_Logs.MaxLength = 32_767; // character length
@@ -139,7 +140,7 @@ namespace SysBot.Pokemon.WinForms
             DialogResult result = MessageBox.Show("是否退出?", "操作提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             SaveCurrentConfig();
             var bots = RunningEnvironment;
-            
+
             if (result == DialogResult.Yes)
             {
                 if (!bots.IsRunning)
@@ -156,7 +157,7 @@ namespace SysBot.Pokemon.WinForms
                 bots.StopAll();
                 Task.WhenAny(WaitUntilNotRunning(), Task.Delay(5_000)).ConfigureAwait(true).GetAwaiter().GetResult();
             }
-            else if((result == DialogResult.No))
+            else if ((result == DialogResult.No))
             {
                 e.Cancel = true;
                 this.WindowState = FormWindowState.Minimized;
@@ -314,7 +315,7 @@ namespace SysBot.Pokemon.WinForms
             var cfg = BotConfigUtil.GetConfig<SwitchConnectionConfig>(ip, port);
             cfg.Protocol = (SwitchProtocol)WinFormsUtil.GetIndex(CB_Protocol);
 
-            var pk = new PokeBotState {Connection = cfg};
+            var pk = new PokeBotState { Connection = cfg };
             var type = (PokeRoutineType)WinFormsUtil.GetIndex(CB_Routine);
             pk.Initialize(type);
             return pk;

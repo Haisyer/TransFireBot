@@ -21,12 +21,7 @@ namespace SysBot.Pokemon.Helpers
     /// <para>注意在实现抽象类的构造方法里一定要调用SetPokeTradeTrainerInfo()和SetTradeQueueInfo()</para>
     /// </summary>
     public abstract class PokemonTradeHelper<T> where T : PKM, new()
-    {
-      
-       // public static LegalitySettings Settings = default!;
-        internal static LegalitySettings set = default!;
-       // public PokemonTradeHelper(LegalitySettings settings) => Settings = settings;
-
+    {     
         /// <summary>
         ///  <para>发送消息的抽象方法</para>
         ///  <para>这个方法不能直接调用,必须在派生类中进行实现</para>
@@ -52,6 +47,7 @@ namespace SysBot.Pokemon.Helpers
         /// 队列信息
         /// </summary>
         private TradeQueueInfo<T> queueInfo = default!;
+        private LegalitySettings lea = default!;
 
         /// <summary>
         /// 设定宝可梦交换的用户信息
@@ -253,7 +249,7 @@ namespace SysBot.Pokemon.Helpers
             {
                 SendMessage($"期望交换的{totalCount}只宝可梦中，有{invalidCount}只不合法，仅交换合法的{totalCount - invalidCount}只");
             }
-            else
+            else if(invalidCount == 0)
             {
                 SendMessage($"交换合法的{totalCount}只");
             }
@@ -276,7 +272,7 @@ namespace SysBot.Pokemon.Helpers
                 var _ = CheckAndGetPkm(ps, out var msg, out var pk,out var modid);
                 if (!_)
                 {
-                    invalidCount = 0;
+                    invalidCount ++;
                     LogUtil.LogInfo($"批量第{i + 1}只宝可梦有问题:{msg}", nameof(PokemonTradeHelper<T>));
                     pokeMessage += $"\n第{i + 1}只有问题";
                 }
@@ -423,7 +419,8 @@ namespace SysBot.Pokemon.Helpers
                 {
                     var la = new LegalityAnalysis(pkm);
                     var valid = la.Valid;
-                    if (valid ||set.PokemonTradeillegalMod)
+                    LogUtil.LogInfo($"非法判断:{queueInfo.Hub.Config.Legality.PokemonTradeillegalMod}", nameof(PokemonTradeHelper<T>));
+                    if (valid || queueInfo.Hub.Config.Legality.PokemonTradeillegalMod)
                     {
                         msg = $"已加入等待队列. 如果你选宝可梦的速度太慢，你的派送请求将被取消!";
                         return true;

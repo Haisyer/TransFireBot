@@ -29,10 +29,10 @@ namespace SysBot.Pokemon
         [Category(FeatureToggle), Description("确定队列何时被打开和关闭")]
         public QueueOpening QueueToggleMode { get; set; } = QueueOpening.Threshold;
 
-        [Category(FeatureToggle), Description("是否打开批量文件夹功能")]
-        public bool MutiTrade { get; set; }
+        //[Category(FeatureToggle), Description("是否打开批量文件夹功能")]
+        //public bool MutiTrade { get; set; }
 
-        [Category(UserBias), Description("指令批量最大数目")]
+        [Category(UserBias), Description("批量最大数目")]
         public int MutiMaxNumber { get; set; } = 3;
 
         // Queue Toggle

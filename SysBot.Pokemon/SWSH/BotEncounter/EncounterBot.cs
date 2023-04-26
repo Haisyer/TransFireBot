@@ -77,6 +77,7 @@ namespace SysBot.Pokemon
             Log($"Encounter: {encounterCount}{Environment.NewLine}{print}{Environment.NewLine}");
 
             var folder = IncrementAndGetDumpFolder(pk);
+
             if (DumpSetting.Dump && !string.IsNullOrEmpty(DumpSetting.DumpFolder))
                 DumpPokemon(DumpSetting.DumpFolder, folder, pk);
 
@@ -96,7 +97,6 @@ namespace SysBot.Pokemon
                 ContinueAfterMatch.PauseWaitAcknowledge => "Waiting for instructions to continue.",
                 ContinueAfterMatch.StopExit             => "Stopping routine execution; restart the bot to search again.",
                 _ => throw new ArgumentOutOfRangeException("Match result type was invalid.", nameof(ContinueAfterMatch)),
-
             };
 
             if (!string.IsNullOrWhiteSpace(Hub.Config.StopConditions.MatchFoundEchoMention))

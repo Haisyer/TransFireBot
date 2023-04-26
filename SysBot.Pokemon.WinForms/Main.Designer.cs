@@ -30,249 +30,238 @@ namespace SysBot.Pokemon.WinForms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.TC_Main = new System.Windows.Forms.TabControl();
-            this.Tab_Bots = new System.Windows.Forms.TabPage();
-            this.CB_Protocol = new System.Windows.Forms.ComboBox();
-            this.FLP_Bots = new System.Windows.Forms.FlowLayoutPanel();
-            this.TB_IP = new System.Windows.Forms.TextBox();
-            this.CB_Routine = new System.Windows.Forms.ComboBox();
-            this.NUD_Port = new System.Windows.Forms.NumericUpDown();
-            this.B_New = new System.Windows.Forms.Button();
-            this.Tab_Hub = new System.Windows.Forms.TabPage();
-            this.PG_Hub = new System.Windows.Forms.PropertyGrid();
-            this.Tab_Logs = new System.Windows.Forms.TabPage();
-            this.RTB_Logs = new System.Windows.Forms.RichTextBox();
-            this.B_Stop = new System.Windows.Forms.Button();
-            this.B_Start = new System.Windows.Forms.Button();
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TC_Main.SuspendLayout();
-            this.Tab_Bots.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NUD_Port)).BeginInit();
-            this.Tab_Hub.SuspendLayout();
-            this.Tab_Logs.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
-            this.SuspendLayout();
+            TC_Main = new System.Windows.Forms.TabControl();
+            Tab_Bots = new System.Windows.Forms.TabPage();
+            CB_Protocol = new System.Windows.Forms.ComboBox();
+            FLP_Bots = new System.Windows.Forms.FlowLayoutPanel();
+            TB_IP = new System.Windows.Forms.TextBox();
+            CB_Routine = new System.Windows.Forms.ComboBox();
+            NUD_Port = new System.Windows.Forms.NumericUpDown();
+            B_New = new System.Windows.Forms.Button();
+            Tab_Hub = new System.Windows.Forms.TabPage();
+            PG_Hub = new System.Windows.Forms.PropertyGrid();
+            Tab_Logs = new System.Windows.Forms.TabPage();
+            RTB_Logs = new System.Windows.Forms.RichTextBox();
+            B_Stop = new System.Windows.Forms.Button();
+            B_Start = new System.Windows.Forms.Button();
+            notifyIcon1 = new System.Windows.Forms.NotifyIcon(components);
+            contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(components);
+            exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            TC_Main.SuspendLayout();
+            Tab_Bots.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NUD_Port).BeginInit();
+            Tab_Hub.SuspendLayout();
+            Tab_Logs.SuspendLayout();
+            contextMenuStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // TC_Main
             // 
-            this.TC_Main.Controls.Add(this.Tab_Bots);
-            this.TC_Main.Controls.Add(this.Tab_Hub);
-            this.TC_Main.Controls.Add(this.Tab_Logs);
-            this.TC_Main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TC_Main.Location = new System.Drawing.Point(0, 0);
-            this.TC_Main.Margin = new System.Windows.Forms.Padding(4);
-            this.TC_Main.Name = "TC_Main";
-            this.TC_Main.SelectedIndex = 0;
-            this.TC_Main.Size = new System.Drawing.Size(533, 404);
-            this.TC_Main.TabIndex = 3;
+            TC_Main.Controls.Add(Tab_Bots);
+            TC_Main.Controls.Add(Tab_Hub);
+            TC_Main.Controls.Add(Tab_Logs);
+            TC_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            TC_Main.Location = new System.Drawing.Point(0, 0);
+            TC_Main.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            TC_Main.Name = "TC_Main";
+            TC_Main.SelectedIndex = 0;
+            TC_Main.Size = new System.Drawing.Size(685, 475);
+            TC_Main.TabIndex = 3;
             // 
             // Tab_Bots
             // 
-            this.Tab_Bots.Controls.Add(this.CB_Protocol);
-            this.Tab_Bots.Controls.Add(this.FLP_Bots);
-            this.Tab_Bots.Controls.Add(this.TB_IP);
-            this.Tab_Bots.Controls.Add(this.CB_Routine);
-            this.Tab_Bots.Controls.Add(this.NUD_Port);
-            this.Tab_Bots.Controls.Add(this.B_New);
-            this.Tab_Bots.Location = new System.Drawing.Point(4, 26);
-            this.Tab_Bots.Margin = new System.Windows.Forms.Padding(4);
-            this.Tab_Bots.Name = "Tab_Bots";
-            this.Tab_Bots.Size = new System.Drawing.Size(525, 374);
-            this.Tab_Bots.TabIndex = 0;
-            this.Tab_Bots.Text = "机器人";
-            this.Tab_Bots.UseVisualStyleBackColor = true;
+            Tab_Bots.Controls.Add(CB_Protocol);
+            Tab_Bots.Controls.Add(FLP_Bots);
+            Tab_Bots.Controls.Add(TB_IP);
+            Tab_Bots.Controls.Add(CB_Routine);
+            Tab_Bots.Controls.Add(NUD_Port);
+            Tab_Bots.Controls.Add(B_New);
+            Tab_Bots.Location = new System.Drawing.Point(4, 29);
+            Tab_Bots.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            Tab_Bots.Name = "Tab_Bots";
+            Tab_Bots.Size = new System.Drawing.Size(677, 442);
+            Tab_Bots.TabIndex = 0;
+            Tab_Bots.Text = "机器人";
+            Tab_Bots.UseVisualStyleBackColor = true;
             // 
             // CB_Protocol
             // 
-            this.CB_Protocol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CB_Protocol.FormattingEnabled = true;
-            this.CB_Protocol.Location = new System.Drawing.Point(290, 6);
-            this.CB_Protocol.Margin = new System.Windows.Forms.Padding(4);
-            this.CB_Protocol.Name = "CB_Protocol";
-            this.CB_Protocol.Size = new System.Drawing.Size(67, 25);
-            this.CB_Protocol.TabIndex = 10;
-            this.CB_Protocol.SelectedIndexChanged += new System.EventHandler(this.CB_Protocol_SelectedIndexChanged);
+            CB_Protocol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            CB_Protocol.FormattingEnabled = true;
+            CB_Protocol.Location = new System.Drawing.Point(373, 7);
+            CB_Protocol.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            CB_Protocol.Name = "CB_Protocol";
+            CB_Protocol.Size = new System.Drawing.Size(85, 28);
+            CB_Protocol.TabIndex = 10;
+            CB_Protocol.SelectedIndexChanged += CB_Protocol_SelectedIndexChanged;
             // 
             // FLP_Bots
             // 
-            this.FLP_Bots.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.FLP_Bots.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FLP_Bots.Location = new System.Drawing.Point(0, 41);
-            this.FLP_Bots.Margin = new System.Windows.Forms.Padding(0);
-            this.FLP_Bots.Name = "FLP_Bots";
-            this.FLP_Bots.Size = new System.Drawing.Size(524, 327);
-            this.FLP_Bots.TabIndex = 9;
-            this.FLP_Bots.Resize += new System.EventHandler(this.FLP_Bots_Resize);
+            FLP_Bots.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            FLP_Bots.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            FLP_Bots.Location = new System.Drawing.Point(0, 48);
+            FLP_Bots.Margin = new System.Windows.Forms.Padding(0);
+            FLP_Bots.Name = "FLP_Bots";
+            FLP_Bots.Size = new System.Drawing.Size(673, 384);
+            FLP_Bots.TabIndex = 9;
+            FLP_Bots.Resize += FLP_Bots_Resize;
             // 
             // TB_IP
             // 
-            this.TB_IP.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.TB_IP.Location = new System.Drawing.Point(74, 7);
-            this.TB_IP.Margin = new System.Windows.Forms.Padding(4);
-            this.TB_IP.Name = "TB_IP";
-            this.TB_IP.Size = new System.Drawing.Size(134, 20);
-            this.TB_IP.TabIndex = 8;
-            this.TB_IP.Text = "192.168.0.1";
+            TB_IP.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            TB_IP.Location = new System.Drawing.Point(95, 8);
+            TB_IP.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            TB_IP.Name = "TB_IP";
+            TB_IP.Size = new System.Drawing.Size(171, 23);
+            TB_IP.TabIndex = 8;
+            TB_IP.Text = "192.168.0.1";
             // 
             // CB_Routine
             // 
-            this.CB_Routine.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CB_Routine.FormattingEnabled = true;
-            this.CB_Routine.Location = new System.Drawing.Point(364, 6);
-            this.CB_Routine.Margin = new System.Windows.Forms.Padding(4);
-            this.CB_Routine.Name = "CB_Routine";
-            this.CB_Routine.Size = new System.Drawing.Size(117, 25);
-            this.CB_Routine.TabIndex = 7;
+            CB_Routine.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            CB_Routine.FormattingEnabled = true;
+            CB_Routine.Location = new System.Drawing.Point(468, 7);
+            CB_Routine.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            CB_Routine.Name = "CB_Routine";
+            CB_Routine.Size = new System.Drawing.Size(149, 28);
+            CB_Routine.TabIndex = 7;
             // 
             // NUD_Port
             // 
-            this.NUD_Port.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.NUD_Port.Location = new System.Drawing.Point(214, 7);
-            this.NUD_Port.Margin = new System.Windows.Forms.Padding(4);
-            this.NUD_Port.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.NUD_Port.Name = "NUD_Port";
-            this.NUD_Port.Size = new System.Drawing.Size(67, 20);
-            this.NUD_Port.TabIndex = 6;
-            this.NUD_Port.Value = new decimal(new int[] {
-            6000,
-            0,
-            0,
-            0});
+            NUD_Port.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            NUD_Port.Location = new System.Drawing.Point(275, 8);
+            NUD_Port.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            NUD_Port.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            NUD_Port.Name = "NUD_Port";
+            NUD_Port.Size = new System.Drawing.Size(86, 23);
+            NUD_Port.TabIndex = 6;
+            NUD_Port.Value = new decimal(new int[] { 6000, 0, 0, 0 });
             // 
             // B_New
             // 
-            this.B_New.Location = new System.Drawing.Point(4, 7);
-            this.B_New.Margin = new System.Windows.Forms.Padding(4);
-            this.B_New.Name = "B_New";
-            this.B_New.Size = new System.Drawing.Size(63, 27);
-            this.B_New.TabIndex = 0;
-            this.B_New.Text = "添加";
-            this.B_New.UseVisualStyleBackColor = true;
-            this.B_New.Click += new System.EventHandler(this.B_New_Click);
+            B_New.Location = new System.Drawing.Point(5, 8);
+            B_New.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            B_New.Name = "B_New";
+            B_New.Size = new System.Drawing.Size(81, 32);
+            B_New.TabIndex = 0;
+            B_New.Text = "添加";
+            B_New.UseVisualStyleBackColor = true;
+            B_New.Click += B_New_Click;
             // 
             // Tab_Hub
             // 
-            this.Tab_Hub.Controls.Add(this.PG_Hub);
-            this.Tab_Hub.Location = new System.Drawing.Point(4, 26);
-            this.Tab_Hub.Margin = new System.Windows.Forms.Padding(4);
-            this.Tab_Hub.Name = "Tab_Hub";
-            this.Tab_Hub.Padding = new System.Windows.Forms.Padding(4);
-            this.Tab_Hub.Size = new System.Drawing.Size(525, 374);
-            this.Tab_Hub.TabIndex = 2;
-            this.Tab_Hub.Text = "菜单";
-            this.Tab_Hub.UseVisualStyleBackColor = true;
+            Tab_Hub.Controls.Add(PG_Hub);
+            Tab_Hub.Location = new System.Drawing.Point(4, 29);
+            Tab_Hub.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            Tab_Hub.Name = "Tab_Hub";
+            Tab_Hub.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            Tab_Hub.Size = new System.Drawing.Size(677, 442);
+            Tab_Hub.TabIndex = 2;
+            Tab_Hub.Text = "菜单";
+            Tab_Hub.UseVisualStyleBackColor = true;
             // 
             // PG_Hub
             // 
-            this.PG_Hub.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PG_Hub.Location = new System.Drawing.Point(4, 4);
-            this.PG_Hub.Margin = new System.Windows.Forms.Padding(4);
-            this.PG_Hub.Name = "PG_Hub";
-            this.PG_Hub.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.PG_Hub.Size = new System.Drawing.Size(517, 366);
-            this.PG_Hub.TabIndex = 0;
+            PG_Hub.Dock = System.Windows.Forms.DockStyle.Fill;
+            PG_Hub.Location = new System.Drawing.Point(5, 5);
+            PG_Hub.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            PG_Hub.Name = "PG_Hub";
+            PG_Hub.PropertySort = System.Windows.Forms.PropertySort.Categorized;
+            PG_Hub.Size = new System.Drawing.Size(667, 432);
+            PG_Hub.TabIndex = 0;
             // 
             // Tab_Logs
             // 
-            this.Tab_Logs.Controls.Add(this.RTB_Logs);
-            this.Tab_Logs.Location = new System.Drawing.Point(4, 26);
-            this.Tab_Logs.Margin = new System.Windows.Forms.Padding(4);
-            this.Tab_Logs.Name = "Tab_Logs";
-            this.Tab_Logs.Size = new System.Drawing.Size(525, 374);
-            this.Tab_Logs.TabIndex = 1;
-            this.Tab_Logs.Text = "日志";
-            this.Tab_Logs.UseVisualStyleBackColor = true;
+            Tab_Logs.Controls.Add(RTB_Logs);
+            Tab_Logs.Location = new System.Drawing.Point(4, 29);
+            Tab_Logs.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            Tab_Logs.Name = "Tab_Logs";
+            Tab_Logs.Size = new System.Drawing.Size(677, 442);
+            Tab_Logs.TabIndex = 1;
+            Tab_Logs.Text = "日志";
+            Tab_Logs.UseVisualStyleBackColor = true;
             // 
             // RTB_Logs
             // 
-            this.RTB_Logs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RTB_Logs.Location = new System.Drawing.Point(0, 0);
-            this.RTB_Logs.Margin = new System.Windows.Forms.Padding(4);
-            this.RTB_Logs.Name = "RTB_Logs";
-            this.RTB_Logs.ReadOnly = true;
-            this.RTB_Logs.Size = new System.Drawing.Size(525, 374);
-            this.RTB_Logs.TabIndex = 0;
-            this.RTB_Logs.Text = "";
+            RTB_Logs.Dock = System.Windows.Forms.DockStyle.Fill;
+            RTB_Logs.Location = new System.Drawing.Point(0, 0);
+            RTB_Logs.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            RTB_Logs.Name = "RTB_Logs";
+            RTB_Logs.ReadOnly = true;
+            RTB_Logs.Size = new System.Drawing.Size(677, 442);
+            RTB_Logs.TabIndex = 0;
+            RTB_Logs.Text = "";
             // 
             // B_Stop
             // 
-            this.B_Stop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.B_Stop.Location = new System.Drawing.Point(419, 0);
-            this.B_Stop.Margin = new System.Windows.Forms.Padding(4);
-            this.B_Stop.Name = "B_Stop";
-            this.B_Stop.Size = new System.Drawing.Size(91, 27);
-            this.B_Stop.TabIndex = 4;
-            this.B_Stop.Text = "全部停止";
-            this.B_Stop.UseVisualStyleBackColor = true;
-            this.B_Stop.Click += new System.EventHandler(this.B_Stop_Click);
+            B_Stop.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            B_Stop.Location = new System.Drawing.Point(539, 0);
+            B_Stop.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            B_Stop.Name = "B_Stop";
+            B_Stop.Size = new System.Drawing.Size(117, 32);
+            B_Stop.TabIndex = 4;
+            B_Stop.Text = "全部停止";
+            B_Stop.UseVisualStyleBackColor = true;
+            B_Stop.Click += B_Stop_Click;
             // 
             // B_Start
             // 
-            this.B_Start.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.B_Start.Location = new System.Drawing.Point(321, 0);
-            this.B_Start.Margin = new System.Windows.Forms.Padding(4);
-            this.B_Start.Name = "B_Start";
-            this.B_Start.Size = new System.Drawing.Size(91, 27);
-            this.B_Start.TabIndex = 3;
-            this.B_Start.Text = "全部开始";
-            this.B_Start.UseVisualStyleBackColor = true;
-            this.B_Start.Click += new System.EventHandler(this.B_Start_Click);
+            B_Start.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            B_Start.Location = new System.Drawing.Point(413, 0);
+            B_Start.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            B_Start.Name = "B_Start";
+            B_Start.Size = new System.Drawing.Size(117, 32);
+            B_Start.TabIndex = 3;
+            B_Start.Text = "全部开始";
+            B_Start.UseVisualStyleBackColor = true;
+            B_Start.Click += B_Start_Click;
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
-            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
-            this.notifyIcon1.Text = "传火机器人";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            notifyIcon1.ContextMenuStrip = contextMenuStrip1;
+            notifyIcon1.Icon = (System.Drawing.Icon)resources.GetObject("notifyIcon1.Icon");
+            notifyIcon1.Text = "King-Bot";
+            notifyIcon1.Visible = true;
+            notifyIcon1.MouseDoubleClick += notifyIcon1_MouseDoubleClick;
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 26);
+            contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { exitToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new System.Drawing.Size(109, 28);
             // 
             // exitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
-            this.exitToolStripMenuItem.Text = "退出";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click_1);
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new System.Drawing.Size(108, 24);
+            exitToolStripMenuItem.Text = "退出";
+            exitToolStripMenuItem.Click += exitToolStripMenuItem_Click_1;
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(533, 404);
-            this.Controls.Add(this.B_Stop);
-            this.Controls.Add(this.B_Start);
-            this.Controls.Add(this.TC_Main);
-            this.Icon = global::SysBot.Pokemon.WinForms.Properties.Resources.icon;
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "Main";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "传火机器人";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
-            this.TC_Main.ResumeLayout(false);
-            this.Tab_Bots.ResumeLayout(false);
-            this.Tab_Bots.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.NUD_Port)).EndInit();
-            this.Tab_Hub.ResumeLayout(false);
-            this.Tab_Logs.ResumeLayout(false);
-            this.contextMenuStrip1.ResumeLayout(false);
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(685, 475);
+            Controls.Add(B_Stop);
+            Controls.Add(B_Start);
+            Controls.Add(TC_Main);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            Name = "Main";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "King-Bot";
+            FormClosing += Main_FormClosing;
+            TC_Main.ResumeLayout(false);
+            Tab_Bots.ResumeLayout(false);
+            Tab_Bots.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NUD_Port).EndInit();
+            Tab_Hub.ResumeLayout(false);
+            Tab_Logs.ResumeLayout(false);
+            contextMenuStrip1.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion

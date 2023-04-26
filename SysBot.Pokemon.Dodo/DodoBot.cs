@@ -52,8 +52,8 @@ namespace SysBot.Pokemon.Dodo
         {
             var channelId = Settings.ChannelId;
             if (string.IsNullOrWhiteSpace(channelId)) return;
-            //SendChannelMessage("欢迎使用传火机器人！", channelId);
-            SendChannelMessageAll("欢迎使用传火机器人！", channelId);
+            SendChannelMessage("欢迎使用King-交换机器人！", channelId);
+            //SendChannelMessageAll("欢迎使用King-交换机器人！", channelId);
             var Msg = "";
             if (!DodoBot<T>.Info.Hub.Config.Legality.AllowUseFile)
             {

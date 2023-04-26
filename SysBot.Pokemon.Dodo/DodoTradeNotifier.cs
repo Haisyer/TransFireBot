@@ -70,7 +70,7 @@ namespace SysBot.Pokemon.Dodo
                 var r = DodoBot<T>.Info.CheckIndex(i);
                 if (r != 0)
                 {
-                    DodoBot<T>.SendChannelAtMessage(r, $"请注意,你在第{i + 1}位,{i}个以后该到你了！\n", ChannelId);
+                    DodoBot<T>.SendChannelAtMessage(r, $"你在第{i + 1}位,{i}个以后到你\n", ChannelId);
                 }
             }
         }
@@ -79,19 +79,17 @@ namespace SysBot.Pokemon.Dodo
         {
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
-            var message = $"与{info.Trainer.TrainerName}的交易: " + (tradedToUser != 0
-                ? $"完成。希望您能与您的{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}玩的愉快!"
-                : "完成!");
+            var message = $"**交易" + (tradedToUser != 0
+                ? $"完成，准备下一位！**"//\n你得到的宝可梦：{ ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}
+                : "批量完成!**");
             var text =
-                 $"我收到精灵的种类:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
-                 $"PID:{result.PID:X}\n" +
-                 $"加密常数:{result.EncryptionConstant:X}\n" +
-                 $"训练家姓名:{result.OT_Name}\n" +
-                 $"训练家性别:{(result.OT_Gender == 0 ? "男" : "女")}\n" +
-                 $"训练家表ID:{result.TrainerTID7}\n" +
-                 $"训练家里ID:{result.TrainerSID7}";
+                 $"我收到宝可梦种类:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
+                 $"宝可梦训练家姓名:{result.OT_Name}\n" +
+                 $"宝可梦训练家性别:{(result.OT_Gender == 0 ? "男" : "女")}\n" +
+                 $"宝可梦训练家表ID:{result.TrainerTID7}\n" +
+                 $"宝可梦训练家里ID:{result.TrainerSID7}"; 
             LogUtil.LogText(message);
-            RecordUtil<PokeTradeBot>.Record($"交换完成\t交换对象:{info.Trainer.TrainerName}\t队列号:{info.ID}\t宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\t");
+            RecordUtil<PokeTradeBot>.Record($"交换完成\t交换对象:{info.Trainer.TrainerName}\t交换宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\t");
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, message, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), text, IslandId);
             var n = DodoBot<T>.Info.Hub.Config.Queues.AlertNumber;
@@ -100,7 +98,7 @@ namespace SysBot.Pokemon.Dodo
                 var r = DodoBot<T>.Info.CheckIndex(i);
                 if (r != 0)
                 {
-                    DodoBot<T>.SendChannelAtMessage(r, $"请注意,你在第{i + 1}位,{i}个以后该到你了！\n", ChannelId);
+                    DodoBot<T>.SendChannelAtMessage(r, $"你在第{i + 1}位,{i}个以后到你\n", ChannelId);
                 }
             }
         }
@@ -112,10 +110,10 @@ namespace SysBot.Pokemon.Dodo
                 $"正在初始化与{info.Trainer.TrainerName}(ID: {info.ID})的交易{receive}";
             msg += $" 交易密码为: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
-            var text = $"队列号:**{info.ID}**\n正在派送:**{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}**\n密码:见私信\n状态:初始化\n请准备好\n";
+            var text = $"\n正在派送:**{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}**\n交换密码:**见私信**";
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, text, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(),
-                $"正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n您的密码:{info.Code:0000 0000}\n{routine.InGameName}正在派送", IslandId);
+                $"正在派送:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\n交换密码: {info.Code:0000 0000}\n我的游戏ID为{routine.InGameName}", IslandId);
         }
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
@@ -125,9 +123,10 @@ namespace SysBot.Pokemon.Dodo
             var message = $"正在等待{name}!,机器人IGN为{routine.InGameName}.";
             message += $" 交换密码为: {info.Code:0000 0000}";
             LogUtil.LogText(message);
-            var text = $"我正在等你,第{info.ID}号\n我的游戏ID为{routine.InGameName}\n正在派送:**{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}**\n密码:**见私信**\n状态:搜索中\n";
+            var text = $"";
+            //我正在等你，你稍微快点！！\n我的游戏ID为{ routine.InGameName}\n正在为你派送: ***{ ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}***\n密码: ***见私信 * **\n状态: 正在搜索中\n
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, text, ChannelId);
-            DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你,{name}\n密码:{info.Code:0000 0000}\n请速来领取", IslandId);
+            DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), $"我正在等你 {name} 你可以开始连接了\n交换密码: {info.Code:0000 0000}",IslandId);
         }
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeSummary message)
