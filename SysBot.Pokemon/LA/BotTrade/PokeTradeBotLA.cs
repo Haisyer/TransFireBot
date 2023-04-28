@@ -698,7 +698,7 @@ namespace SysBot.Pokemon
             var hovering = await ReadUntilChanged(TradePartnerOfferedOffset, new byte[] { 0x2 }, 25_000, 1_000, true, true, token).ConfigureAwait(false);
             if (!hovering)
             {
-                Log("Trade partner did not change their initial offer.");
+                Log("交易对象没有改变他们最初提供的宝可梦.");
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return false;
             }
@@ -720,7 +720,7 @@ namespace SysBot.Pokemon
             {
                 if (trade.Type == LedyResponseType.AbuseDetected)
                 {
-                    var msg = $"Found {partner.TrainerName} has been detected for abusing Ledy trades.";
+                    var msg = $"发现 {partner.TrainerName} 因滥用Ledy交易而被检测到.";
                     if (AbuseSettings.EchoNintendoOnlineIDLedy)
                         msg += $"\nID: {partner.TrainerOnlineID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.LedyAbuseEchoMention))
@@ -733,7 +733,7 @@ namespace SysBot.Pokemon
                 toSend = trade.Receive;
                 poke.TradeData = toSend;
 
-                poke.SendNotification(this, "Injecting the requested Pokémon.");
+                poke.SendNotification(this, "正在写入请求的宝可梦...");
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
             }
             else if (config.LedyQuitIfNoMatch)
@@ -765,7 +765,7 @@ namespace SysBot.Pokemon
             }
 
             FailedBarrier++;
-            Log($"Barrier sync timed out after {timeoutAfter} seconds. Continuing.");
+            Log($"Barrier同步在 {timeoutAfter} 秒后超时. Continuing.");
         }
 
         /// <summary>
@@ -782,12 +782,12 @@ namespace SysBot.Pokemon
             if (shouldWait)
             {
                 Hub.BotSync.Barrier.AddParticipant();
-                Log($"Joined the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
+                Log($"加入Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
             }
             else
             {
                 Hub.BotSync.Barrier.RemoveParticipant();
-                Log($"Left the Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
+                Log($"离开Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
             }
         }
 
@@ -803,13 +803,13 @@ namespace SysBot.Pokemon
             if (cooldown != null)
             {
                 var delta = DateTime.Now - cooldown.Time;
-                Log($"Last saw {user.TrainerName} {delta.TotalMinutes:F1} minutes ago (OT: {TrainerName}).");
+                Log($"在{delta.TotalMinutes:F1}分钟前连接过: {user.TrainerName} (游戏名称: {TrainerName}).");
 
                 var cd = AbuseSettings.TradeCooldown;
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
                 {
-                    poke.Notifier.SendNotification(this, poke, "You have ignored the trade cooldown set by the bot owner. The owner has been notified.");
-                    var msg = $"Found {user.TrainerName}{useridmsg} ignoring the {cd} minute trade cooldown. Last encountered {delta.TotalMinutes:F1} minutes ago.";
+                    poke.Notifier.SendNotification(this, poke, "你忽略了管理员设置的交易冷却时间。已通知管理员.");
+                    var msg = $"发现 {user.TrainerName}{useridmsg} 无视 {cd} 分钟交易冷却时间.在 {delta.TotalMinutes:F1} 分钟前连接过";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
@@ -829,12 +829,12 @@ namespace SysBot.Pokemon
                         if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                         {
                             AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "in-game block for sending to multiple in-game players") });
-                            Log($"Added {TrainerNID} to the BannedIDs list.");
+                            Log($"已经将{TrainerNID}加入黑名单.");
                         }
                         quit = true;
                     }
 
-                    var msg = $"Found {user.TrainerName}{useridmsg} sending to multiple in-game players. Previous OT: {previousEncounter.Name}, Current OT: {TrainerName}";
+                    var msg = $"发现 {user.TrainerName}{useridmsg} 使用多个游戏存档交换. 上一个角色OT: {previousEncounter.Name}, 当前角色OT: {TrainerName}";
                     if (AbuseSettings.EchoNintendoOnlineIDMultiRecipients)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiRecipientEchoMention))
@@ -894,7 +894,7 @@ namespace SysBot.Pokemon
         {
             ID = id,
             Name = name,
-            Comment = $"Added automatically on {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
+            Comment = $"自动添加在 {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
         };
 
         // based on https://github.com/Muchacho13Scripts/SysBot.NET/commit/f7879386f33bcdbd95c7a56e7add897273867106
