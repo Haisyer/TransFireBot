@@ -159,8 +159,8 @@ namespace SysBot.Pokemon.QQ
             //发送交换密码
             var method = MiraiQQBot<T>.Info.Hub.Config.QQ.TradeCodeMethod;
             var message_group = $"准备交换\n连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";
-            var message_temp = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
-            var message_friend = $" 准备交换\n连接密码:见私信\n我的名字:{routine.InGameName}";
+            var message_temp = $" 准备交换\n连接密码:瞅我干啥看私信啊\n我的名字:{routine.InGameName}";
+            var message_friend = $" 准备交换\n连接密码:瞅我干啥看私信啊\n我的名字:{routine.InGameName}";
             var message_code = $" 准备交换\n连接密码是你私信我的\n我的名字: {routine.InGameName}";
             var message_password = $" 连接密码:{info.Code:0000 0000}\n我的名字:{routine.InGameName}";        
 
