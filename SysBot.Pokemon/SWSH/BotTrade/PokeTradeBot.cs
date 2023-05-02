@@ -474,46 +474,23 @@ namespace SysBot.Pokemon
                     await ExitTrade(false, token).ConfigureAwait(false);
                     return PokeTradeResult.RoutineCancel;
                 }
-            }
-                /*
-                PokeTradeResult update;
-                var trainer = new PartnerDataHolder(trainerNID, trainerName, trainerTID);
-                (toSend, update) = await GetEntityToSend(sav, poke, offered, oldEC, toSend, trainer, token).ConfigureAwait(false);
-                if (update != PokeTradeResult.Success)
-                {
-                    await ExitTrade(Hub.Config, false, token).ConfigureAwait(false);
-                    return update;
-                }
-
-                var tradeResult = await ConfirmAndStartTrading(poke, token).ConfigureAwait(false);
-                if (tradeResult != PokeTradeResult.Success)
-                {
-                    await ExitTrade(Hub.Config, false, token).ConfigureAwait(false);
-                    return tradeResult;
-                }
-
-                if (token.IsCancellationRequested)
-                {
-                    await ExitTrade(Hub.Config, false, token).ConfigureAwait(false);
-                    return PokeTradeResult.RoutineCancel;
-                }
-                */
+            }      
                 // Trade was Successful!
                 var received = await ReadBoxPokemon(0, 0, token).ConfigureAwait(false);
             // Pokémon in b1s1 is same as the one they were supposed to receive (was never sent).
             if (SearchUtil.HashByDetails(received) == SearchUtil.HashByDetails(toSend) && received.Checksum == toSend.Checksum)
             {
-                Log("User did not complete the trade.");
-                RecordUtil<PokeTradeBot>.Record($"Cancelled\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\\t{poke.ID}\t{toSend.EncryptionConstant:X8}\t{offered.EncryptionConstant:X8}");
+                Log("用户没有完成交易.");
+                RecordUtil<PokeTradeBot>.Record($"取消\t{trainerNID:X16}\t{trainerName}\t{poke.Trainer.TrainerName}\\t{poke.ID}\t{toSend.EncryptionConstant:X8}\t{offered.EncryptionConstant:X8}");
                 await ExitTrade(false, token).ConfigureAwait(false);
                 return PokeTradeResult.TrainerTooSlow;
             }
 
             // As long as we got rid of our inject in b1s1, assume the trade went through.
-            Log("User completed the trade.");
+            Log("用户完成交易.");
             poke.TradeFinished(this, received);
 
-            RecordUtil<PokeTradeBot>.Record($"Finished\t{trainerNID:X16}\t{toSend.EncryptionConstant:X8}\t{received.EncryptionConstant:X8}");
+            RecordUtil<PokeTradeBot>.Record($"完成\t{trainerNID:X16}\t{toSend.EncryptionConstant:X8}\t{received.EncryptionConstant:X8}");
 
             // Only log if we completed the trade.
             UpdateCountsAndExport(poke, received, toSend);
@@ -542,12 +519,12 @@ namespace SysBot.Pokemon
             var tradeswsh = new LegalityAnalysis(cln);
             if (tradeswsh.Valid)
             {
-                Log($"Pokemon is valid, use trade partnerInfo");
+                Log($"宝可梦有效，使用用户信息");
                 await SetBoxPokemon(cln, 0, 0, token, sav).ConfigureAwait(false);
             }
             else
             {
-                Log($"Pokemon not valid, do nothing to trade Pokemon");
+                Log($"宝可梦信息无效，不交换宝可梦");
             }
 
             return tradeswsh.Valid;
@@ -570,8 +547,8 @@ namespace SysBot.Pokemon
                 var cd = AbuseSettings.TradeCooldown;
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
                 {
-                    poke.Notifier.SendNotification(this, poke, "You have ignored the trade cooldown set by the bot owner. The owner has been notified.");
-                    var msg = $"Found {user.TrainerName}{useridmsg} ignoring the {cd} minute trade cooldown. Last encountered {delta.TotalMinutes:F1} minutes ago.";
+                    poke.Notifier.SendNotification(this, poke, "你无视管理员设置的交换CD. 现已经通知管理员.");
+                    var msg = $"发现 {user.TrainerName}{useridmsg}无视 {cd} 分钟的交换CD.上一次遇到是在 {delta.TotalMinutes:F1} 分钟前.";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
@@ -593,14 +570,14 @@ namespace SysBot.Pokemon
                             await BlockUser(token).ConfigureAwait(false);
                             if (AbuseSettings.BanIDWhenBlockingUser)
                             {
-                                AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "in-game block for sending to multiple in-game players") });
-                                Log($"Added {TrainerNID} to the BannedIDs list.");
+                                AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "给多个游戏存档发送游戏数据") });
+                                Log($"已经将{TrainerNID}加入黑名单.");
                             }
                         }
                         quit = true;
                     }
 
-                    var msg = $"Found {user.TrainerName}{useridmsg} sending to multiple in-game players. Previous OT: {previousEncounter.Name}, Current OT: {TrainerName}";
+                    var msg = $"发现 {user.TrainerName}{useridmsg} 使用多个游戏存档交换.  上一个角色OT: {previousEncounter.Name}, 当前角色OT: {TrainerName}";
                     if (AbuseSettings.EchoNintendoOnlineIDMultiRecipients)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiRecipientEchoMention))
@@ -634,7 +611,7 @@ namespace SysBot.Pokemon
                     quit = true;
                 }
 
-                var msg = $"Found {user.TrainerName}{useridmsg} using multiple accounts.\nPreviously encountered {previous.Name} ({previous.RemoteID}) {delta.TotalMinutes:F1} minutes ago on OT: {TrainerName}.";
+                var msg = $"发现 {user.TrainerName}{useridmsg}使用多个账户.\n{delta.TotalMinutes:F1}分钟前识别到{previous.Name} ({previous.RemoteID})OT: {TrainerName}.";
                 if (AbuseSettings.EchoNintendoOnlineIDMulti)
                     msg += $"\nID: {TrainerNID}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiAbuseEchoMention))
@@ -651,9 +628,9 @@ namespace SysBot.Pokemon
                 if (AbuseSettings.BlockDetectedBannedUser)
                     await BlockUser(token).ConfigureAwait(false);
 
-                var msg = $"{user.TrainerName}{useridmsg} is a banned user, and was encountered in-game using OT: {TrainerName}.";
+                var msg = $"{user.TrainerName}{useridmsg}是一个黑名单的用户，并且在游戏中使用OT: {TrainerName}.";
                 if (!string.IsNullOrWhiteSpace(entry.Comment))
-                    msg += $"\nUser was banned for: {entry.Comment}";
+                    msg += $"\n用户因以下原因被禁: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
                 EchoUtil.Echo(msg);
