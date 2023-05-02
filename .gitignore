@@ -353,3 +353,12 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+/SysBot.Pokemon.Dodo/DodoBot.cs
+/SysBot.Pokemon.Dodo/DodoTradeNotifier.cs
+/SysBot.Pokemon.QQ/MiraiQQTradeNotifier.cs
+/SysBot.Pokemon.WinForms/deps
+/SysBot.Pokemon.WinForms/Main.Designer.cs
+/SysBot.Pokemon.WinForms/icon.ico
+/SysBot.Pokemon/Helpers/ShowdownTranslator.cs
+/SysBot.Pokemon/Helpers/TradeExtensions.cs
