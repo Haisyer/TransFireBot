@@ -490,7 +490,7 @@ namespace SysBot.Pokemon
             Log("用户完成交易.");
             poke.TradeFinished(this, received);
 
-            RecordUtil<PokeTradeBot>.Record($"F完成\t{trainerNID:X16}\t{toSend.EncryptionConstant:X8}\t{received.EncryptionConstant:X8}");
+            RecordUtil<PokeTradeBot>.Record($"完成\t{trainerNID:X16}\t{toSend.EncryptionConstant:X8}\t{received.EncryptionConstant:X8}");
 
             // Only log if we completed the trade.
             UpdateCountsAndExport(poke, received, toSend);
@@ -630,7 +630,7 @@ namespace SysBot.Pokemon
 
                 var msg = $"{user.TrainerName}{useridmsg}是一个黑名单的用户，并且在游戏中使用OT: {TrainerName}.";
                 if (!string.IsNullOrWhiteSpace(entry.Comment))
-                    msg += $"\n该用户因以下原因被禁: {entry.Comment}";
+                    msg += $"\n用户因以下原因被禁: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
                 EchoUtil.Echo(msg);
