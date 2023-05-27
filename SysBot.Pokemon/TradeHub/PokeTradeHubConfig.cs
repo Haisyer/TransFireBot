@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using SysBot.Pokemon.SWSH.BotTrade;
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
