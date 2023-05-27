@@ -81,7 +81,7 @@ namespace SysBot.Pokemon
                 Log(e.Message);
             }
 
-            Log($"Ending {nameof(RaidBot)} loop.");
+            Log($"Ending {nameof(RaidBotSWSH)} loop.");
             await HardStop().ConfigureAwait(false);
         }
 
