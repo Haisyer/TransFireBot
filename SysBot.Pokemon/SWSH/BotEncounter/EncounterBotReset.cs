@@ -4,7 +4,7 @@ using PKHeX.Core;
 using PKHeX.Core.Searching;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Base.SwitchStick;
-using static SysBot.Pokemon.PokeDataOffsets;
+using static SysBot.Pokemon.PokeDataOffsetsSWSH;
 
 namespace SysBot.Pokemon
 {

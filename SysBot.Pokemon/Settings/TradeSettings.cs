@@ -97,7 +97,7 @@ namespace SysBot.Pokemon
 
         public void AddCompletedTrade() => Interlocked.Increment(ref _completedTrades);
         public void AddCompletedSeedCheck() => Interlocked.Increment(ref _completedSeedChecks);
-        public void AddCompletedSurprise() =>Interlocked.Increment(ref _completedSurprise);
+        public void AddCompletedSurprise() => Interlocked.Increment(ref _completedSurprise);
         public void AddCompletedDistribution() => Interlocked.Increment(ref _completedDistribution);
         public void AddCompletedDumps() => Interlocked.Increment(ref _completedDumps);
         public void AddCompletedClones() => Interlocked.Increment(ref _completedClones);

@@ -91,7 +91,7 @@ namespace SysBot.Pokemon.Dodo
                  $"训练家表ID:{result.TrainerTID7}\n" +
                  $"训练家里ID:{result.TrainerSID7}";
             LogUtil.LogText(message);
-            RecordUtil<PokeTradeBot>.Record($"交换完成\t交换对象:{info.Trainer.TrainerName}\t队列号:{info.ID}\t宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\t");
+            RecordUtil<PokeTradeBotSWSH>.Record($"交换完成\t交换对象:{info.Trainer.TrainerName}\t队列号:{info.ID}\t宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[Data.Species]}\t");
             DodoBot<T>.SendChannelAtMessage(info.Trainer.ID, message, ChannelId);
             DodoBot<T>.SendPersonalMessage(info.Trainer.ID.ToString(), text, IslandId);
             var n = DodoBot<T>.Info.Hub.Config.Queues.AlertNumber;

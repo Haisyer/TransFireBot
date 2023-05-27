@@ -148,7 +148,7 @@ namespace SysBot.Pokemon
             var entry = AbuseSettings.BannedIDs.List.Find(z => z.ID == TrainerNID);
             if (entry != null)
             {
-                if (AbuseSettings.BlockDetectedBannedUser && bot is PokeRoutineExecutor8)
+                if (AbuseSettings.BlockDetectedBannedUser && bot is PokeRoutineExecutor8SWSH)
                     await BlockUser(token).ConfigureAwait(false);
 
                 var msg = $"{user.TrainerName}{useridmsg} 是一个黑名单的用户，并且在游戏中使用OT: {TrainerName}.";
@@ -156,7 +156,7 @@ namespace SysBot.Pokemon
                     msg += $"\n用户因以下原因被禁: {entry.Comment}";
                 if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
                     msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
-                //ReBannedList<PokeTradeBot>.ReBL($"连接到黑名单用户:{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}该用户因以下原因被禁:{entry.Comment}");
+                //ReBannedList<PokeTradeBotSWSH>.ReBL($"连接到黑名单用户:{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}该用户因以下原因被禁:{entry.Comment}");
                 EchoUtil.Echo(msg);
                 return PokeTradeResult.SuspiciousActivity;
             }
@@ -194,7 +194,7 @@ namespace SysBot.Pokemon
                         if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                         {
                             await BlockUser(token).ConfigureAwait(false);
-                            if (AbuseSettings.BanIDWhenBlockingUser || bot is not PokeRoutineExecutor8) // Only ban ID if blocking in SWSH, always in other games.
+                            if (AbuseSettings.BanIDWhenBlockingUser || bot is not PokeRoutineExecutor8SWSH) // Only ban ID if blocking in SWSH, always in other games.
                             {
                                 AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "给多个游戏存档发送游戏数据") });
                                 Log($"已经将 {TrainerNID} 加入黑名单.");
@@ -230,7 +230,7 @@ namespace SysBot.Pokemon
                     if (AbuseSettings.TradeAbuseAction == TradeAbuseAction.BlockAndQuit)
                     {
                         await BlockUser(token).ConfigureAwait(false);
-                        if (AbuseSettings.BanIDWhenBlockingUser || bot is not PokeRoutineExecutor8) // Only ban ID if blocking in SWSH, always in other games.
+                        if (AbuseSettings.BanIDWhenBlockingUser || bot is not PokeRoutineExecutor8SWSH) // Only ban ID if blocking in SWSH, always in other games.
                         {
                             AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(TrainerName, TrainerNID, "使用多个账户发送游戏数据") });
                             Log($"Added {TrainerNID} to the BannedIDs list.");

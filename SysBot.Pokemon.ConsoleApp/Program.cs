@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.ConsoleApp
             {
                 var lines = File.ReadAllText(ConfigPath);
                 var cfg = JsonConvert.DeserializeObject<ProgramConfig>(lines, GetSettings()) ?? new ProgramConfig();
-                PokeTradeBot.SeedChecker = new Z3SeedSearchHandler<PK8>();
+                PokeTradeBotSWSH.SeedChecker = new Z3SeedSearchHandler<PK8>();
                 BotContainer.RunBots(cfg);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -95,7 +95,7 @@ namespace SysBot.Pokemon.ConsoleApp
 
         private static IPokeBotRunner GetRunner(ProgramConfig prog) => prog.Mode switch
         {
-            ProgramMode.SWSH => new PokeBotRunnerImpl<PK8>(prog.Hub, new BotFactory8()),
+            ProgramMode.SWSH => new PokeBotRunnerImpl<PK8>(prog.Hub, new BotFactory8SWSH()),
             ProgramMode.BDSP => new PokeBotRunnerImpl<PB8>(prog.Hub, new BotFactory8BS()),
             ProgramMode.LA => new PokeBotRunnerImpl<PA8>(prog.Hub, new BotFactory8LA()),
             ProgramMode.SV => new PokeBotRunnerImpl<PK9>(prog.Hub, new BotFactory9SV()),
