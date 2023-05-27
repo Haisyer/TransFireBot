@@ -39,10 +39,10 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("当PKM文件不匹配任何提供的PKM文件时，则使用默认的语言。")]
         public LanguageID GenerateLanguage { get; set; } = LanguageID.English;
 
-        [Category(Generate), Description("如果优先级游戏设置为\"True \"，则使用优先考虑游戏版本开始创建来源版本。如果\"False\"，则使用最新的游戏作为版本。")]
+        [Category(Generate), Description("如果优先级游戏设置为\"True\"，则使用优先考虑游戏版本开始创建来源版本。如果\"False\"，则使用最新的游戏作为版本。建议将其保留为\"True\"")]
         public bool PrioritizeGame { get; set; } = true;
 
-        [Category(Generate), Description("指定在检查其他游戏之前创建来源版本的第一个游戏，或者如果该字段被设置为\"Any\"，则指定当前游戏。将优先级游戏设置为\"true\"，表示启用。")]
+        [Category(Generate), Description("指定用于创建来源版本的第一个游戏，或者如果该字段被设置为\"Any\"，则指定当前游戏。将优先级游戏设置为\"true\"，表示启用。建议将其保留为\"Any\"")]
         public GameVersion PrioritizeGameVersion { get; set; } = GameVersion.Any;
 
         [Category(Generate), Description("为任何生成的Pokémon设置所有可能的合法证章。")]
@@ -94,8 +94,8 @@ namespace SysBot.Pokemon
         public bool PokemonTradeillegalMod { get; set; } = false;
        
 
-        [Category(Misc), Description("将HOME跟踪器归零，不管当前跟踪器的值. 同样适用于用户要求的PKM文件。")]
-        public bool ResetHOMETracker { get; set; } = true;
+        [Category(Misc), Description("清除克隆和用户请求的PKM文件的HOME跟踪器。建议禁用此选项，以避免创建无效的HOME数据。")]
+        public bool ResetHOMETracker { get; set; } = false;
 
         [Category(Misc), Description("由交换对象重写训练家信息。")]
         public bool UseTradePartnerInfo { get; set; } = true;
