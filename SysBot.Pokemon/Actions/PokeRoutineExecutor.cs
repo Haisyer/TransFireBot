@@ -144,6 +144,23 @@ namespace SysBot.Pokemon
             var useridmsg = isDistribution ? "" : $" ({user.ID})";
             var list = isDistribution ? PreviousUsersDistribution : PreviousUsers;
 
+            // Matches to a list of banned NIDs, in case the user ever manages to enter a trade.
+            var entry = AbuseSettings.BannedIDs.List.Find(z => z.ID == TrainerNID);
+            if (entry != null)
+            {
+                if (AbuseSettings.BlockDetectedBannedUser && bot is PokeRoutineExecutor8)
+                    await BlockUser(token).ConfigureAwait(false);
+
+                var msg = $"{user.TrainerName}{useridmsg} 是一个黑名单的用户，并且在游戏中使用OT: {TrainerName}.";
+                if (!string.IsNullOrWhiteSpace(entry.Comment))
+                    msg += $"\n用户因以下原因被禁: {entry.Comment}";
+                if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
+                    msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
+                //ReBannedList<PokeTradeBot>.ReBL($"连接到黑名单用户:{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}该用户因以下原因被禁:{entry.Comment}");
+                EchoUtil.Echo(msg);
+                return PokeTradeResult.SuspiciousActivity;
+            }
+
             // Allows setting a cooldown for repeat trades. If the same user is encountered within the cooldown period, the user is warned and the trade will be ignored.
             var cooldown = list.TryGetPrevious(TrainerNID);
             if (cooldown != null)
@@ -161,7 +178,7 @@ namespace SysBot.Pokemon
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
                         msg = $"{AbuseSettings.CooldownAbuseEchoMention} {msg}";
                     EchoUtil.Echo(msg);
-                    quit = true;
+                    return PokeTradeResult.SuspiciousActivity;
                 }
             }
 
@@ -233,22 +250,6 @@ namespace SysBot.Pokemon
             if (quit)
                 return PokeTradeResult.SuspiciousActivity;
 
-            // Matches to a list of banned NIDs, in case the user ever manages to enter a trade.
-            var entry = AbuseSettings.BannedIDs.List.Find(z => z.ID == TrainerNID);
-            if (entry != null)
-            {
-                if (AbuseSettings.BlockDetectedBannedUser && bot is PokeRoutineExecutor8)
-                    await BlockUser(token).ConfigureAwait(false);
-
-                var msg = $"{user.TrainerName}{useridmsg} 是一个黑名单的用户，并且在游戏中使用OT: {TrainerName}.";
-                if (!string.IsNullOrWhiteSpace(entry.Comment))
-                    msg += $"\n用户因以下原因被禁: {entry.Comment}";
-                if (!string.IsNullOrWhiteSpace(AbuseSettings.BannedIDMatchEchoMention))
-                    msg = $"{AbuseSettings.BannedIDMatchEchoMention} {msg}";
-                //ReBannedList<PokeTradeBot>.ReBL($"连接到黑名单用户:{user.TrainerName}OT: {TrainerName}NID:{TrainerNID}该用户因以下原因被禁:{entry.Comment}");
-                EchoUtil.Echo(msg);
-                return PokeTradeResult.SuspiciousActivity;
-            }
 
             return PokeTradeResult.Success;
         }
@@ -261,7 +262,7 @@ namespace SysBot.Pokemon
         };
 
         // Blocks a user from the box during in-game trades (SWSH).
-        protected async Task BlockUser(CancellationToken token)
+        private async Task BlockUser(CancellationToken token)
         {
             Log("Blocking user in-game...");
             await PressAndHold(RSTICK, 0_750, 0, token).ConfigureAwait(false);
