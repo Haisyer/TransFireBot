@@ -87,9 +87,12 @@ namespace SysBot.Pokemon
 
             var sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
             InitSaveData(sav);
-
+            
             if (!IsValidTrainerData())
-                throw new Exception("训练家数据无效 请参考SysBot.NET维基(https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting)来了修复这个错误.");
+            {
+                await CheckForRAMShiftingApps(token).ConfigureAwait(false);
+                throw new Exception("训练家数据无效,请参考SysBot.NET维基(https://github.com/kwsch/SysBot.NET/wiki/Troubleshooting)获取更多信息");
+            }
             if (await GetTextSpeed(token).ConfigureAwait(false) < TextSpeedOption.Fast)
                 throw new Exception("文本速度应设置为快速。为了正确的操作，请修复这个问题。");
 
