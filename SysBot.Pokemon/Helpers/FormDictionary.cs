@@ -185,6 +185,7 @@ namespace SysBot.Pokemon
             {"下垂姿势","Droopy"},
             {"平挺姿势","Stretchy"},
             {"三节形态","Three-Segment"},
+            {"徒步","Roaming"},
         };
         #endregion
     }
