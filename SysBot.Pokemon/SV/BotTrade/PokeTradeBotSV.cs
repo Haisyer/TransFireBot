@@ -437,6 +437,15 @@ namespace SysBot.Pokemon
                     await ExitTradeToPortal(false, token).ConfigureAwait(false);
                     return PokeTradeResult.SuspiciousActivity;
                 }
+                else if (toSend.OT_Name == "DDZ")
+                {
+                    Log($"有狗");
+                    poke.SendNotification(this, $"DDZ");
+                    AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(tradePartner.TrainerName, trainerNID, "大队长与狗不能交换") });
+                    await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return PokeTradeResult.SuspiciousActivity;
+                }
 
 
                 if (Hub.Config.Legality.UseTradePartnerInfo)
