@@ -426,19 +426,23 @@ namespace SysBot.Pokemon
                 //  LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}",nameof(PokeTradeBotSV));
                 //}
 
-                //模板ban人，后加
+                //模板ban人，数组内加名字
+                string[] wretchName = { "大队长", "DDZ" };
                 Log($"Current OT is: " + toSend.OT_Name);
-                if (toSend.OT_Name == "大队长")
+
+                foreach (var itemName in wretchName)
                 {
-                    Log($"有狗");
-                    poke.SendNotification(this, $"大队长");
-                    AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(tradePartner.TrainerName, trainerNID, "大队长与狗不能交换") });
-                    await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
-                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
-                    return PokeTradeResult.SuspiciousActivity;
+                    if (string.Equals(toSend.OT_Name, itemName))
+                    {
+                        Log($"有狗");
+                        poke.SendNotification(this, $"大队长");
+                        AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(tradePartner.TrainerName, trainerNID, "大队长与狗不能交换") });
+                        await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
+                        await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                        return PokeTradeResult.SuspiciousActivity;
+                    }
                 }
-
-
+              
                 if (Hub.Config.Legality.UseTradePartnerInfo)
                 {
                     await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, poke.MODID, token);
