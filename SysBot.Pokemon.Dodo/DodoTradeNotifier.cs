@@ -57,7 +57,11 @@ namespace SysBot.Pokemon.Dodo
             }
             else if (message.StartsWith("大队长"))
             {
-                DodoBot<T>.SendChannelMessage("**大队长与狗不能进行交换，你家主子是不会开机器人吗？**", ChannelId);
+                DodoBot<T>.SendChannelMessage("**大队长与狗不能进行交换，你家主子是不会开机器人吗？**\n**自古忠孝两难全，队长一人成两全**", ChannelId);
+            }
+            else if (message.StartsWith("DDZ"))
+            {
+                DodoBot<T>.SendChannelMessage("**大队长与狗不能进行交换，你家主子是不会开机器人吗？**\n**自古忠孝两难全，队长一人成两全**", ChannelId);
             }
 
             LogUtil.LogText(message);
