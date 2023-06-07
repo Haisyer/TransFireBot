@@ -425,6 +425,20 @@ namespace SysBot.Pokemon
                 //  poke.SendNotification(this, $"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}");
                 //  LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}",nameof(PokeTradeBotSV));
                 //}
+
+                //模板ban人，后加
+                Log($"Current OT is: " + toSend.OT_Name);
+                if (toSend.OT_Name == "大队长")
+                {
+                    Log($"有狗");
+                    poke.SendNotification(this, $"大队长");
+                    AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(tradePartner.TrainerName, trainerNID, "大队长与狗不能交换") });
+                    await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return PokeTradeResult.SuspiciousActivity;
+                }
+
+
                 if (Hub.Config.Legality.UseTradePartnerInfo)
                 {
                     await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, poke.MODID, token);
@@ -1007,6 +1021,14 @@ namespace SysBot.Pokemon
                 Log($"离开Barrier. Count: {Hub.BotSync.Barrier.ParticipantCount}");
             }
         }
+
+        //ban人，后加
+        private static RemoteControlAccess GetReference(string name, ulong id, string comment) => new()
+        {
+            ID = id,
+            Name = name,
+            Comment = $"Added automatically on {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
+        };
 
         private string GetDodoURL(byte[] bytes)
         {

@@ -55,8 +55,14 @@ namespace SysBot.Pokemon.Dodo
             {
                 DodoBot<T>.SendChannelMessage(message, ChannelId);
             }
+            else if (message.StartsWith("大队长"))
+            {
+                DodoBot<T>.SendChannelMessage("**大队长与狗不能进行交换，你家主子是不会开机器人吗？**", ChannelId);
+            }
+
             LogUtil.LogText(message);
         }
+
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             string description = GetEnumDescription(msg);
