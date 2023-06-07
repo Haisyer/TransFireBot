@@ -40,6 +40,9 @@ namespace SysBot.Pokemon
         [Category(Monitoring), Description("被禁止的在线ID，将触发交易退出或游戏内屏蔽。")]
         public RemoteControlAccessList BannedIDs { get; set; } = new();
 
+        [Category(Monitoring), Description("被禁止的模板ID")]
+        public RemoteControlAccessList BanFile { get; set; } = new();
+
         [Category(Monitoring), Description("当遇到一个被禁止的ID的人，在退出交易之前在游戏中阻止他们。")]
         public bool BlockDetectedBannedUser { get; set; } = true;
 
