@@ -31,7 +31,7 @@ namespace SysBot.Pokemon
             var msg = $"你已经在 {Detail.Type} 队列中! 位置: {position} (ID {Detail.Trade.ID})";
             var pk = Detail.Trade.TradeData;
             if (pk.Species != 0)
-                msg += $", 接收到{(Species)Detail.Trade.TradeData.Species}";
+                msg += $", 接收到: {GameInfo.GetStrings(1).Species[pk.Species]}";
             return msg;
         }
     }
