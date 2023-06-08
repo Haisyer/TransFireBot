@@ -171,7 +171,9 @@ namespace SysBot.Pokemon
                 var cd = AbuseSettings.TradeCooldown;     // Time they must wait before trading again.
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
                 {
-                    poke.Notifier.SendNotification(bot, poke, $"你仍处在交换冷却时间中, 冷却时间还剩：{TimeSpan.FromMinutes(cd) - delta} 分钟.");
+                    var wait = TimeSpan.FromMinutes(cd) - delta;
+                    poke.Notifier.SendNotification(bot, poke, $"你仍处在交换冷却时间中, 冷却时间还剩 {wait.TotalMinutes:F1}分钟.");
+                   ;
                     var msg = $"Found {user.TrainerName}{useridmsg} 无视 {cd} 分钟交易冷却时间.在 {delta.TotalMinutes:F1} 分钟前连接过.";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
                         msg += $"\nID: {TrainerNID}";
