@@ -32,7 +32,7 @@ namespace SysBot.Pokemon
             set => _exponent = Math.Max(_mexp, value);
         }
 
-        [Category(Configure), Description("相乘：插入在(不喜欢的用户)*(相乘)不喜欢的用户之后。")]
+        [Category(Configure), Description("相乘：插入在(不喜欢的用户)*(相乘)不喜欢的用户之后。将其设置为0.2会在20%的用户之后添加。”")]
         public float Multiply
         {
             get => _multiply;
