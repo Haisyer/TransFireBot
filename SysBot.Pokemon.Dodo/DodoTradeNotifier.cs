@@ -1,10 +1,12 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
+using SysBot.Pokemon;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -53,14 +55,12 @@ namespace SysBot.Pokemon.Dodo
             {
                 DodoBot<T>.SendChannelMessage(message, ChannelId);
             }
-            else if (CheckWretchName(message))
+            else if (message.StartsWith("该模板"))
             {
-                DodoBot<T>.SendChannelMessage("**大队长与狗不能进行交换，你家主是不会开机器人吗？** \n **自古忠孝两难全，队长一人成两全**", ChannelId);
+                DodoBot<T>.SendChannelMessage(message, ChannelId);
             }
-
             LogUtil.LogText(message);
         }
-
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             string description = GetEnumDescription(msg);
@@ -198,19 +198,6 @@ namespace SysBot.Pokemon.Dodo
             }
 
             return value.ToString();
-        }
-
-        public bool CheckWretchName(string message)
-        {
-            string[] banTradeName = { "大队长", "DDZ" };
-            foreach (var itemName in banTradeName)
-            {
-                if (message.StartsWith(itemName))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

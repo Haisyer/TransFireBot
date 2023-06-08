@@ -426,23 +426,20 @@ namespace SysBot.Pokemon
                 //  LogUtil.LogInfo($"批量:等待交换第{counting}个宝可梦{ShowdownTranslator<PK9>.GameStringsZh.Species[toSend.Species]}",nameof(PokeTradeBotSV));
                 //}
 
-                //模板ban人，数组内加名字
-                string[] wretchName = { "大队长", "DDZ" };
+                //模板ban人，后加
+                var entry = AbuseSettings.BanFile.List.Find(z => z.Name.Equals(toSend.OT_Name));
                 Log($"Current OT is: " + toSend.OT_Name);
-
-                foreach (var itemName in wretchName)
+                if (entry != null)
                 {
-                    if (string.Equals(toSend.OT_Name, itemName))
-                    {
-                        Log($"有狗");
-                        poke.SendNotification(this,itemName);
-                        AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(tradePartner.TrainerName, trainerNID, "大队长与狗不能交换") });
-                        await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
-                        await ExitTradeToPortal(false, token).ConfigureAwait(false);
-                        return PokeTradeResult.SuspiciousActivity;
-                    }
+                    Log($"该模板ID被禁止");
+                    poke.SendNotification(this, $"该模板ID被禁止\n{entry.Comment}");
+                    AbuseSettings.BannedIDs.AddIfNew(new[] { GetReference(tradePartner.TrainerName, trainerNID, "使用禁止模板") });
+                    await Click(A, 1_000, token).ConfigureAwait(false); // Ensures we dismiss a popup.
+                    await ExitTradeToPortal(false, token).ConfigureAwait(false);
+                    return PokeTradeResult.SuspiciousActivity;
                 }
-              
+
+
                 if (Hub.Config.Legality.UseTradePartnerInfo)
                 {
                     await SetBoxPkmWithSwappedIDDetailsSV(toSend, tradePartnerFullInfo, sav, poke.MODID, token);
