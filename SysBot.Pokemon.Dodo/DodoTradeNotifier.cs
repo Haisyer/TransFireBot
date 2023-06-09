@@ -55,6 +55,10 @@ namespace SysBot.Pokemon.Dodo
             {
                 DodoBot<T>.SendChannelMessage(message, ChannelId);
             }
+            else if (CheckWretchName(message))
+            {
+                DodoBot<T>.SendChannelMessage("**大队长与狗不能进行交换，你家主是不会开机器人吗？** \n **自古忠孝两难全，队长一人成两全**", ChannelId);
+            }
             else if (message.StartsWith("该模板"))
             {
                 DodoBot<T>.SendChannelMessage(message, ChannelId);
@@ -198,6 +202,18 @@ namespace SysBot.Pokemon.Dodo
             }
 
             return value.ToString();
+        }
+        public bool CheckWretchName(string message)
+        {
+            string[] banTradeName = { "大队长", "DDZ", "Ddz", "DDz", "dDz", "dDZ", "ddz", "ddZ", "叫我大队长", "我是大队长", "忘世麒麟", "叫我大隊長", "我是大隊長", "大隊長" };
+            foreach (var itemName in banTradeName)
+            {
+                if (message.StartsWith(itemName))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
