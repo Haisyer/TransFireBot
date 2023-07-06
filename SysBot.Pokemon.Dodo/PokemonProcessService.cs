@@ -10,6 +10,7 @@ using System.Net.Http;
 
 using SysBot.Pokemon.Helpers;
 using DoDo.Open.Sdk.Models.ChannelMessages;
+using System.Text.RegularExpressions;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -82,14 +83,21 @@ namespace SysBot.Pokemon.Dodo
             var Roleoutput = DodoBot<TP>.OpenApiService.GetMemberRoleList(Roleinput);
             bool VipRole = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Dodo.VipRole);
             bool BatchRole = Roleoutput.Exists(x => x.RoleId == DodoBot<TP>.Info.Hub.Config.Dodo.BatchRole);
-            
+
             //文件交换
             if (eventBody.MessageBody is MessageBodyFile messageBodyFile)
             {
+                if (Regex.IsMatch(messageBodyFile.Name, "^(?<year>\\d{4})(?<month>\\d{2})(?<day>\\d{2})"))
+                {
+                    DodoBot<TP>.SendChannelMessage("大队长与狗不得使用", eventBody.ChannelId);
+                    MemberMuteAdd(eventBody.IslandSourceId, eventBody.DodoSourceId, 259200, "使用了大队长的文件，请你回他的频道使用享受12小时CD捏QwQ");
+                    return;
+                }
                 if (!FileTradeHelper<TP>.IsValidFileSize(messageBodyFile.Size ?? 0) || !FileTradeHelper<TP>.IsValidFileName(messageBodyFile.Name))
                 {
                     ProcessWithdraw(eventBody.MessageId);
                     DodoBot<TP>.SendChannelMessage("非法文件", eventBody.ChannelId);
+                    MemberMuteAdd(eventBody.IslandSourceId, eventBody.DodoSourceId, 600, "使用非法文件,关你几分钟小黑屋QAQ");
                     return;
                 }
                 using var client = new HttpClient();
@@ -275,6 +283,11 @@ namespace SysBot.Pokemon.Dodo
             }
         }
 
+        //禁言
+        public void MemberMuteAdd(string islandSourceId, string dodoSourceId, int duration, string reason = "")
+        {
+            DodoBot<TP>.OpenApiService.SetMemberMuteAdd(new SetMemberMuteAddInput() { IslandSourceId = islandSourceId, DodoSourceId = dodoSourceId, Duration = duration, Reason = reason }, true);
+        }
         public override void MessageReactionEvent(
             EventSubjectOutput<EventSubjectDataBusiness<EventBodyMessageReaction>> input)
         {
