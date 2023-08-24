@@ -57,8 +57,6 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("尝试宝可梦遭遇类型的顺序.")]
         public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } = new List<EncounterTypeGroup>() { EncounterTypeGroup.Egg, EncounterTypeGroup.Slot, EncounterTypeGroup.Static, EncounterTypeGroup.Mystery, EncounterTypeGroup.Trade };
 
-        [Category(Generate), Description("根据游戏RNG生成合法、非异色、8代、来自宝可梦巢穴的宝可梦。")]
-        public bool UseXOROSHIRO { get; set; } = true;
 
         [Category(Generate), Description("是否为用户返还其中文指令生成的ShowDown代码，暂只有dodo可用。")]
         public bool ReturnShowdownSets { get; set; } = true;
