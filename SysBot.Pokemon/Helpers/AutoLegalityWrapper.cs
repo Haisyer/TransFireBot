@@ -22,8 +22,8 @@ namespace SysBot.Pokemon
         private static void InitializeAutoLegality(LegalitySettings cfg)
         {
             InitializeCoreStrings();
-            if (!EncounterEvent.Initialized)
-                EncounterEvent.RefreshMGDB(cfg.MGDBPath);
+            //if (!EncounterEvent.Initialized)
+                //EncounterEvent.RefreshMGDB(cfg.MGDBPath);
             InitializeTrainerDatabase(cfg);
             InitializeSettings(cfg);
         }
