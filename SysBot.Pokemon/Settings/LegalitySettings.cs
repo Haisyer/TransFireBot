@@ -54,6 +54,9 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("如果合法，则强制使用指定的球。")]
         public bool ForceSpecifiedBall { get; set; } = true;
 
+        [Category(Generate), Description("Assumes level 50 sets are level 100 competitive sets.")]
+        public bool ForceLevel100for50 { get; set; }
+
         [Category(Generate), Description("尝试宝可梦遭遇类型的顺序.")]
         public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } = new List<EncounterTypeGroup>() { EncounterTypeGroup.Egg, EncounterTypeGroup.Slot, EncounterTypeGroup.Static, EncounterTypeGroup.Mystery, EncounterTypeGroup.Trade };
 
