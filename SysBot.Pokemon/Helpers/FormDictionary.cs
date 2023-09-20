@@ -186,6 +186,15 @@ namespace SysBot.Pokemon
             {"平挺姿势","Stretchy"},
             {"三节形态","Three-Segment"},
             {"徒步","Roaming"},
+            {"冒牌货的样子","Counterfeit"},
+            {"高档货的样子","Artisan"},
+            {"凡作的样子","Unremarkable"},
+            {"杰作的样子","Masterpiece"},
+            {"赫月","Bloodmoon"},
+            {"碧草面具","Teal"},
+            {"水井面具","Wellspring"},
+            {"火灶面具","Hearthflame"},
+            {"础石面具","Cornerstone"},
         };
         #endregion
     }
