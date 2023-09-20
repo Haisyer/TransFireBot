@@ -348,7 +348,8 @@ namespace SysBot.Pokemon
                 pkm = pkMet;
             return pkm;
         }
-
+        #region //目前无用
+        /*
         public static T CherishHandler(MysteryGift mg, ITrainerInfo info)
         {
             var result = EntityConverterResult.None;
@@ -390,6 +391,8 @@ namespace SysBot.Pokemon
             }
             else return (T)mgPkm;
         }
+        */
+        #endregion
         #region //目前无用
         /* public static string PokeImg(PKM pkm, bool canGmax, bool fullSize)
          {
