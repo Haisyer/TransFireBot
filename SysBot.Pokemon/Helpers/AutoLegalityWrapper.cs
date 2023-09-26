@@ -44,6 +44,9 @@ namespace SysBot.Pokemon
             APILegality.SetBattleVersion = cfg.SetBattleVersion;
             APILegality.Timeout = cfg.Timeout;
 
+            if (!(APILegality.AllowHOMETransferGeneration = cfg.AllowHOMETransferGeneration))
+                typeof(ParseSettings).GetProperty(nameof(ParseSettings.Gen8TransferTrackerNotPresent))!.SetValue(null, Severity.Invalid);
+
             // We need all the encounter types present, so add the missing ones at the end.
             var missing = EncounterPriority.Except(cfg.PrioritizeEncounters);
             cfg.PrioritizeEncounters.AddRange(missing);
@@ -137,9 +140,16 @@ namespace SysBot.Pokemon
 
         public static PKM GetLegal(this ITrainerInfo sav, IBattleTemplate set, out string res)
         {
-            var result = sav.GetLegalFromSet(set, out var type);
-            res = type.ToString();
-            return result;
+            var result = sav.GetLegalFromSet(set);
+            res = result.Status switch
+            {
+                LegalizationResult.Regenerated     => "Regenerated",
+                LegalizationResult.Failed          => "Failed",
+                LegalizationResult.Timeout         => "Timeout",
+                LegalizationResult.VersionMismatch => "VersionMismatch",
+                _ => "",
+            };
+            return result.Created;
         }
 
         public static string GetLegalizationHint(IBattleTemplate set, ITrainerInfo sav, PKM pk) => set.SetAnalysis(sav, pk);

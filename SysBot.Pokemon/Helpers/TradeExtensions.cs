@@ -216,7 +216,7 @@ namespace SysBot.Pokemon
             pk.Move1_PPUps = pk.Move2_PPUps = pk.Move3_PPUps = pk.Move4_PPUps = 0;
             pk.SetMaximumPPCurrent(pk.Moves);
             pk.SetSuggestedHyperTrainingData();
-            pk.SetSuggestedRibbons(template, enc);
+            pk.SetSuggestedRibbons(template, enc, true, new List<ALMTraceback>());
         }
 
         public static void EncounterLogs(PKM pk, string filepath = "")
@@ -359,7 +359,7 @@ namespace SysBot.Pokemon
             if (mgPkm is not null && result is EntityConverterResult.Success)
             {
                 var enc = new LegalityAnalysis(mgPkm).EncounterMatch;
-                mgPkm.SetHandlerandMemory(info, enc);
+                mgPkm.SetHandlerandMemory(info, enc, new List<ALMTraceback>());
 
                 if (mgPkm.TID16 is 0 && mgPkm.SID16 is 0)
                 {

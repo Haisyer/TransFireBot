@@ -54,8 +54,11 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("如果合法，则强制使用指定的球。")]
         public bool ForceSpecifiedBall { get; set; } = true;
 
-        [Category(Generate), Description("Assumes level 50 sets are level 100 competitive sets.")]
+        [Category(Generate), Description("强制设置精灵为50级到100级。")]
         public bool ForceLevel100for50 { get; set; }
+
+        [Category(Generate), Description("禁用此选项将强制ALM不生成需要HOME跟踪的宝可梦。")]
+        public bool AllowHOMETransferGeneration { get; set; } = true;
 
         [Category(Generate), Description("尝试宝可梦遭遇类型的顺序.")]
         public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } = new List<EncounterTypeGroup>() { EncounterTypeGroup.Egg, EncounterTypeGroup.Slot, EncounterTypeGroup.Static, EncounterTypeGroup.Mystery, EncounterTypeGroup.Trade };
@@ -70,7 +73,7 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("增加对战版本，支持它(目前仅仅支持剑盾)使用过去的一代宝可梦可以进行在线对战。")]
         public bool SetBattleVersion { get; set; } = false;
 
-        [Category(Generate), Description("如果提供了非法的SET代码，机器人将创建一个复活节的宝可梦蛋。")]
+        [Category(Generate), Description("如果提供了非法的SET代码，机器人将创建一个初始蛋生宝可梦。")]
         public bool EnableEasterEggs { get; set; } = false;
 
         [Category(Generate), Description("允许用户在Showdown sets中提交自定义的OT，TID，SID和OT Gender，即允许用户使用PS代码实现自ID。")]

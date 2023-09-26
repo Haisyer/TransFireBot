@@ -302,7 +302,8 @@ namespace SysBot.Pokemon
             LastTradeDistributionFixed = poke.Type == PokeTradeType.Random && !Hub.Config.Distribution.RandomCode;
 
             // Search for a trade partner for a Link Trade.
-            await Click(A, 1_000, token).ConfigureAwait(false);
+            await Click(A, 0_500, token).ConfigureAwait(false);
+            await Click(A, 0_500, token).ConfigureAwait(false);
 
             // Clear it so we can detect it loading.
             await ClearTradePartnerNID(TradePartnerNIDOffset, token).ConfigureAwait(false);
@@ -611,17 +612,16 @@ namespace SysBot.Pokemon
                 if (attempts >= 30)
                     break;
 
-                await Click(B, 1_300, token).ConfigureAwait(false);
+                await Click(B, 1_000, token).ConfigureAwait(false);
                 if (await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
                     break;
 
-                await Click(B, 2_000, token).ConfigureAwait(false);
+                await Click(B, 1_000, token).ConfigureAwait(false);
                 if (await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
                     break;
 
-                await Click(A, 1_300, token).ConfigureAwait(false);
-                if (await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
-                    break;
+                if (await IsInBox(PortalOffset, token).ConfigureAwait(false))
+                    await Click(A, 1_000, token).ConfigureAwait(false);
             }
 
             // We didn't make it for some reason.
@@ -647,7 +647,7 @@ namespace SysBot.Pokemon
             var attempts = 0;
             while (await IsInPokePortal(PortalOffset, token).ConfigureAwait(false))
             {
-                await Click(B, 1_500, token).ConfigureAwait(false);
+                await Click(B, 2_500, token).ConfigureAwait(false);
                 if (++attempts >= 30)
                 {
                     Log("无法恢复到宝可站.");
@@ -753,6 +753,7 @@ namespace SysBot.Pokemon
 
         private async Task ExitTradeToPortal(bool unexpected, CancellationToken token)
         {
+            await Task.Delay(1_000, token).ConfigureAwait(false);
             if (await IsInPokePortal(PortalOffset, token).ConfigureAwait(false))
                 return;
 
@@ -768,21 +769,21 @@ namespace SysBot.Pokemon
                 await Click(B, 1_000, token).ConfigureAwait(false);
                 if (!await IsInBox(PortalOffset, token).ConfigureAwait(false))
                 {
-                    await Task.Delay(5_000, token).ConfigureAwait(false);
+                    await Task.Delay(1_000, token).ConfigureAwait(false);
                     break;
                 }
 
                 await Click(A, 1_000, token).ConfigureAwait(false);
                 if (!await IsInBox(PortalOffset, token).ConfigureAwait(false))
                 {
-                    await Task.Delay(5_000, token).ConfigureAwait(false);
+                    await Task.Delay(1_000, token).ConfigureAwait(false);
                     break;
                 }
 
                 await Click(B, 1_000, token).ConfigureAwait(false);
                 if (!await IsInBox(PortalOffset, token).ConfigureAwait(false))
                 {
-                    await Task.Delay(5_000, token).ConfigureAwait(false);
+                    await Task.Delay(1_000, token).ConfigureAwait(false);
                     break;
                 }
 
@@ -816,7 +817,6 @@ namespace SysBot.Pokemon
                     return;
                 }
             }
-            await Task.Delay(2_000, token).ConfigureAwait(false);
         }
 
         // These don't change per session and we access them frequently, so set these each time we start.
