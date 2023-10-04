@@ -38,5 +38,8 @@ namespace SysBot.Pokemon
 
         [Category(Startup), Description("是否撤回交换消息")]
         public bool WithdrawTradeMessage { get; set; } = false;
+
+        [Category(Startup), Description("是否开启卡片消息")]
+        public bool CardTradeMessage { get; set; } = true;
     }
 }

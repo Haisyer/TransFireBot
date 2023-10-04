@@ -35,5 +35,16 @@ namespace SysBot.Pokemon.Dodo
         {
             DodoBot<T>.SendChannelAtMessage(userInfo.ID, message, channelId);
         }
+
+        public override void SendCardMessage(string message, string pokeurl,string itemurl, string ballurl,string teraurl, string teraoriginalurl)
+        {
+            DodoBot<T>.SendChannelCardMessage(message, channelId, pokeurl,itemurl,ballurl,teraurl,teraoriginalurl);
+        }
+
+        public override void SendCardBatchMessage(string message, string pokeurl, string itemurl, string ballurl)
+        {
+            DodoBot<T>.SendChannelCardBatchMessage(message, channelId, pokeurl, itemurl, ballurl);
+        }
+
     }
 }

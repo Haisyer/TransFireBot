@@ -8,6 +8,8 @@ using DoDo.Open.Sdk.Models.ChannelMessages;
 using DoDo.Open.Sdk.Models.Islands;
 using DoDo.Open.Sdk.Services;
 using PKHeX.Core;
+using System.Collections.Generic;
+using System.Threading.Channels;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -172,6 +174,304 @@ namespace SysBot.Pokemon.Dodo
                     Width = 1280,
                     Height = 720,
                     IsOriginal = 1
+                }
+            });
+        }
+
+        public static void SendChannelCardMessage(string message, string channelId, string pokeurl,string itemurl, string ballurl,string teraurl, string teraoriginalurl)
+        {
+            string mes = "";
+            if (string.IsNullOrEmpty(message)) message= "None";
+            string[] pmsgLines = message.Split('\n');
+            mes = pmsgLines[0]+"\n"+ pmsgLines[1] + "\n"+ pmsgLines[2] + "\n"+ pmsgLines[3] + "\n"+ pmsgLines[4] + "\n"+ pmsgLines[5] + "\n"+ pmsgLines[6] + "\n"+ pmsgLines[16] + "\n";
+            
+            string[] parts = pmsgLines[8].Split(',');
+            for (int i = 0; i < parts.Length; i++)
+                parts[i] = parts[i].Replace(":", "\n");
+
+            string[] part = pmsgLines[10].Split(',');
+            for (int i = 0; i < part.Length; i++)
+                part[i] = part[i].Replace(":", "\n");
+
+            OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
+            {
+                ChannelId = channelId,
+                MessageBody = new MessageBodyCard
+                {
+
+                    Card = new MessageModelCard
+                    {
+                        Type = "card",
+                        Theme = "grey",
+                        //Title = "这是你要的宝可梦：",
+                        Components = new List<object>
+                        {
+                            new
+                            {
+                                type = "remark",
+                                elements = new List<object>()
+                                {
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "球种:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = ballurl
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "道具:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = itemurl
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "原始太晶属性:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = teraoriginalurl
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "当前太晶属性:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = teraurl
+                                    }
+
+                                }
+                            },
+                            new
+                            {
+                                type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = mes
+                                },
+                                align = "left",
+                                accessory = new
+                                {
+                                      type = "image",
+                                      src = pokeurl
+                                }
+                            },
+                            new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = "**个体：**"
+                                }
+                            },
+                             new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "paragraph",
+                                    cols = 6,
+                                    fields = new List<object>()
+                                    {
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[0]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content =  parts[1]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[2]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[3]
+                                        },
+                                           new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[4]
+                                        },
+                                             new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[5]
+                                        }
+                                    }
+                                }
+                            },
+                             new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = "**努力：**"
+                                }
+                            },
+                             new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "paragraph",
+                                    cols = 6,
+                                    fields = new List<object>()
+                                    {
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content =  part[0]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = part[1]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = part[2]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = part[3]
+                                        },
+                                           new
+                                        {
+                                            type = "dodo-md",
+                                           content = part[4]
+                                        },
+                                             new
+                                        {
+                                            type = "dodo-md",
+                                           content = part[5]
+                                        }
+                                    }
+                                }
+                            },
+                             new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = "**技能：**"
+                                }
+                            },
+                              new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "paragraph",
+                                    cols = 2,
+                                    fields = new List<object>()
+                                    {
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = pmsgLines[12]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = pmsgLines[13]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = pmsgLines[14]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = pmsgLines[15]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }); 
+        }
+
+        public static void SendChannelCardBatchMessage(string message, string channelId, string pokeurl, string itemurl, string ballurl)
+        {
+            OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
+            {
+                ChannelId = channelId,
+                MessageBody = new MessageBodyCard
+                {
+
+                    Card = new MessageModelCard
+                    {
+                        Type = "card",
+                        Theme = "grey",
+                        Components = new List<object>
+                        {
+                            new
+                            {
+                                type = "remark",
+                                elements = new List<object>()
+                                {
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "宝可梦:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = pokeurl
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "球种:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = ballurl
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "道具:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = itemurl
+                                    }
+                                }
+                            }
+                                                
+                        }
+                    }
                 }
             });
         }

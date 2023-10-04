@@ -24,7 +24,8 @@ namespace SysBot.Pokemon
         [Category(Files), Description("截图根目录（screenshot）")]
         public string ScreenshotFolder{ get; set; } = string.Empty;
 
-       
+        [Category(Files), Description("卡片消息图片的txt文件的路径地址,如:C:\\publish\\bot\\image.txt")]
+        public string CardImagePath { get; set; } = string.Empty;
         public void CreateDefaults(string path)
         {
             var dump = Path.Combine(path, "dump");
