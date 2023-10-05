@@ -214,6 +214,11 @@ namespace SysBot.Pokemon.Dodo
                                 {
                                     new
                                     {
+                                        type = "image",
+                                        src = shinyurl
+                                    },
+                                    new
+                                    {
                                         type = "dodo-md",
                                        content = "球种:"
                                     },
@@ -231,11 +236,6 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "image",
                                         src = itemurl
-                                    },
-                                    new
-                                    {
-                                        type = "image",
-                                        src = shinyurl
                                     },
                                     new
                                     {
