@@ -52,8 +52,8 @@ namespace SysBot.Pokemon
         public bool SetMatchingBalls { get; set; } = true;
 
         [Description(
-            "该项启用时，个体值为全31时显示蓝色、30显示红色。否则全31时显示蓝色、0显示红色。"
-        )]
+            "该项启用时，个体值为全31时显示蓝色、30显示红色。否则全31时显示蓝色、0显示红色。" )]
+
         public bool UseCompetitiveMarkings { get; set; } = true;
 
         [Description("根据宝可梦的个体值设置标记。")]
