@@ -51,6 +51,14 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("为任何生成的宝可梦设置一个匹配的球(基于宝可梦颜色)。")]
         public bool SetMatchingBalls { get; set; } = true;
 
+        [Description(
+            "该项启用时，个体值为全31时显示蓝色、30显示红色。否则全31时显示蓝色、0显示红色。" )]
+
+        public bool UseCompetitiveMarkings { get; set; } = true;
+
+        [Description("根据宝可梦的个体值设置标记。")]
+        public bool UseMarkings { get; set; } = true;
+
         [Category(Generate), Description("如果合法，则强制使用指定的球。")]
         public bool ForceSpecifiedBall { get; set; } = true;
 
