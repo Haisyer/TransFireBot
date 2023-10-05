@@ -32,7 +32,7 @@ namespace SysBot.Pokemon
             Settings = hub.Config.RaidSV;
         }
 
-        private const string RaidBotVersion = "Version 0.4.1";
+        private const string RaidBotVersion = "Version 0.5.1";
         private int RaidsAtStart;
         private int RaidCount;
         private int WinCount;
@@ -44,7 +44,8 @@ namespace SysBot.Pokemon
         private ulong TodaySeed;
         private ulong OverworldOffset;
         private ulong ConnectedOffset;
-        private ulong TeraRaidBlockOffset;
+        private ulong RaidBlockPointerP;
+        private ulong RaidBlockPointerK;
         private readonly ulong[] TeraNIDOffsets = new ulong[3];        
 
         public override async Task MainLoop(CancellationToken token)
@@ -97,11 +98,11 @@ namespace SysBot.Pokemon
                 await InitializeSessionOffsets(token).ConfigureAwait(false);
                 if (RaidCount == 0)
                 {
-                    TodaySeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset, 8, token).ConfigureAwait(false), 0);
+                    TodaySeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 8, token).ConfigureAwait(false), 0);
                     Log($"Starting routine with Today Seed: {TodaySeed:X8}");
                 }
 
-                var currentSeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset, 8, token).ConfigureAwait(false), 0);
+                var currentSeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 8, token).ConfigureAwait(false), 0);
                 if (TodaySeed != currentSeed)
                 {
                     if (dayRoll != 0)
@@ -276,10 +277,18 @@ namespace SysBot.Pokemon
         private async Task CountRaids(List<(ulong, TradeMyStatus)>? trainers, CancellationToken token)
         {
             List<uint> seeds = new();
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset + 0x20, 2304, token).ConfigureAwait(false);
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 2304, token).ConfigureAwait(false);
             for (int i = 0; i < 69; i++)
             {
                 var seed = BitConverter.ToUInt32(data.Slice(0 + (i * 32), 4));
+                if (seed != 0)
+                    seeds.Add(seed);
+            }
+
+            data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerK, 0xC80, token).ConfigureAwait(false);
+            for (int i = 0; i < 25; i++)
+            {
+                var seed = BitConverter.ToUInt32(data.Slice(32 + (i * 32), 4));
                 if (seed != 0)
                     seeds.Add(seed);
             }
@@ -517,7 +526,8 @@ namespace SysBot.Pokemon
             Log("Caching session offsets...");
             OverworldOffset = await SwitchConnection.PointerAll(Offsets.OverworldPointer, token).ConfigureAwait(false);
             ConnectedOffset = await SwitchConnection.PointerAll(Offsets.IsConnectedPointer, token).ConfigureAwait(false);
-            TeraRaidBlockOffset = await SwitchConnection.PointerAll(Offsets.TeraRaidBlockPointer, token).ConfigureAwait(false);
+            RaidBlockPointerP = await SwitchConnection.PointerAll(Offsets.RaidBlockPointerP, token).ConfigureAwait(false);
+            RaidBlockPointerK = await SwitchConnection.PointerAll(Offsets.RaidBlockPointerK, token).ConfigureAwait(false);
 
             var nidPointer = new long[] { Offsets.LinkTradePartnerNIDPointer[0], Offsets.LinkTradePartnerNIDPointer[1], Offsets.LinkTradePartnerNIDPointer[2] };
             for (int p = 0; p < TeraNIDOffsets.Length; p++)
