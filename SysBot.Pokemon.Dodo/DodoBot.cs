@@ -10,6 +10,7 @@ using DoDo.Open.Sdk.Services;
 using PKHeX.Core;
 using System.Collections.Generic;
 using System.Threading.Channels;
+using System;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -178,7 +179,7 @@ namespace SysBot.Pokemon.Dodo
             });
         }
 
-        public static void SendChannelCardMessage(string message, string channelId, string pokeurl,string itemurl, string ballurl,string teraurl, string teraoriginalurl)
+        public static void SendChannelCardMessage(string message, string channelId, string pokeurl,string itemurl, string ballurl,string teraurl, string teraoriginalurl, string shinyurl, string movetypeurl1, string movetypeurl2, string movetypeurl3, string movetypeurl4)
         {
             string mes = "";
             if (string.IsNullOrEmpty(message)) message= "None";
@@ -230,6 +231,11 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "image",
                                         src = itemurl
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = shinyurl
                                     },
                                     new
                                     {
@@ -382,43 +388,58 @@ namespace SysBot.Pokemon.Dodo
                             },
                               new
                             {
-                              type = "section",
-                                text = new
+                                  type = "remark",
+                                elements = new List<object>()
                                 {
-                                    type = "paragraph",
-                                    cols = 2,
-                                    fields = new List<object>()
+                                    new
                                     {
-                                         new
-                                        {
-                                            type = "dodo-md",
-                                           content = pmsgLines[12]
-                                        },
-                                         new
-                                        {
-                                            type = "dodo-md",
-                                           content = pmsgLines[13]
-                                        },
-                                         new
-                                        {
-                                            type = "dodo-md",
-                                           content = pmsgLines[14]
-                                        },
-                                         new
-                                        {
-                                            type = "dodo-md",
-                                           content = pmsgLines[15]
-                                        }
-                                    }
+                                        type = "image",
+                                        src = movetypeurl1
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = $"**{pmsgLines[12]}**"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = movetypeurl2
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = $"**{pmsgLines[13]}**"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = movetypeurl3
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = $"**{pmsgLines[14]}**"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = movetypeurl4
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = $"**{pmsgLines[15]}**"
+                                    },
                                 }
-                            }
+                            },
                         }
                     }
                 }
             }); 
         }
 
-        public static void SendChannelCardBatchMessage(string message, string channelId, string pokeurl, string itemurl, string ballurl)
+        public static void SendChannelCardBatchMessage(string message, string channelId, string pokeurl, string itemurl, string ballurl, string shinyurl, string movetypeurl1, string movetypeurl2, string movetypeurl3, string movetypeurl4)
         {
             OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
             {
@@ -446,6 +467,11 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "image",
                                         src = pokeurl
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = shinyurl
                                     },
                                     new
                                     {

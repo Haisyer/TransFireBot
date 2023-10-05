@@ -34,12 +34,12 @@ namespace SysBot.Pokemon.QQ
 
         #region
         // QQ没有卡片信息,后续可以改造成图片消息
-        public override void SendCardMessage(string message, string pokeurl, string itemurl, string ballurl, string teraurl, string teraoriginalurl)
+        public override void SendCardMessage(string message, string pokeurl, string itemurl, string ballurl, string teraurl, string teraoriginalurl, string shinyurl, string movetypeurl1, string movetypeurl2, string movetypeurl3, string movetypeurl4)
         {
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(userInfo.ID.ToString()).Plain(message).Build());
         }
         //  QQ没有卡片信息,后续可以改造成图片消息
-        public override void SendCardBatchMessage(string message, string pokeurl, string itemurl, string ballurl)
+        public override void SendCardBatchMessage(string message, string pokeurl, string itemurl, string ballurl, string shinyurl, string movetypeurl1, string movetypeurl2, string movetypeurl3, string movetypeurl4)
         {
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(userInfo.ID.ToString()).Plain(message).Build());
         }
