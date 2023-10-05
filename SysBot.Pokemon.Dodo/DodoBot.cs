@@ -55,8 +55,8 @@ namespace SysBot.Pokemon.Dodo
         {
             var channelId = Settings.ChannelId;
             if (string.IsNullOrWhiteSpace(channelId)) return;
-            //SendChannelMessage("欢迎使用传火机器人！", channelId);
-            SendChannelMessageAll("欢迎使用传火机器人！", channelId);
+            //SendChannelMessage("开始派送！", channelId);
+            SendChannelMessageAll("开始派送！", channelId);
             var Msg = "";
             if (!DodoBot<T>.Info.Hub.Config.Legality.AllowUseFile)
             {
@@ -214,6 +214,11 @@ namespace SysBot.Pokemon.Dodo
                                 {
                                     new
                                     {
+                                        type = "image",
+                                        src = shinyurl
+                                    },
+                                    new
+                                    {
                                         type = "dodo-md",
                                        content = "球种:"
                                     },
@@ -231,11 +236,6 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "image",
                                         src = itemurl
-                                    },
-                                    new
-                                    {
-                                        type = "image",
-                                        src = shinyurl
                                     },
                                     new
                                     {
