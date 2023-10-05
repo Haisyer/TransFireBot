@@ -37,6 +37,8 @@ namespace SysBot.Pokemon
             APILegality.ForceSpecifiedBall = cfg.ForceSpecifiedBall;
             APILegality.ForceLevel100for50 = cfg.ForceLevel100for50;
             Legalizer.EnableEasterEggs = cfg.EnableEasterEggs;
+            APILegality.UseCompetitiveMarkings = cfg.UseCompetitiveMarkings;
+            APILegality.UseMarkings = cfg.UseMarkings;
             APILegality.AllowTrainerOverride = cfg.AllowTrainerDataOverride;
             APILegality.AllowBatchCommands = cfg.AllowBatchCommands;
             APILegality.PrioritizeGame = cfg.PrioritizeGame;
@@ -46,6 +48,9 @@ namespace SysBot.Pokemon
 
             if (!(APILegality.AllowHOMETransferGeneration = cfg.AllowHOMETransferGeneration))
                 typeof(ParseSettings).GetProperty(nameof(ParseSettings.Gen8TransferTrackerNotPresent))!.SetValue(null, Severity.Invalid);
+
+            if (APILegality.UseCompetitiveMarkings)
+                MarkingApplicator.MarkingMethod = APILegality.CompetitiveMarking;
 
             // We need all the encounter types present, so add the missing ones at the end.
             var missing = EncounterPriority.Except(cfg.PrioritizeEncounters);
