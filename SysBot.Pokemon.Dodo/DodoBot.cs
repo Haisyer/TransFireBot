@@ -439,7 +439,7 @@ namespace SysBot.Pokemon.Dodo
             }); 
         }
 
-        public static void SendChannelCardBatchMessage(string message, string channelId, string pokeurl, string itemurl, string ballurl, string shinyurl, string movetypeurl1, string movetypeurl2, string movetypeurl3, string movetypeurl4)
+        public static void SendChannelCardBatchMessage(string message, string channelId, string pokeurl, string itemurl, string ballurl, string shinyurl)
         {
             OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
             {

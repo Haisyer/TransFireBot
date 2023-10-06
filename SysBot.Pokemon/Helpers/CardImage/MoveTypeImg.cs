@@ -2,16 +2,8 @@
 
 namespace SysBot.Pokemon
 {
-    public class OtherImg
+    public class MoveTypeImg
     {
-        #region 闪光图片
-        public static Dictionary<int, string> ShinyUrlMapping = new Dictionary<int, string>
-        {
-            {1, "https://img.imdodo.com/openapitest/upload/cdn/39240F8E02D5DB05A6686F2E34BACF23_1696445706494.png"},
-            
-        };
-        #endregion
-
         #region 技能属性图片
         public static Dictionary<int, string> MoveTypeUrlMapping = new Dictionary<int, string>
         {
@@ -35,5 +27,18 @@ namespace SysBot.Pokemon
             {17, "https://img.imdodo.com/openapitest/upload/cdn/EBB606283A27C3C6BCDCE6CB99B6EF4C_1696481011850.png"},
         };
         #endregion
+
+        public string MoveTypeToChinese(int move)
+        {
+            if (MoveTypeUrlMapping.ContainsKey(move))
+            {
+                return MoveTypeUrlMapping[move];
+            }
+            else
+            {
+                string errorUrl = "https://img.imdodo.com/openapitest/upload/cdn/AEA3F842940BD2E6418AE36231F53BB7_1696061304099.png";
+                return errorUrl;
+            }
+        }
     }
 }

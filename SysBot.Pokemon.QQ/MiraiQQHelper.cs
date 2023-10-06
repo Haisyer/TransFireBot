@@ -39,7 +39,7 @@ namespace SysBot.Pokemon.QQ
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(userInfo.ID.ToString()).Plain(message).Build());
         }
         //  QQ没有卡片信息,后续可以改造成图片消息
-        public override void SendCardBatchMessage(string message, string pokeurl, string itemurl, string ballurl, string shinyurl, string movetypeurl1, string movetypeurl2, string movetypeurl3, string movetypeurl4)
+        public override void SendCardBatchMessage(string message, string pokeurl, string itemurl, string ballurl, string shinyurl)
         {
             MiraiQQBot<T>.SendGroupMessage(new MessageChainBuilder().At(userInfo.ID.ToString()).Plain(message).Build());
         }
