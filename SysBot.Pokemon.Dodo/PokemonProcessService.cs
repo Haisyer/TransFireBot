@@ -87,7 +87,7 @@ namespace SysBot.Pokemon.Dodo
             //文件交换
             if (eventBody.MessageBody is MessageBodyFile messageBodyFile)
             {
-                if (messageBodyFile.Name.Length > 8 && Regex.IsMatch(messageBodyFile.Name[..8], "^(?<year>\\d{4})(?<month>\\d{2})(?<day>\\d{2})$"))
+                if (messageBodyFile.Name.Length > 8 && (Regex.IsMatch(messageBodyFile.Name.Substring(0, 8), "^2023(?<month>\\d{2})(?<day>\\d{2})$") || Regex.IsMatch(messageBodyFile.Name.Substring(0, 8), "^2022(?<month>\\d{2})(?<day>\\d{2})$") || Regex.IsMatch(messageBodyFile.Name.Substring(0, 8), "^2024(?<month>\\d{2})(?<day>\\d{2})$")))
                 {
                     DodoBot<TP>.SendChannelMessage("**大队长与狗不得使用**", eventBody.ChannelId);
                     MemberMuteAdd(eventBody.IslandSourceId, eventBody.DodoSourceId, 604800, "使用了大队长的文件，请你回他的频道使用享受12小时CD捏QwQ");
