@@ -706,8 +706,7 @@ namespace SysBot.Pokemon
             {
                 client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
                 MultipartFormDataContent contentFormData = new MultipartFormDataContent();
-                string path = @"D:\Desktop\a.jpg";
-                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "b.jpg");
+                contentFormData.Add(new ByteArrayContent(bytes), "file", "b.jpg");
                 var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
                 var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
                 var a = result.Split("https");
