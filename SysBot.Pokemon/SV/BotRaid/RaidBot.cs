@@ -46,7 +46,8 @@ namespace SysBot.Pokemon
         private ulong ConnectedOffset;
         private ulong RaidBlockPointerP;
         private ulong RaidBlockPointerK;
-        private readonly ulong[] TeraNIDOffsets = new ulong[3];        
+        private readonly ulong[] TeraNIDOffsets = new ulong[3];
+        private string TeraRaidCode { get; set; } = string.Empty;        
 
         public override async Task MainLoop(CancellationToken token)
         {
@@ -99,18 +100,19 @@ namespace SysBot.Pokemon
                 if (RaidCount == 0)
                 {
                     TodaySeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 8, token).ConfigureAwait(false), 0);
-                    Log($"Starting routine with Today Seed: {TodaySeed:X8}");
+                    Log($"Today Seed: {TodaySeed:X8}");
                 }
 
                 var currentSeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 8, token).ConfigureAwait(false), 0);
                 if (TodaySeed != currentSeed)
                 {
+                    var msg = $"Current Today Seed {currentSeed:X8} does not match Starting Today Seed: {TodaySeed:X8} after rolling back 1 day. ";
                     if (dayRoll != 0)
                     {
-                        Log($"Current Today Seed {currentSeed:X8} does not match Starting Today Seed: {TodaySeed:X8} after rolling back 1 day. Stopping routine for lost raid.");
+                        Log(msg + "Stopping routine for lost raid.");
                         return;
                     }
-                    Log($"Current Today Seed {currentSeed:X8} does not match Starting Today Seed: {TodaySeed:X8}, attempting dayroll correction.");
+                    Log(msg);
                     await CloseGame(Hub.Config, token).ConfigureAwait(false);
                     await RolloverCorrectionSV(token).ConfigureAwait(false);
                     await StartGame(Hub.Config, token).ConfigureAwait(false);
@@ -155,7 +157,8 @@ namespace SysBot.Pokemon
                     Log("Clearing stored OTs");
                     for (int i = 0; i < 3; i++)
                     {
-                        var ptr = new long[] { 0x44B97D8, 0x48, 0xE0 + (i * 0x30), 0x0 };
+                        List<long> ptr = new(Offsets.Trader2MyStatusPointer);
+                        ptr[2] += i * 0x30;
                         await SwitchConnection.PointerPoke(new byte[16], ptr, token).ConfigureAwait(false);
                     }
                     continue;
@@ -199,8 +202,9 @@ namespace SysBot.Pokemon
                         if (nid == 0)
                             continue;
 
-                        var pointer = new long[] { 0x44B97D8, 0x48, 0xE0 + (i * 0x30), 0x0 };
-                        var trainer = await GetTradePartnerMyStatus(pointer, token).ConfigureAwait(false);
+                        List<long> ptr = new(Offsets.Trader2MyStatusPointer);
+                        ptr[2] += i * 0x30;
+                        var trainer = await GetTradePartnerMyStatus(ptr, token).ConfigureAwait(false);
 
                         if (string.IsNullOrWhiteSpace(trainer.OT))
                             continue;
@@ -331,8 +335,10 @@ namespace SysBot.Pokemon
                     return false;
             }
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
                 await Click(B, 0_500, token).ConfigureAwait(false);
+
+            await Task.Delay(1_500, token).ConfigureAwait(false);
 
             // If not in the overworld, we've been attacked so quit earlier.
             if (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
@@ -370,10 +376,9 @@ namespace SysBot.Pokemon
         private async Task<string> GetRaidCode(CancellationToken token)
         {
             var data = await SwitchConnection.PointerPeek(6, Offsets.TeraRaidCodePointer, token).ConfigureAwait(false);
-            string str = Encoding.ASCII.GetString(data);
-
-            Log($"Raid Code: {str}");
-            return $"{str}";
+            TeraRaidCode = Encoding.ASCII.GetString(data);
+            Log($"Raid Code: {TeraRaidCode}");
+            return $"\n{TeraRaidCode}\n";
         }
 
         private async Task<bool> CheckIfTrainerBanned(TradeMyStatus trainer, ulong nid, int player, bool updateBanList, CancellationToken token)
@@ -427,13 +432,14 @@ namespace SysBot.Pokemon
                         nid = BitConverter.ToUInt64(data, 0);
                     }
 
-                    var pointer = new long[] { 0x44B97D8, 0x48, 0xE0 + (i * 0x30), 0x0 };
-                    var trainer = await GetTradePartnerMyStatus(pointer, token).ConfigureAwait(false);
+                    List<long> ptr = new(Offsets.Trader2MyStatusPointer);
+                    ptr[2] += i * 0x30;
+                    var trainer = await GetTradePartnerMyStatus(ptr, token).ConfigureAwait(false);
 
                     while (trainer.OT.Length == 0 && (DateTime.Now < endTime))
                     {
                         await Task.Delay(0_500, token).ConfigureAwait(false);
-                        trainer = await GetTradePartnerMyStatus(pointer, token).ConfigureAwait(false);
+                        trainer = await GetTradePartnerMyStatus(ptr, token).ConfigureAwait(false);
                     }
 
                     if (nid != 0 && !string.IsNullOrWhiteSpace(trainer.OT))
@@ -467,13 +473,13 @@ namespace SysBot.Pokemon
 
         private async Task<bool> IsConnectedToLobby(CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesMainAsync(Offsets.TeraLobby, 1, token).ConfigureAwait(false);
+            var data = await SwitchConnection.ReadBytesMainAsync(Offsets.TeraLobbyIsConnected, 1, token).ConfigureAwait(false);
             return data[0] != 0x00; // 0 when in lobby but not connected
         }
 
         private async Task<bool> IsInRaid(CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesMainAsync(Offsets.LoadedIntoRaid, 1, token).ConfigureAwait(false);
+            var data = await SwitchConnection.ReadBytesMainAsync(Offsets.LoadedIntoDesiredState, 1, token).ConfigureAwait(false);
             return data[0] == 0x02; // 2 when in raid, 1 when not
         }
 
@@ -485,6 +491,9 @@ namespace SysBot.Pokemon
                 DTFormat.YYMMDD => 2,
                 _ => 1,
             };
+
+            for (int i = 0; i < 2; i++)
+                await Click(B, 0_150, token).ConfigureAwait(false);
 
             for (int i = 0; i < 2; i++)
                 await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
@@ -503,8 +512,8 @@ namespace SysBot.Pokemon
                 await Click(DDOWN, 0_150, token).ConfigureAwait(false);
             await Click(A, 0_500, token).ConfigureAwait(false);
             for (int i = 0; i < scrollroll; i++) // 0 to roll day for DDMMYY, 1 to roll day for MMDDYY, 3 to roll hour
-                await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
-            await Click(DDOWN, 0_150, token).ConfigureAwait(false);
+                await Click(DRIGHT, 0_200, token).ConfigureAwait(false);
+            await Click(DDOWN, 0_200, token).ConfigureAwait(false);
             for (int i = 0; i < 8; i++) // Mash DRIGHT to confirm
                 await Click(DRIGHT, 0_200, token).ConfigureAwait(false);
 
@@ -560,7 +569,11 @@ namespace SysBot.Pokemon
 
                 byte[]? bytes = Array.Empty<byte>();
                 if (Settings.TakeScreenshot)
-                    bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
+	{
+	    bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
+	    //var result = GetDodoURL(bytes);
+                    //EchoUtil.Echo(result);
+	}
                 /*      var embed = new EmbedBuilder()
                       {
                           Title = disband ? "**Raid was disbanded due to a banned user**" : title,
@@ -687,14 +700,13 @@ namespace SysBot.Pokemon
             await Task.Delay(1_000, token).ConfigureAwait(false);
             return true;
         }
-        private static string GetDodoURL()
+        private static string GetDodoURL(byte[] bytes)
         {
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("Authorization", "Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM");
                 MultipartFormDataContent contentFormData = new MultipartFormDataContent();
-                string path = @"D:\Desktop\a.jpg";
-                contentFormData.Add(new ByteArrayContent(System.IO.File.ReadAllBytes(path)), "file", "b.jpg");
+                contentFormData.Add(new ByteArrayContent(bytes), "file", "b.jpg");
                 var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";
                 var result = client.PostAsync(requestUri, contentFormData).Result.Content.ReadAsStringAsync().Result;
                 var a = result.Split("https");
