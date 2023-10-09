@@ -54,7 +54,7 @@ namespace SysBot.Pokemon
         public bool IncludeCountdown { get; set; } = false;
 
         [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False")]
-        public bool TakeScreenshot { get; set; } = true;
+        public bool TakeScreenshot { get; set; } = false;
 
         [Category(Hosting), Description("被禁止的用户NID")]
         public RemoteControlAccessList RaiderBanList { get; set; } = new() { AllowIfEmpty = false };

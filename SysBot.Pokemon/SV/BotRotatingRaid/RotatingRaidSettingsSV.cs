@@ -48,7 +48,7 @@ namespace SysBot.Pokemon
         public LobbyFiltersCategory LobbyOptions { get; set; } = new();
 
         [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False。")]
-        public bool TakeScreenshot { get; set; } = true;
+        public bool TakeScreenshot { get; set; } = false;
 
         [Category(FeatureToggle), Description("启用后，机器人将从 Discord 嵌入中隐藏 raid 代码。")]
         public bool HideRaidCode { get; set; } = false;

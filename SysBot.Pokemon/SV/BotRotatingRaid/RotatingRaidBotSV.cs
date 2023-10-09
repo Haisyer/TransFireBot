@@ -1032,13 +1032,17 @@ namespace SysBot.Pokemon
                 await Task.Delay(5_000, token).ConfigureAwait(false);
 
                 byte[]? bytes = Array.Empty<byte>();
-                if (Settings.TakeScreenshot)
-	            {
+            if (Settings.TakeScreenshot)
+            {
+                if (Hub.Config.Dodo.DodoUploadFileUrl.Contains("Bot"))
+                {
                     bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
-	                var result = GetDodoURL(bytes);
+                    var result = GetDodoURL(bytes);
                     EchoUtil.Echo(result);
-	            }
-                if (!disband && names is not null && !upnext && raidstart)
+                }
+                else Log("授权为空，请检查Dodo\\DodoUploadFileUrl路径下的授权是否写入，DoDo机器人发送图片失败！");
+            }
+            if (!disband && names is not null && !upnext && raidstart)
                 {
                     var players = string.Empty;
                     if (names.Count == 0)
