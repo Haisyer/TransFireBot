@@ -1446,7 +1446,7 @@ namespace SysBot.Pokemon
         {
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("Authorization", Settings.DodoTeraUploadFileUrl);
+                client.DefaultRequestHeaders.Add("Authorization", Hub.Config.Dodo.DodoUploadFileUrl);
                 MultipartFormDataContent contentFormData = new MultipartFormDataContent();
                 contentFormData.Add(new ByteArrayContent(bytes), "file", "b.jpg");
                 var requestUri = @"https://botopen.imdodo.com/api/v2/resource/picture/upload";

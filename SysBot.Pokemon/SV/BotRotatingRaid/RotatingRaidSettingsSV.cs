@@ -50,9 +50,6 @@ namespace SysBot.Pokemon
         [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False。")]
         public bool TakeScreenshot { get; set; } = true;
 
-        [Category(Hosting), Description("Dodo朱紫突袭上传文件授权链接\nBot+空格+识别码+.+Token\n实例：Bot 69804372.Njk4MDQzNzI.77-9OW_vv70.qvJQfqTiyAXPJlZx1THOL8hp2H3MjISyFpficc6OOOM")]
-        public string DodoTeraUploadFileUrl { get; set; } = string.Empty;
-
         [Category(FeatureToggle), Description("启用后，机器人将从 Discord 嵌入中隐藏 raid 代码。")]
         public bool HideRaidCode { get; set; } = false;
 
