@@ -7,7 +7,6 @@ using PKHeX.Core;
 using SysBot.Base;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra;
-using Discord;
 using SysBot.Pokemon.Helpers;
 
 namespace SysBot.Pokemon.Dodo

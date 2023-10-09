@@ -1,4 +1,4 @@
-﻿﻿using PKHeX.Core;
+﻿using PKHeX.Core;
 using System;
 using SysBot.Base;
 using System.Collections.Generic;
@@ -7,12 +7,12 @@ using System.Threading;
 
 namespace SysBot.Pokemon
 {
-    public class RaidSettingsSV : IBotStateSettings, ICountSettings
+    public class RotatingRaidSettingsSV : IBotStateSettings, ICountSettings
     {
         private const string Hosting = nameof(Hosting);
         private const string Counts = nameof(Counts);
         private const string FeatureToggle = nameof(FeatureToggle);
-        public override string ToString() => "朱紫团体战机器人设置";
+        public override string ToString() => "可变朱紫团体战机器人设置";
 
         [Category(FeatureToggle), Description("将URL转换成宝可梦自动化的太晶禁用列表json格式（或符合所需结构的格式）。")]
         public string BanListURL { get; set; } = "";
@@ -26,17 +26,11 @@ namespace SysBot.Pokemon
         [Category(Hosting), Description("启用后，机器人将尝试从机器人启动时的“raidsv.txt”文件自动生成 Raid 参数。")]
         public bool GenerateParametersFromFile { get; set; } = true;
 
-        [Category(Hosting), Description("启用后，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
-        public bool UsePresetFile { get; set; } = true;
+        [Category(Hosting), Description("RotatingRaid Preset Filters"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public RotatingRaidPresetFiltersCategory PresetFilters { get; set; } = new();
 
-        [Category(Hosting), Description("Preset Filters"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public RaidPresetFiltersCategory PresetFilters { get; set; } = new();
-
-        [Category(Hosting), Description("Raid Embed Filters"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public RaidEmbedFiltersCategory RaidEmbedFilters { get; set; } = new();
-
-        [Category(Hosting), Description("启用后，机器人将使用 SHA 提供的艺术图。")]
-        public bool SpriteAlternateArt { get; set; } = true;
+        [Category(Hosting), Description("Raid embed parameters.")]
+        public List<RotatingRaidParameters> RaidEmbedParameters { get; set; } = new();
 
         [Category(Hosting), Description("输入机器人自动停止之前要托管的袭击总数。默认值为 0 以忽略此设置。")]
         public int TotalRaidsToHost { get; set; } = 0;
@@ -44,17 +38,20 @@ namespace SysBot.Pokemon
         [Category(Hosting), Description("在他们被自动添加到禁令名单之前，每个玩家的捕捉限制。如果设置为0，该设置将被忽略。")]
         public int CatchLimit { get; set; } = 0;
 
-        [Category(Hosting), Description("在机器人托管未编码的 raid 之前，每个参数的空 raid 限制。默认为 3 次袭击。")]
-        public int EmptyRaidLimit { get; set; } = 3;
-
-        [Category(Hosting), Description("开始团体战前的最小等待秒数。")]
+        [Category(Hosting), Description("开始团体战前的最小等待秒数")]
         public int TimeToWait { get; set; } = 90;
 
         [Category(FeatureToggle), Description("启用后，嵌入将在“TimeToWait”中倒计时秒数，直到开始突袭。")]
         public bool IncludeCountdown { get; set; } = false;
 
-        [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False")]
+        [Category(Hosting), Description("Lobby Options"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public LobbyFiltersCategory LobbyOptions { get; set; } = new();
+
+        [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False。")]
         public bool TakeScreenshot { get; set; } = false;
+
+        [Category(FeatureToggle), Description("启用后，机器人将从 Discord 嵌入中隐藏 raid 代码。")]
+        public bool HideRaidCode { get; set; } = false;
 
         [Category(Hosting), Description("被禁止的用户NID")]
         public RemoteControlAccessList RaiderBanList { get; set; } = new() { AllowIfEmpty = false };
@@ -102,26 +99,27 @@ namespace SysBot.Pokemon
                 yield return $"Started Raids: {CompletedRaids}";
         }
 
-        [Category(Hosting), TypeConverter(typeof(CategoryConverter<RaidEmbedFiltersCategory>))]
-        public class RaidEmbedFiltersCategory
+        public class RotatingRaidParameters
         {
-            public override string ToString() => "Raid Embed Filters";
+            public override string ToString() => $"{Title}";
+            public bool ActiveInRotation { get; set; } = true;
             public TeraCrystalType CrystalType { get; set; } = TeraCrystalType.Base;
             public string[] Description { get; set; } = Array.Empty<string>();
             public bool IsCoded { get; set; } = true;
             public bool IsSet { get; set; } = false;
             public bool IsShiny { get; set; } = true;
-            public string[] PartyPK { get; set; } = Array.Empty<string>();
             public Species Species { get; set; } = Species.None;
             public int SpeciesForm { get; set; } = 0;
-            public string Seed { get; set; } = "00000000";
+            public string[] PartyPK { get; set; } = Array.Empty<string>();
+            public bool SpriteAlternateArt { get; set; } = false;
+            public string Seed { get; set; } = "0";
             public string Title { get; set; } = string.Empty;
         }
 
-        [Category(Hosting), TypeConverter(typeof(CategoryConverter<RaidPresetFiltersCategory>))]
-        public class RaidPresetFiltersCategory
+        [Category(Hosting), TypeConverter(typeof(CategoryConverter<RotatingRaidPresetFiltersCategory>))]
+        public class RotatingRaidPresetFiltersCategory
         {
-            public override string ToString() => "Preset Filters";
+            public override string ToString() => "Preset filters.";
 
             [Category(Hosting), Description("如果为 true，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
             public bool UsePresetFile { get; set; } = true;
@@ -140,6 +138,22 @@ namespace SysBot.Pokemon
 
             [Category(Hosting), Description("如果为 true，机器人会将掉落奖励附加到预设描述中。")]
             public bool IncludeRewards { get; set; } = true;
+        }
+
+        [Category(Hosting), TypeConverter(typeof(CategoryConverter<LobbyFiltersCategory>))]
+        public class LobbyFiltersCategory
+        {
+            public override string ToString() => "Lobby Filters";
+
+            [Category(Hosting), Description("OpenLobby - Opens the Lobby after x Empty Lobbies\nSkipRaid - Moves on after x losses/empty Lobbies\nContinue - Continues hosting the raid")]
+            public LobbyMethodOptions LobbyMethodOptions { get; set; } = LobbyMethodOptions.OpenLobby;
+
+            [Category(Hosting), Description("Empty raid limit per parameter before the bot hosts an uncoded raid. Default is 3 raids.")]
+            public int EmptyRaidLimit { get; set; } = 3;
+
+            [Category(Hosting), Description("Empty/Lost raid limit per parameter before the bot moves on to the next one. Default is 3 raids.")]
+            public int SkipRaidLimit { get; set; } = 3;
+
         }
 
         public class CategoryConverter<T> : TypeConverter

@@ -11,6 +11,7 @@ using PKHeX.Core;
 using System.Collections.Generic;
 using System.Threading.Channels;
 using System;
+using SysBot.Base;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -54,6 +55,9 @@ namespace SysBot.Pokemon.Dodo
         public void StartDistribution()
         {
             var channelId = Settings.ChannelId;
+            EchoUtil.Forwarders.Add(msg =>{ if (msg.StartsWith("https")) SendChannelMessagePicture(msg, channelId);});
+            EchoUtil.Forwarders.Add(msg => { if (msg.Contains("团")) SendChannelMessage(msg, channelId); });
+            EchoUtil.Forwarders.Add(msg => { if (msg.Contains("打")) SendChannelMessage(msg, channelId); });
             if (string.IsNullOrWhiteSpace(channelId)) return;
             //SendChannelMessage("欢迎使用传火机器人！", channelId);
             SendChannelMessageAll("欢迎使用传火机器人！", channelId);

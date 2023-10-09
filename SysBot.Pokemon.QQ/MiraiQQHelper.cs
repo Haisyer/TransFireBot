@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Discord;
 using Manganese.Array;
 using Mirai.Net.Utils.Scaffolds;
 using PKHeX.Core;
