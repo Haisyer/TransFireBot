@@ -53,6 +53,10 @@ namespace SysBot.Pokemon
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public RaidSettingsSV RaidSV { get; set; } = new();
 
+        [Category(BotEncounter)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+        public RotatingRaidSettingsSV RotatingRaidSV { get; set; } = new();
+
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public StopConditionSettings StopConditions { get; set; } = new();
 
