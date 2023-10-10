@@ -240,7 +240,14 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "image",
                                         src = itemurl
-                                    },
+                                    }
+                                }
+                            },
+                             new
+                            {
+                                type = "remark",
+                                elements = new List<object>()
+                                {
                                     new
                                     {
                                         type = "dodo-md",
@@ -414,7 +421,14 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "dodo-md",
                                        content = $"**{pmsgLines[13]}**"
-                                    },
+                                    }
+                                }
+                            },
+                                new
+                            {
+                                  type = "remark",
+                                elements = new List<object>()
+                                {
                                     new
                                     {
                                         type = "image",
@@ -434,15 +448,137 @@ namespace SysBot.Pokemon.Dodo
                                     {
                                         type = "dodo-md",
                                        content = $"**{pmsgLines[15]}**"
-                                    },
+                                    }
                                 }
-                            },
+                            }
                         }
                     }
                 }
             }); 
         }
+        public static void SendChannelEggCardMessage(string title, string message, string channelId, string pokeurl,string ballurl,string shinyurl,string shinyinfo)
+        {
+            string mes = "";
+            if (string.IsNullOrEmpty(message)) message = "None";
+            if (string.IsNullOrEmpty(title)) title = "None";
+            if (string.IsNullOrEmpty(shinyinfo)) shinyinfo = "None";
+            string[] pmsgLines = message.Split('\n');
+            string[] parts = pmsgLines[8].Split(',');
+            for (int i = 0; i < parts.Length; i++)
+                parts[i] = parts[i].Replace(":", "\n");
+            mes = pmsgLines[0] + "\n" + pmsgLines[1] + "\n" + pmsgLines[2] + "\n" + pmsgLines[3] + "\n" +  shinyinfo;
+            OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
+            {
+                ChannelId = channelId,
+                MessageBody = new MessageBodyCard
+                {
 
+                    Card = new MessageModelCard
+                    {
+                        Type = "card",
+                        Theme = "grey",
+                        Title = title,
+                        Components = new List<object>
+                        {
+                            new
+                            {
+                                type = "remark",
+                                elements = new List<object>()
+                                {
+                                    new
+                                    {
+                                        type = "image",
+                                        src = shinyurl
+                                    },
+                                     new
+                                    {
+                                        type = "image",
+                                        src = "https://img.imdodo.com/openapitest/upload/cdn/E714716E359055F4AD802BD414A97AF2_1696061162810.png"
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                       content = "球种:"
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = ballurl
+                                    }
+                                }
+                            },
+                            new
+                            {
+                                type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = mes
+                                },
+                                align = "left",
+                                accessory = new
+                                {
+                                      type = "image",
+                                      src = pokeurl
+                                }
+                            },
+                              new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = "**个体：**"
+                                }
+                            },
+                             new
+                            {
+                              type = "section",
+                                text = new
+                                {
+                                    type = "paragraph",
+                                    cols = 6,
+                                    fields = new List<object>()
+                                    {
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[0]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content =  parts[1]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[2]
+                                        },
+                                         new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[3]
+                                        },
+                                           new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[4]
+                                        },
+                                             new
+                                        {
+                                            type = "dodo-md",
+                                           content = parts[5]
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            });
+        }
         public static void SendChannelCardBatchMessage(string message, string channelId, string pokeurl, string itemurl, string ballurl, string shinyurl)
         {
             OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
