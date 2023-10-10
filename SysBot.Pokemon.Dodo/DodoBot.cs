@@ -506,5 +506,61 @@ namespace SysBot.Pokemon.Dodo
             });
         }
 
+        public static void SendChannelCardDumpMessage(string text, string message, string channelId, string pokeurl, string shinyurl)
+        {
+            OpenApiService.SetChannelMessageSend(new SetChannelMessageSendInput<MessageBodyCard>
+            {
+                ChannelId = channelId,
+                MessageBody = new MessageBodyCard
+                {
+
+                    Card = new MessageModelCard
+                    {
+                        Type = "card",
+                        Theme = "grey",
+                        Components = new List<object>
+                        {
+                            new
+                            {
+                                type = "remark",
+                                elements = new List<object>()
+                                {
+                                    new
+                                    {
+                                        type = "image",
+                                        src = shinyurl
+                                    },
+                                    new
+                                    {
+                                        type = "image",
+                                        src = "https://img.imdodo.com/openapitest/upload/cdn/E714716E359055F4AD802BD414A97AF2_1696061162810.png"
+                                    },
+                                    new
+                                    {
+                                        type = "dodo-md",
+                                        content = message
+                                    }
+                                }
+                            },
+                            new
+                            {
+                                type = "section",
+                                text = new
+                                {
+                                    type = "dodo-md",
+                                    content = text
+                                },
+                                align = "left",
+                                accessory = new
+                                {
+                                      type = "image",
+                                      src = pokeurl
+                                }
+                            },
+                        }
+                    }
+                }
+            });
+        }
     }
 }

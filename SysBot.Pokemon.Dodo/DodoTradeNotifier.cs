@@ -6,7 +6,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
+using SysBot.Pokemon.Helpers;
+using System.IO;
 
 namespace SysBot.Pokemon.Dodo
 {
@@ -177,12 +178,57 @@ namespace SysBot.Pokemon.Dodo
                 };
                 if (result.Species != 0 && info.Type == PokeTradeType.Dump)
                 {
-                    var text = message +
-                        $"宝可梦:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}({GenderString})\n" +
+                    var text = $"**{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}**({GenderString})\n" +
                         $"个体值:{result.IV_HP},{result.IV_ATK},{result.IV_DEF},{result.IV_SPA},{result.IV_SPD},{result.IV_SPE}" + IVstring + "\n" +
                         $"特性:{Abilitystring}\n" +
-                        $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
-                    DodoBot<T>.SendChannelMessage(text, ChannelId);
+                        $"闪光:{(result.IsShiny ? "**闪了闪了闪了**" : "**李肿么还没闪是不是百变怪肾虚辣！**")}";
+                    var cardflag = DodoBot<T>.Info.Hub.Config.Dodo.CardTradeMessage;
+                    if (cardflag)
+                    {
+                        string pokeurl = "https://img.imdodo.com/openapitest/upload/cdn/AEA3F842940BD2E6418AE36231F53BB7_1696061304099.png";
+                        string shinyurl = "https://img.imdodo.com/openapitest/upload/cdn/4A47A0DB6E60853DEDFCFDF08A5CA249_1695595586219.png";
+                        int shinyInt = result.IsShiny == true ? 1 : 0;
+                        int pkForm = result.Form;
+                        int speciesInt = result.Species;
+                        if (shinyInt == 1)
+                        {
+                            shinyurl = "https://img.imdodo.com/openapitest/upload/cdn/39240F8E02D5DB05A6686F2E34BACF23_1696445706494.png";
+                        }
+                        var key = (Species: speciesInt, Form: pkForm, Shiny: shinyInt);
+                        string txtFilePath = "";
+                        txtFilePath = DodoBot<T>.Info.Hub.Config.Folder.CardImagePath;
+                        if (txtFilePath != "")
+                        {
+                            string[] lines = File.ReadAllLines(txtFilePath);
+
+                            Regex regex = new Regex(@"\(\s*(\d+),\s*(\d+),\s*(\d+)\)\s*,\s*""(https:\/\/[^""]+)""");
+
+                            foreach (var line in lines)
+                            {
+
+                                Match match = regex.Match(line);
+                                if (match.Success)
+                                {
+                                    int s = int.Parse(match.Groups[1].Value);
+                                    int f = int.Parse(match.Groups[2].Value);
+                                    int i = int.Parse(match.Groups[3].Value);
+                                    string url = match.Groups[4].Value;
+                                    if (s == speciesInt && f == pkForm && i == shinyInt)
+                                    {
+                                        pokeurl = url;
+                                        LogUtil.LogInfo($"KEY:{key}", nameof(PokemonTradeHelper<T>));
+                                        LogUtil.LogInfo($"KEY:{url}", nameof(PokemonTradeHelper<T>));
+                                    }
+                                }
+                            }
+                        }
+                        DodoBot<T>.SendChannelCardDumpMessage(text, message, ChannelId, pokeurl, shinyurl);
+                    }
+                    else
+                    {
+                        text = message + "宝可梦:" + text;
+                        DodoBot<T>.SendChannelMessage(text, ChannelId);
+                    }
                 }
             }
             else if (message.Contains("https"))
