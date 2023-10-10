@@ -181,7 +181,7 @@ namespace SysBot.Pokemon.Dodo
                     var text = $"**{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}**({GenderString})\n" +
                         $"个体值:{result.IV_HP},{result.IV_ATK},{result.IV_DEF},{result.IV_SPA},{result.IV_SPD},{result.IV_SPE}" + IVstring + "\n" +
                         $"特性:{Abilitystring}\n" +
-                        $"闪光:{(result.IsShiny ? "**闪了闪了闪了**" : "**李肿么还没闪是不是百变怪肾虚辣！**")}";
+                        $"闪光:{(result.IsShiny ? "**闪了闪了闪了**" : "否")}";
                     var cardflag = DodoBot<T>.Info.Hub.Config.Dodo.CardTradeMessage;
                     if (cardflag)
                     {
