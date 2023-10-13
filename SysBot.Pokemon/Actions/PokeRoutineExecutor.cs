@@ -161,7 +161,7 @@ namespace SysBot.Pokemon
                         var gNID = BannedList[i].NIDs;
                         for (int g = 0; g < gNID.Length; g++)
                         {
-                            if (gNID[g] == MyNID)
+                            if (gNID[g] == MyNID || gNID[g] == TrainerNID)
                             {
                                 if (BannedList[i].enabled)
                                     return PokeTradeResult.TrainerTooSlow;
