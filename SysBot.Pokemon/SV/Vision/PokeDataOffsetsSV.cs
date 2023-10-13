@@ -31,5 +31,6 @@ namespace SysBot.Pokemon
 
         public ulong TeraLobbyIsConnected { get; } = 0x042CA430;
         public ulong LoadedIntoDesiredState { get; } = 0x046B3020;
+        public ulong MyNIDPointer { get; } = 0x046403C8; // MyNid
     }
 }

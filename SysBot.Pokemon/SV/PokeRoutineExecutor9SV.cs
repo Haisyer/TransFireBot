@@ -229,7 +229,11 @@ namespace SysBot.Pokemon
             var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 8, token).ConfigureAwait(false);
             return BitConverter.ToUInt64(data, 0);
         }
-
+        public async Task<ulong> GetMyNID(ulong offset, CancellationToken token)
+        {
+            var data2 = await SwitchConnection.ReadBytesMainAsync(offset, 8, token).ConfigureAwait(false);
+            return BitConverter.ToUInt64(data2, 0);
+        }
         public async Task ClearTradePartnerNID(ulong offset, CancellationToken token)
         {
             var data = new byte[8];
