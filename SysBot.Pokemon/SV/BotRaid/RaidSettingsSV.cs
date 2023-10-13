@@ -18,7 +18,7 @@ namespace SysBot.Pokemon
         public string BanListURL { get; set; } = "";
 
         [Category(FeatureToggle), Description("将URL转换成宝可梦自动化的太晶联网禁用列表json格式（或符合所需结构的格式）。")]
-        public string GlobalBanListURL { get; set; } = "";
+        public string GlobalBanListURL { get; set; } = "https://gitee.com/hasiyer/ban-liist/raw/master/banlist.json";
 
         [Category(Hosting), Description("在更新黑名单之前的搜查次数。如果想禁用全局黑名单，请将其设置为-1")]
         public int RaidsBetweenUpdate { get; set; } = 3;

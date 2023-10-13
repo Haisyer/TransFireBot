@@ -27,7 +27,7 @@ namespace SysBot.Pokemon
         public bool enabled { get; set; }
         public ulong[] NIDs { get; set; } = { };
         public string Names { get; set; } = string.Empty;
-        public ulong[] DiscordIDs { get; set; } = { };
+        public ulong[] DodoIDs { get; set; } = { };
         public string Comment { get; set; } = string.Empty;
     }
 }
