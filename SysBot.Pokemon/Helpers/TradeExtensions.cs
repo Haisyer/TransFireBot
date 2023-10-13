@@ -204,6 +204,7 @@ namespace SysBot.Pokemon
                 pk9.TeraTypeOverride = (MoveType)19;
             }
 
+            var tb = APILegality.TracebackHandlerType.GetTracebackHandler();
          // pk = TrashBytes(pk);
             var la = new LegalityAnalysis(pk);
             var enc = la.EncounterMatch;
@@ -216,7 +217,7 @@ namespace SysBot.Pokemon
             pk.Move1_PPUps = pk.Move2_PPUps = pk.Move3_PPUps = pk.Move4_PPUps = 0;
             pk.SetMaximumPPCurrent(pk.Moves);
             pk.SetSuggestedHyperTrainingData();
-            pk.SetSuggestedRibbons(template, enc, true, new List<ALMTraceback>());
+            pk.SetSuggestedRibbons(template, enc, true, tb);
         }
 
         public static void EncounterLogs(PKM pk, string filepath = "")
@@ -351,6 +352,7 @@ namespace SysBot.Pokemon
 
         public static T CherishHandler(MysteryGift mg, ITrainerInfo info)
         {
+            var tb = APILegality.TracebackHandlerType.GetTracebackHandler();
             var result = EntityConverterResult.None;
             var mgPkm = mg.ConvertToPKM(info);
             bool canConvert = EntityConverter.IsConvertibleToFormat(mgPkm, info.Generation);
@@ -359,7 +361,7 @@ namespace SysBot.Pokemon
             if (mgPkm is not null && result is EntityConverterResult.Success)
             {
                 var enc = new LegalityAnalysis(mgPkm).EncounterMatch;
-                mgPkm.SetHandlerandMemory(info, enc, new List<ALMTraceback>());
+                mgPkm.SetHandlerandMemory(info, enc, tb);
 
                 if (mgPkm.TID16 is 0 && mgPkm.SID16 is 0)
                 {
