@@ -29,8 +29,8 @@ namespace SysBot.Pokemon
         public IReadOnlyList<long> RaidBlockPointerK { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0xCD8 };
         public IReadOnlyList<long> BlockKeyPointer = new long[] { 0x4617648, 0xD8, 0x0, 0x0, 0x30, 0x0 };
 
-        public ulong TeraLobbyIsConnected { get; } = 0x042CA430;
-        public ulong LoadedIntoDesiredState { get; } = 0x046B3020;
+        public ulong TeraLobbyIsConnected { get; } = 0x042CB430;
+        public ulong LoadedIntoDesiredState { get; } = 0x046B4020;
         public ulong MyNIDPointer { get; } = 0x046403C8; // MyNid
     }
 }

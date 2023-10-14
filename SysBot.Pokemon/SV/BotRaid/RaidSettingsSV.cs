@@ -23,7 +23,7 @@ namespace SysBot.Pokemon
         [Category(Hosting), Description("在更新黑名单之前的搜查次数。如果想禁用全局黑名单，请将其设置为-1")]
         public int RaidsBetweenUpdate { get; set; } = 3;
 
-        [Category(Hosting), Description("启用后，机器人将尝试从机器人启动时的“raidsv.txt”文件自动生成 Raid 参数。")]
+        [Category(Hosting), Description("启用后，机器人将尝试从机器人启动时的“pkparam.txt”文件自动生成 Raid 参数。")]
         public bool GenerateParametersFromFile { get; set; } = true;
 
         [Category(Hosting), Description("启用后，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
@@ -115,6 +115,7 @@ namespace SysBot.Pokemon
             public Species Species { get; set; } = Species.None;
             public int SpeciesForm { get; set; } = 0;
             public string Seed { get; set; } = "00000000";
+            public MoveType TeraType { get; set; } = MoveType.Any;
             public string Title { get; set; } = string.Empty;
         }
 
@@ -122,9 +123,6 @@ namespace SysBot.Pokemon
         public class RaidPresetFiltersCategory
         {
             public override string ToString() => "Preset Filters";
-
-            [Category(Hosting), Description("如果为 true，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
-            public bool UsePresetFile { get; set; } = true;
 
             [Category(Hosting), Description("如果为 true，机器人将使用预设的第一行作为标题。")]
             public bool TitleFromPreset { get; set; } = true;

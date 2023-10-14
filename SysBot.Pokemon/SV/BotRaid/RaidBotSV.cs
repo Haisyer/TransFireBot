@@ -31,12 +31,13 @@ namespace SysBot.Pokemon
         }
 
         private int RaidCount;
-        private int RaidsAtStart;
         private int WinCount;
         private int LossCount;
         private int EmptyRaid;
         private int StoryProgress;
         private int EventProgress;
+        private int StoredIndex;
+        private int TeraType;
         private ulong TodaySeed;
         private ulong OverworldOffset;
         private ulong ConnectedOffset;
@@ -184,7 +185,7 @@ namespace SysBot.Pokemon
                 if (!Settings.RaidEmbedFilters.IsSet)
                 {
                     Log($"读取宝可梦 {Settings.RaidEmbedFilters.Species}");
-                    await ReadRaids(token).ConfigureAwait(false);
+                    await ReadRaids(false, token).ConfigureAwait(false);
                 }
                 else
                     Log($"宝可梦 {Settings.RaidEmbedFilters.Species} 已经准备好了, 跳过Raid读取。");
@@ -215,9 +216,6 @@ namespace SysBot.Pokemon
 
                 if (Hub.Config.Stream.CreateAssets)
                     await GetRaidSprite(token).ConfigureAwait(false);
-
-                // Get initial raid counts for comparison later.
-                await CountRaids(null, token).ConfigureAwait(false);
 
                 // Clear NIDs.
                 await SwitchConnection.WriteBytesAbsoluteAsync(new byte[32], TeraNIDOffsets[0], token).ConfigureAwait(false);
@@ -358,10 +356,51 @@ namespace SysBot.Pokemon
                 Log("返回游戏世界...");
                 while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
                     await Click(A, 1_000, token).ConfigureAwait(false);
+
+                bool status = await DenStatus(StoredIndex, token).ConfigureAwait(false);
+                if (!status)
+                {
+                    Settings.AddCompletedRaids();
+                    EchoUtil.Echo("打赢了");
+                    WinCount++;
+                    if (trainers.Count > 0 && Settings.CatchLimit != 0)
+                        ApplyPenalty(trainers);
+
+                    await EnqueueEmbed(null, "", false, false, true, false, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    EchoUtil.Echo("666,打输了");
+                    LossCount++;
+                }
             }
 
-            await CountRaids(lobbyTrainersFinal, token).ConfigureAwait(false);
-            await ReOpenGame(Hub.Config, token).ConfigureAwait(false);
+            await CloseGame(Hub.Config, token).ConfigureAwait(false);
+            await StartGame(Hub.Config, token).ConfigureAwait(false);
+        }
+
+        private async Task<bool> DenStatus(int index, CancellationToken token)
+        {
+            List<long> ptr;
+            if (index < 69)
+            {
+                ptr = new(Offsets.RaidBlockPointerP)
+                {
+                    [3] = 0x40 + (index + 1) * 0x20 - 0x10
+                };
+            }
+            else
+            {
+                ptr = new(Offsets.RaidBlockPointerK)
+                {
+                    [3] = 0xCE8 + (index - 69) * 0x20 - 0x10
+                };
+            }
+            var data = await SwitchConnection.PointerPeek(2, ptr, token).ConfigureAwait(false);
+            var status = BitConverter.ToUInt16(data);
+            var msg = status == 1 ? "active" : "inactive";
+            Log($"Den is {msg}.");
+            return status == 1;
         }
 
         private void ApplyPenalty(List<(ulong, TradeMyStatus)> trainers)
@@ -383,55 +422,11 @@ namespace SysBot.Pokemon
             }
         }
 
-        private async Task CountRaids(List<(ulong, TradeMyStatus)>? trainers, CancellationToken token)
-        {
-            List<uint> seeds = new();
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 2304, token).ConfigureAwait(false);
-            for (int i = 0; i < 69; i++)
-            {
-                var seed = BitConverter.ToUInt32(data.Slice(0 + (i * 32), 4));
-                if (seed != 0)
-                    seeds.Add(seed);
-            }
-
-            data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerK, 0xC80, token).ConfigureAwait(false);
-            for (int i = 0; i < 25; i++)
-            {
-                var seed = BitConverter.ToUInt32(data.Slice(32 + (i * 32), 4));
-                if (seed != 0)
-                    seeds.Add(seed);
-            }
-
-            Log($"总Raid数: {seeds.Count}");
-            if (RaidCount == 0)
-            {
-                RaidsAtStart = seeds.Count;
-                return;
-            }
-
-            if (trainers is not null)
-            {
-                Log("回到游戏世界，检查突袭赢了还是输了。");
-                Settings.AddCompletedRaids();
-                if (RaidsAtStart > seeds.Count)
-                {
-                    EchoUtil.Echo("打赢了");
-                    WinCount++;
-                    if (trainers.Count > 0)
-                        ApplyPenalty(trainers);
-                    return;
-                }
-
-                EchoUtil.Echo("666,打输了");
-                LossCount++;
-            }
-        }
-
         private async void OverrideTodaySeed()
         {
             var todayoverride = BitConverter.GetBytes(TodaySeed);
             List<long> ptr = new(Offsets.RaidBlockPointerP);
-            ptr[2] += 0x8;
+            ptr[3] += 0x8;
             await SwitchConnection.PointerPoke(todayoverride, ptr, CancellationToken.None).ConfigureAwait(false);
         }
 
@@ -498,7 +493,7 @@ namespace SysBot.Pokemon
             await Click(A, 3_000, token).ConfigureAwait(false);
             await Click(A, 3_000, token).ConfigureAwait(false);
 
-            if (!Settings.RaidEmbedFilters.IsCoded || Settings.RaidEmbedFilters.IsCoded && EmptyRaid == Settings.EmptyRaidLimit)
+            if (!Settings.RaidEmbedFilters.IsCoded || Settings.RaidEmbedFilters.IsCoded && EmptyRaid == Settings.EmptyRaidLimit && Settings.EmptyRaidLimit != 0)
             {
                 if (Settings.RaidEmbedFilters.IsCoded && EmptyRaid == Settings.EmptyRaidLimit)
                     Log($"我们有 {Settings.EmptyRaidLimit} 次未进行的突袭.. 向所有人开放这次突袭!");
@@ -916,9 +911,8 @@ namespace SysBot.Pokemon
 
         #region RaidCrawler
         // via RaidCrawler modified for this proj
-        private async Task ReadRaids(CancellationToken token)
+        private async Task ReadRaids(bool init, CancellationToken token)
         {
-            Log("开始raid读取..");
             if (RaidBlockPointerP == 0)
                 RaidBlockPointerP = await SwitchConnection.PointerAll(Offsets.RaidBlockPointerP, token).ConfigureAwait(false);
 
@@ -932,46 +926,62 @@ namespace SysBot.Pokemon
                 RaidCrawler.Core.Structures.Offsets.VioletID => "Violet",
                 _ => "",
             };
-            container = new(game);
-            container.SetGame(game);
+            if (container is null)
+            {
+                container = new(game);
+                container.SetGame(game);
 
-            var BaseBlockKeyPointer = await SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+                var BaseBlockKeyPointer = await SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
 
-            StoryProgress = await GetStoryProgress(BaseBlockKeyPointer, token).ConfigureAwait(false);
-            EventProgress = Math.Min(StoryProgress, 3);
+                StoryProgress = await GetStoryProgress(BaseBlockKeyPointer, token).ConfigureAwait(false);
+                EventProgress = Math.Min(StoryProgress, 3);
 
-            await ReadEventRaids(BaseBlockKeyPointer, container, token).ConfigureAwait(false);
+                await ReadEventRaids(BaseBlockKeyPointer, container, token).ConfigureAwait(false);
 
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP + RaidBlock.HEADER_SIZE, (int)(RaidBlock.SIZE_BASE - RaidBlock.HEADER_SIZE), token).ConfigureAwait(false);
+                var data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP + RaidBlock.HEADER_SIZE, (int)(RaidBlock.SIZE_BASE - RaidBlock.HEADER_SIZE), token).ConfigureAwait(false);
 
-            (int delivery, int enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, TeraRaidMapParent.Paldea);
-            if (enc > 0)
-                Log($"Failed to find encounters for {enc} raid(s).");
+                (int delivery, int enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, TeraRaidMapParent.Paldea);
+                if (enc > 0)
+                    Log($"Failed to find encounters for {enc} raid(s).");
 
-            if (delivery > 0)
-                Log($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
+                if (delivery > 0)
+                    Log($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
 
-            var raids = container.Raids;
-            var encounters = container.Encounters;
-            var rewards = container.Rewards;
+                var raids = container.Raids;
+                var encounters = container.Encounters;
+                var rewards = container.Rewards;
 
-            data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerK, 0xC80, token).ConfigureAwait(false);
+                data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerK, 0xC80, token).ConfigureAwait(false);
 
-            (delivery, enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, TeraRaidMapParent.Kitakami);
+                (delivery, enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, TeraRaidMapParent.Kitakami);
 
-            if (enc > 0)
-                Log($"Failed to find encounters for {enc} raid(s).");
+                if (enc > 0)
+                    Log($"Failed to find encounters for {enc} raid(s).");
 
-            if (delivery > 0)
-                Log($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
+                if (delivery > 0)
+                    Log($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
 
-            var allRaids = raids.Concat(container.Raids).ToList().AsReadOnly();
-            var allEncounters = encounters.Concat(container.Encounters).ToList().AsReadOnly();
-            var allRewards = rewards.Concat(container.Rewards).ToList().AsReadOnly();
+                var allRaids = raids.Concat(container.Raids).ToList().AsReadOnly();
+                var allEncounters = encounters.Concat(container.Encounters).ToList().AsReadOnly();
+                var allRewards = rewards.Concat(container.Rewards).ToList().AsReadOnly();
 
-            container.SetRaids(allRaids);
-            container.SetEncounters(allEncounters);
-            container.SetRewards(allRewards);
+                container.SetRaids(allRaids);
+                container.SetEncounters(allEncounters);
+                container.SetRewards(allRewards);
+            }
+
+            if (init)
+            {
+                for (int i = 0; i < container.Raids.Count; i++)
+                {
+                    if (container.Raids[i].Seed == uint.Parse(Settings.RaidEmbedFilters.Seed, NumberStyles.AllowHexSpecifier))
+                    {
+                        StoredIndex = i;
+                        Log($"Den ID: {i} stored.");
+                        return;
+                    }
+                }
+            }
 
             bool done = false;
             for (int i = 0; i < container.Raids.Count; i++)
@@ -1006,6 +1016,7 @@ namespace SysBot.Pokemon
                     Settings.RaidEmbedFilters.CrystalType = container.Raids[i].IsBlack ? TeraCrystalType.Black : container.Raids[i].IsEvent && stars == 7 ? TeraCrystalType.Might : container.Raids[i].IsEvent ? TeraCrystalType.Distribution : TeraCrystalType.Base;
                     Settings.RaidEmbedFilters.Species = (Species)container.Encounters[i].Species;
                     Settings.RaidEmbedFilters.SpeciesForm = container.Encounters[i].Form;
+                    Settings.RaidEmbedFilters.TeraType = (MoveType)container.Raids[i].TeraType;
                     var catchlimit = Settings.CatchLimit;
                     string cl = catchlimit is 0 ? "\n**No catch limit!**" : $"\n**Catch Limit: {catchlimit}**";
                     var pkinfo = Hub.Config.StopConditions.GetRaidPrintName(pk);

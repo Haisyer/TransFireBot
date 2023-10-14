@@ -26,6 +26,9 @@ namespace SysBot.Pokemon
         [Category(Hosting), Description("启用后，机器人将尝试从机器人启动时的“raidsv.txt”文件自动生成 Raid 参数。")]
         public bool GenerateParametersFromFile { get; set; } = true;
 
+        [Category(Hosting), Description("如果为 true，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
+        public bool UsePresetFile { get; set; } = true;
+
         [Category(Hosting), Description("RotatingRaid Preset Filters"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public RotatingRaidPresetFiltersCategory PresetFilters { get; set; } = new();
 
@@ -113,6 +116,7 @@ namespace SysBot.Pokemon
             public string[] PartyPK { get; set; } = Array.Empty<string>();
             public bool SpriteAlternateArt { get; set; } = false;
             public string Seed { get; set; } = "0";
+            public MoveType TeraType { get; set; } = MoveType.Any;
             public string Title { get; set; } = string.Empty;
         }
 
@@ -120,9 +124,6 @@ namespace SysBot.Pokemon
         public class RotatingRaidPresetFiltersCategory
         {
             public override string ToString() => "Preset filters.";
-
-            [Category(Hosting), Description("如果为 true，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
-            public bool UsePresetFile { get; set; } = true;
 
             [Category(Hosting), Description("如果为 true，机器人将使用预设的第一行作为标题。")]
             public bool TitleFromPreset { get; set; } = true;
