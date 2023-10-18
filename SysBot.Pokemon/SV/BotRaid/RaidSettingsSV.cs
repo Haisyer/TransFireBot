@@ -1,9 +1,9 @@
-﻿using PKHeX.Core;
-using System.ComponentModel;
+﻿﻿using PKHeX.Core;
+using System;
 using SysBot.Base;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
-using System;
 
 namespace SysBot.Pokemon
 {
@@ -15,71 +15,70 @@ namespace SysBot.Pokemon
         public override string ToString() => "朱紫团体战机器人设置";
 
         [Category(FeatureToggle), Description("将URL转换成宝可梦自动化的太晶禁用列表json格式（或符合所需结构的格式）。")]
-        public string BanListURL { get; set; } = "https://raw.githubusercontent.com/PokemonAutomation/ServerConfigs-PA-SHA/main/PokemonScarletViolet/TeraAutoHost-BanList.json";
+        public string BanListURL { get; set; } = "";
 
-        [Category(Hosting), Description("在更新黑名单之前的搜查次数。如果想禁用全局黑名单，请将其设置为-1。")]
+        [Category(FeatureToggle), Description("将URL转换成宝可梦自动化的太晶联网禁用列表json格式（或符合所需结构的格式）。")]
+        public string GlobalBanListURL { get; set; } = "https://gitee.com/hasiyer/ban-liist/raw/master/banlist.json";
+
+        [Category(Hosting), Description("在更新黑名单之前的搜查次数。如果想禁用全局黑名单，请将其设置为-1")]
         public int RaidsBetweenUpdate { get; set; } = 3;
 
-        [Category(FeatureToggle), Description("团体战嵌入标题")]
-        public string RaidEmbedTitle { get; set; } = "太晶团体战公告";
+        [Category(Hosting), Description("启用后，机器人将尝试从机器人启动时的“pkparam.txt”文件自动生成 Raid 参数。")]
+        public bool GenerateParametersFromFile { get; set; } = true;
 
-        [Category(FeatureToggle), Description("团体战嵌入说明")]
-        public string[] RaidEmbedDescription { get; set; } = Array.Empty<string>();
+        [Category(Hosting), Description("启用后，机器人将尝试根据“preset.txt”文件自动生成 Raid Embed")]
+        public bool UsePresetFile { get; set; } = true;
 
-        [Category(Hosting), Description("输入宝可梦种类，在嵌入中发布一个缩略图。如果是0则忽略。")]
-        public Species RaidSpecies { get; set; } = Species.None;
+        [Category(Hosting), Description("Preset Filters"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public RaidPresetFiltersCategory PresetFilters { get; set; } = new();
 
-        [Category(Hosting), Description("如果该宝可梦种类没有替代形式，则保留为0。")]
-        public int RaidSpeciesForm { get; set; } = 0;
+        [Category(Hosting), Description("Raid Embed Filters"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public RaidEmbedFiltersCategory RaidEmbedFilters { get; set; } = new();
 
-        [Category(Hosting), Description("设置为True，宝可梦为闪光。设置为False，宝可梦为非闪。")]
-        public bool RaidSpeciesIsShiny { get; set; } = true;
+        [Category(Hosting), Description("启用后，机器人将使用 SHA 提供的艺术图。")]
+        public bool SpriteAlternateArt { get; set; } = true;
 
-        [Category(Hosting), Description("太晶宝可梦的个体")]
-        public string RaidSpeciesIVs { get; set; } = String.Empty;
-
-        [Category(Hosting), Description("太晶宝可梦的性格")]
-        public Nature RaidSpeciesNature { get; set; } = Nature.Random;
-
-        [Category(Hosting), Description("太晶宝可梦的特性")]
-        public Ability RaidSpeciesAbility { get; set; } = Ability.Adaptability;
-
-        [Category(FeatureToggle), Description("如果为True，机器人将使用随机代码进行团体战。")]
-        public bool CodeTheRaid { get; set; } = true;
-
-        [Category(FeatureToggle), Description("如果为True，机器人将在嵌入信息中发布团体战房间码。")]
-        public bool CodeInInfo { get; set; } = false;
-
-        [Category(FeatureToggle), Description("如果为True，将拆分团体战房间码，用spolier标签隐藏。")]
-        public bool CodeIfSplitHidden { get; set; } = false;
+        [Category(Hosting), Description("输入机器人自动停止之前要托管的袭击总数。默认值为 0 以忽略此设置。")]
+        public int TotalRaidsToHost { get; set; } = 0;
 
         [Category(Hosting), Description("在他们被自动添加到禁令名单之前，每个玩家的捕捉限制。如果设置为0，该设置将被忽略。")]
         public int CatchLimit { get; set; } = 0;
 
-        [Category(Hosting), Description("开始团体战前的最小等待秒数")]
+        [Category(Hosting), Description("在机器人托管未编码的 raid 之前，每个参数的空 raid 限制。默认为 3 次袭击。")]
+        public int EmptyRaidLimit { get; set; } = 3;
+
+        [Category(Hosting), Description("开始团体战前的最小等待秒数。")]
         public int TimeToWait { get; set; } = 90;
 
-        [Category(Hosting), Description("黑名单玩家NID")]
+        [Category(FeatureToggle), Description("启用后，嵌入将在“TimeToWait”中倒计时秒数，直到开始突袭。")]
+        public bool IncludeCountdown { get; set; } = false;
+
+        [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False")]
+        public bool TakeScreenshot { get; set; } = false;
+
+        [Category(Hosting), Description("被禁止的用户NID")]
         public RemoteControlAccessList RaiderBanList { get; set; } = new() { AllowIfEmpty = false };
+
+        [Category(Hosting), Description("启用后，机器人会把当天的SEED注入到明天，以确保凌晨不会刷新SEED")]
+        public bool KeepDaySeed { get; set; } = false;
 
         [Category(FeatureToggle), Description("在日期/时间设置中设置您的切换日期/时间格式。如果“日期”发生变化，日期将自动回退1")]
         public DTFormat DateTimeFormat { get; set; } = DTFormat.MMDDYY;
 
+        [Category(Hosting), Description("启用后，机器人将使用overshoot方式来应用翻转校正，否则将使用 DDOWN 点击。")]
+        public bool UseOvershoot { get; set; } = false;
+
+        [Category(Hosting), Description("在翻转校正期间点击 DDOWN 来访问日期/时间设置的次数。 [默认值：39 次点击]")]
+        public int DDOWNClicks { get; set; } = 39;
+
         [Category(Hosting), Description("向下滚动持续时间(以毫秒为单位)的时间，以便在滚动修正期间访问日期/时间设置。你想让它超过1的日期/时间设置，因为它将点击DUP后向下滚动。(默认值:930毫秒)")]
-        public int HoldTimeForRollover { get; set; } = 930;
+        public int HoldTimeForRollover { get; set; } = 900;
 
-        [Category(FeatureToggle), Description("如果为True，当你在游戏关闭的主屏幕时启动机器人。机器人将只运行翻转例程，因此您可以尝试配置准确的计时。")]
+        [Category(Hosting), Description("如果为True，当你在游戏关闭的主屏幕时启动机器人。机器人将只运行翻转例程，因此您可以尝试配置准确的计时。")]
         public bool ConfigureRolloverCorrection { get; set; } = false;
-
-        [Category(FeatureToggle), Description("如果为True，机器人将尝试为团体战嵌入截屏。如果你经常因为“大小/参数”而崩溃，试着把这个设置为False。")]
-        public bool TakeScreenshot { get; set; } = true;
-
-        [Category(Hosting), Description("输入Discord channel ID(s)以发布团体战嵌入。每个客户端重启后，特性必须通过\"$resv\"进行初始化。")]
-        public string RaidEmbedChannelsSV { get; set; } = string.Empty;
 
         [Category(FeatureToggle), Description("当启用后，在正常的机器人操作循环中，屏幕将被关闭，以节省电力。")]
         public bool ScreenOff { get; set; }
-
 
         private int _completedRaids;
 
@@ -103,11 +102,51 @@ namespace SysBot.Pokemon
                 yield return $"Started Raids: {CompletedRaids}";
         }
 
-        public enum DTFormat
-        { 
-            MMDDYY,
-            DDMMYY,
-            YYMMDD,
+        [Category(Hosting), TypeConverter(typeof(CategoryConverter<RaidEmbedFiltersCategory>))]
+        public class RaidEmbedFiltersCategory
+        {
+            public override string ToString() => "Raid Embed Filters";
+            public TeraCrystalType CrystalType { get; set; } = TeraCrystalType.Base;
+            public string[] Description { get; set; } = Array.Empty<string>();
+            public bool IsCoded { get; set; } = true;
+            public bool IsSet { get; set; } = false;
+            public bool IsShiny { get; set; } = true;
+            public string[] PartyPK { get; set; } = Array.Empty<string>();
+            public Species Species { get; set; } = Species.None;
+            public int SpeciesForm { get; set; } = 0;
+            public string Seed { get; set; } = "00000000";
+            public MoveType TeraType { get; set; } = MoveType.Any;
+            public string Title { get; set; } = string.Empty;
         }
-    }
+
+        [Category(Hosting), TypeConverter(typeof(CategoryConverter<RaidPresetFiltersCategory>))]
+        public class RaidPresetFiltersCategory
+        {
+            public override string ToString() => "Preset Filters";
+
+            [Category(Hosting), Description("如果为 true，机器人将使用预设的第一行作为标题。")]
+            public bool TitleFromPreset { get; set; } = true;
+
+            [Category(Hosting), Description("如果为 true，机器人将用新标题覆盖任何设置的标题。")]
+            public bool ForceTitle { get; set; } = true;
+
+            [Category(Hosting), Description("如果为 true，机器人将用新的描述覆盖任何设置的描述。")]
+            public bool ForceDescription { get; set; } = true;
+
+            [Category(Hosting), Description("如果为 true，机器人会将技能附加到预设的描述中。")]
+            public bool IncludeMoves { get; set; } = true;
+
+            [Category(Hosting), Description("如果为 true，机器人会将掉落奖励附加到预设描述中。")]
+            public bool IncludeRewards { get; set; } = true;
+        }
+
+        public class CategoryConverter<T> : TypeConverter
+        {
+            public override bool GetPropertiesSupported(ITypeDescriptorContext? context) => true;
+
+            public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext? context, object value, Attribute[]? attributes) => TypeDescriptor.GetProperties(typeof(T));
+
+            public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType) => destinationType != typeof(string) && base.CanConvertTo(context, destinationType);
+        }
+    }    
 }

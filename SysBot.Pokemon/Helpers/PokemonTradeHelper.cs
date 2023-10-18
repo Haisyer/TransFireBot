@@ -118,7 +118,10 @@ namespace SysBot.Pokemon.Helpers
             var cardflag = queueInfo.Hub.Config.Dodo.CardTradeMessage;
             if (cardflag)
             {
+                var eggurl = GetEggUrl(pkm);
                 var cardmsg = CardInfo(pkm, out string pokeurl, out string itemurl, out string ballurl, out string teraurl, out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4);
+                if (!string.IsNullOrEmpty(eggurl))
+                    pokeurl = eggurl;
                 SendCardMessage(cardmsg, pokeurl, itemurl, ballurl, teraurl, teraoriginurl, shinyurl, movetypeurl1, movetypeurl2, movetypeurl3, movetypeurl4);
             }
             var code = queueInfo.GetRandomTradeCode();
@@ -152,7 +155,10 @@ namespace SysBot.Pokemon.Helpers
             var cardflag = queueInfo.Hub.Config.Dodo.CardTradeMessage;
             if (cardflag)
             {
+                var eggurl = GetEggUrl(pkm);
                 var cardmsg = CardInfo(pkm, out string pokeurl, out string itemurl, out string ballurl, out string teraurl, out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4);
+                if (!string.IsNullOrEmpty(eggurl))
+                    pokeurl = eggurl;
                 SendCardMessage(cardmsg, pokeurl, itemurl, ballurl, teraurl, teraoriginurl, shinyurl, movetypeurl1, movetypeurl2, movetypeurl3, movetypeurl4);
             }
             var code = queueInfo.GetRandomTradeCode();
@@ -238,7 +244,10 @@ namespace SysBot.Pokemon.Helpers
                     var cardflag = queueInfo.Hub.Config.Dodo.CardTradeMessage;
                     if (cardflag)
                     {
+                        var eggurl = GetEggUrl(rawPkms[i]);
                         var cardmsg = CardInfo(rawPkms[i], out string pokeurl, out string itemurl, out string ballurl, out string teraurl, out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4);
+                        if (!string.IsNullOrEmpty(eggurl))
+                            pokeurl = eggurl;
                         //SendCardMessage(cardmsg, pokeurl, itemurl, ballurl, teraurl, teraoriginurl);
                         if (rawPkms.Count == 1)
                             SendCardMessage(cardmsg, pokeurl, itemurl, ballurl, teraurl, teraoriginurl, shinyurl, movetypeurl1, movetypeurl2, movetypeurl3, movetypeurl4);
@@ -336,7 +345,10 @@ namespace SysBot.Pokemon.Helpers
                     var cardflag = queueInfo.Hub.Config.Dodo.CardTradeMessage;
                     if (cardflag)
                     {
+                        var eggurl = GetEggUrl(pk);
                         var cardmsg = CardInfo(pk, out string pokeurl, out string itemurl, out string ballurl, out string teraurl, out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4);
+                        if (!string.IsNullOrEmpty(eggurl))
+                            pokeurl = eggurl;
                         //SendCardMessage(cardmsg, pokeurl, itemurl, ballurl, teraurl, teraoriginurl);
                         if (psList.Count == 1)
                             SendCardMessage(cardmsg, pokeurl, itemurl, ballurl, teraurl, teraoriginurl, shinyurl, movetypeurl1, movetypeurl2, movetypeurl3, movetypeurl4);
@@ -553,9 +565,16 @@ namespace SysBot.Pokemon.Helpers
 
             return true;
         }
-
+        public string GetEggUrl(T pk)
+        {
+            var eggFag = pk.IsEgg;
+            string eggurl = "";
+            if (eggFag)
+                eggurl = "https://img.imdodo.com/openapitest/upload/cdn/E714716E359055F4AD802BD414A97AF2_1696061162810.png";
+            return eggurl;
+        }
         #region Card Information
-        private string CardInfo(T pk, out string pokeurl, out string itemurl, out string ballurl, out string teraurl,out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4)
+        public string CardInfo(T pk, out string pokeurl,out string itemurl, out string ballurl, out string teraurl,out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4)
         {
             string pmsg;
             
@@ -614,7 +633,6 @@ namespace SysBot.Pokemon.Helpers
             var spe_ev = pk.EV_SPE; 
             
             var gendar = pk.Gender;
-            var egg = pk.IsEgg;
 
             var level = pk.CurrentLevel;
             var version = (GameVersion)pk.Version;
@@ -765,12 +783,6 @@ namespace SysBot.Pokemon.Helpers
                 }
 
             }
-            if (egg)
-            {
-               pokeurl= "https://img.imdodo.com/openapitest/upload/cdn/E714716E359055F4AD802BD414A97AF2_1696061162810.png";
-            }
-
-        
             //LogUtil.LogInfo($"itemimage:{itemurl}", nameof(PokemonTradeHelper<T>));
             //LogUtil.LogInfo($"pkimage:{pokeurl}", nameof(PokemonTradeHelper<T>));
             //LogUtil.LogInfo($"ballimage:{ballurl}", nameof(PokemonTradeHelper<T>));

@@ -25,6 +25,9 @@
         /// <summary> Performs group battles as a host. </summary>
         RaidBot = 7,
 
+        /// <summary> Performs and rotates group battles as a host. </summary>
+        RotatingRaidBot = 8,
+
         /// <summary> Triggers walking encounters until the criteria is satisfied. </summary>
         EncounterLine = 1_000,
 

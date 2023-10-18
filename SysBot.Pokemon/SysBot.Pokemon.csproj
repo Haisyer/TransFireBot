@@ -16,8 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net.Core" Version="3.9.0" />
+    <PackageReference Include="FlatSharp.Runtime" Version="7.1.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="KdSoft.FlatBuffers" Version="1.12.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SV\BotRaid\BanList\Resources\languages.json" />
+    <EmbeddedResource Include="SV\BotRaid\BanList\Resources\substitutionTable.json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PKHeX.Core">
@@ -25,6 +32,9 @@
     </Reference>
     <Reference Include="PKHeX.Core.AutoMod">
       <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
+    </Reference>
+    <Reference Include="RaidCrawler.Core">
+      <HintPath>deps\RaidCrawler.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -182,7 +182,17 @@ namespace SysBot.Pokemon.Dodo
                         $"个体值:{result.IV_HP},{result.IV_ATK},{result.IV_DEF},{result.IV_SPA},{result.IV_SPD},{result.IV_SPE}" + IVstring + "\n" +
                         $"特性:{Abilitystring}\n" +
                         $"闪光:{(result.IsShiny ? "闪了闪了闪了闪了闪了闪了" : "否")}";
-                    DodoBot<T>.SendChannelMessage(text, ChannelId);
+                        
+                    var dodoId =ulong.Parse(DodoBot<T>.Info.Hub.Config.Dodo.ClientId);
+                    DodoHelper <T> dodoHelper = new DodoHelper<T>(dodoId,Username,ChannelId, IslandId);
+                    var eggMsg = dodoHelper.CardInfo(result, out string pokeurl, out string itemurl, out string ballurl, out string teraurl, out string teraoriginurl, out string shinyurl, out string movetypeurl1, out string movetypeurl2, out string movetypeurl3, out string movetypeurl4);
+                    string shinyinfo = $"闪光:{(result.IsShiny ? "**!!!闪了!!!闪了!!!**" : "否")}";
+                    if (!DodoBot<T>.Info.Hub.Config.Dodo.CardTradeMessage)
+                        DodoBot<T>.SendChannelMessage(text, ChannelId);
+                    else
+                    {
+                        DodoBot<T>.SendChannelEggCardMessage(message,eggMsg, ChannelId, pokeurl, ballurl, shinyurl, shinyinfo);
+                    }
                 }
             }
             else if (message.Contains("https"))

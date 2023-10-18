@@ -2,11 +2,12 @@
 using Newtonsoft.Json;
 using System.Data;
 using SysBot.Base;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System;
+using System.Linq;
+
 namespace SysBot.Pokemon.SV
 {
     public class BanService : BanListSerialization

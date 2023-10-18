@@ -141,6 +141,28 @@ namespace SysBot.Pokemon
             return false;
         }
 
+        public static bool HasMark(IRibbonIndex pk, out RibbonIndex result)
+        {
+            result = default;
+            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkSlump; mark++)
+            {
+                if (pk.GetRibbon((int)mark))
+                {
+                    result = mark;
+                    return true;
+                }
+            }
+            for (var mark = RibbonIndex.MarkJumbo; mark <= RibbonIndex.MarkMini; mark++)
+            {
+                if (pk.GetRibbon((int)mark))
+                {
+                    result = mark;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public string GetPrintName(PKM pk)
         {
             var set = ShowdownParsing.GetShowdownText(pk);
@@ -166,6 +188,28 @@ namespace SysBot.Pokemon
                     return RibbonStrings.GetName($"Ribbon{mark}");
             }
             return "";
+        }
+
+        public string GetRaidPrintName(PKM pk)
+        {
+            string markEntryText = "";
+            HasMark((IRibbonIndex)pk, out RibbonIndex mark);
+            if (mark == RibbonIndex.MarkMightiest)
+                markEntryText = "the Unrivaled";
+            string gender = pk.Gender == 0 ? " - ♂" : pk.Gender == 1 ? " - ♀ " : " - ⚥";
+            if (pk is PK9 pkl)
+            {
+                if (pkl.Scale == 0)
+                    markEntryText = " the Teeny";
+                if (pkl.Scale == 255)
+                    markEntryText = " the Great";
+            }
+            var set = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 9)}{TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{markEntryText}{gender}\nIVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\nNature: {(Nature)pk.Nature} | Ability: {(Ability)pk.Ability}";
+            if (pk is PK9 pk9)
+            {
+                set += $"\nScale: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
+            }
+            return set;
         }
     }
 

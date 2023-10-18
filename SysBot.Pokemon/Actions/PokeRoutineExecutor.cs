@@ -8,7 +8,10 @@ using System.Diagnostics;
 using System;
 using System.Globalization;
 using static SysBot.Base.SwitchButton;
-
+using System.Security.Policy;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace SysBot.Pokemon
 {
@@ -136,14 +139,42 @@ namespace SysBot.Pokemon
         }
 
         protected async Task<PokeTradeResult> CheckPartnerReputation(PokeRoutineExecutor<T> bot, PokeTradeDetail<T> poke, ulong TrainerNID, string TrainerName,
-            TradeAbuseSettings AbuseSettings, CancellationToken token)
+            TradeAbuseSettings AbuseSettings, CancellationToken token,ulong MyNID = 0)
         {
             bool quit = false;
             var user = poke.Trainer;
             var isDistribution = poke.Type == PokeTradeType.Random;
             var useridmsg = isDistribution ? "" : $" ({user.ID})";
             var list = isDistribution ? PreviousUsersDistribution : PreviousUsers;
-
+            List<BanList> BannedList = new();
+            
+            //Gets banned list
+            try
+            {
+                var client = new HttpClient();
+                var jsonContent = await client.GetStringAsync("https://gitee.com/hasiyer/ban-liist/raw/master/banlist.json", token).ConfigureAwait(false);
+                BannedList = JsonConvert.DeserializeObject<List<BanList>>(jsonContent)!;
+                if (BannedList.Count is not 0)
+                {
+                    for (int i = 0; i < BannedList.Count; i++)
+                    {
+                        var gNID = BannedList[i].NIDs;
+                        for (int g = 0; g < gNID.Length; g++)
+                        {
+                            if (gNID[g] == MyNID || gNID[g] == TrainerNID)
+                            {
+                                if (BannedList[i].enabled)
+                                    return PokeTradeResult.TrainerTooSlow;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log($"检索被Ban列表时出错");
+            }
+            
             // Matches to a list of banned NIDs, in case the user ever manages to enter a trade.
             var entry = AbuseSettings.BannedIDs.List.Find(z => z.ID == TrainerNID);
             if (entry != null)
@@ -308,8 +339,15 @@ namespace SysBot.Pokemon
                 return null;
             }
         }
-      
 
-      
+        public class BanList
+        {
+            public bool enabled { get; set; }
+            public ulong[] NIDs { get; set; } = { };
+            public string Names { get; set; } = string.Empty;
+            public ulong[] DodoIDs { get; set; } = { };
+            public string Comment { get; set; } = string.Empty;
+        }
+
     }
 }
