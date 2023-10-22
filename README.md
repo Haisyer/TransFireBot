@@ -1,5 +1,25 @@
 # TransFireBot
-
+ ## Declaration-声明
+ ### 一切开发旨在学习，请勿用于非法用途
+ 
+ #### 由于项目被人滥用，造成了一些不良的影响，项目以后的更新计划做出如下变动：
+ * 本项目将闭源部分新功能
+ * 对于小版本的变动，将不会更新
+ * 对于大版本的变动，将不再第一时间同步开源
+ * 会酌情发布release版本
+   * 在未发布的情况下，如有需要最新的release版本，可以联系@[Hasy](https://github.com/Haisyer)
+ ### 特别地，若有同类型的事件再次发生，项目将完全停止更新或删除。
+ ----------
+ #### Due to the project being abused and causing some bad effects, the following changes have been made to the project's future update schedule: 
+ * Some new features will not be open sourced for this project
+ * Minor version changes will not be updated.
+ * For major version changes, it will not be synchronized with open source at the first time.
+ * Will be released at the discretion of the release version
+   * In the case of unreleased versions, if you need the latest release version, you can contact the author of the repository([Hasy](https://github.com/Haisyer)).
+ ### Specifically, if the same type of event occurs again, the project will stop being updated or removed altogether
+ 
+ 
+ ----------
  ## 目录
 - [Dodo](#sysbotpokemondodo)
     + [Introduction-介绍](#introduction---)
