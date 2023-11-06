@@ -1,4 +1,10 @@
 # TransFireBot
+ ## 提示-Tip
+ #### 如果你任何疑问，请在issues板块提出或者请在QQ等社交软件上联系我，请不要在其他地方留言
+ ------
+ #### If you have any questions, please raise them in the issues section or contact me on social media, such as QQ. 
+ #### Don't leave comments elsewhere
+ ----------
  ## Declaration-声明
  ### 一切开发旨在学习，请勿用于非法用途
  
