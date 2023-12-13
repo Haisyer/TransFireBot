@@ -1,26 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>11</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="deps\" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="FlatSharp.Runtime" Version="7.1.0" />
+    <PackageReference Include="FlatSharp.Runtime" Version="7.4.0" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="KdSoft.FlatBuffers" Version="1.12.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SV\BotRaid\BanList\Resources\languages.json" />
@@ -37,5 +33,4 @@
       <HintPath>deps\RaidCrawler.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>
