@@ -1091,16 +1091,16 @@ namespace SysBot.Pokemon
             cln.OT_Name = tradePartner.OT;
             if (toSend.IsEgg == false)
             {
-                if (toSend.Species == (ushort)Species.Koraidon)
+                if (toSend.Species == (ushort)Species.Koraidon || toSend.Species == (ushort)Species.GougingFire || toSend.Species == (ushort)Species.RagingBolt)
                 {
                     cln.Version = (int)GameVersion.SL;
-                    Log($"故勒顿，强制修改版本为朱");
+                    Log($"朱版本限定宝可梦，强制修改版本为朱");
 
                 }
-                else if (toSend.Species == (ushort)Species.Miraidon)
+                else if (toSend.Species == (ushort)Species.Miraidon || toSend.Species == (ushort)Species.IronCrown || toSend.Species == (ushort)Species.IronBoulder)
                 {
                     cln.Version = (int)GameVersion.VL;
-                    Log($"密勒顿，强制修改版本为紫");
+                    Log($"紫版本限定宝可梦，强制修改版本为紫");
                 }
                 else
                 {
