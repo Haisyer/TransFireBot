@@ -64,14 +64,14 @@
 * Support PK8 PB8 PA8 PK9 file upload
 * Support Customized Chinese to ALM-Showdown-Sets translation- Support
 * Support Card Message and Picture Message
-
+* Support Batch Trade
 ----------
 
 * 支持使用 [ALM-Showdown-Sets](https://github.com/architdate/PKHeX-Plugins/wiki/ALM-Showdown-Sets) 进行交换
 * 支持 PK8、PB8、PA8、pk9 文件上传交换
 * 支持自定义的中文模版格式进行交换
 * 支持卡片消息和图片消息
-  
+* 支持批量交换
 ----------
 
 
