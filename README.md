@@ -38,6 +38,7 @@
 - [Bilibili](#sysbotpokemonbilibili)
     + [Bilibili直播弹幕配送](#bilibili------)
     + [使用方法](#----)
+- [Thanks](------)
 
 
 # SysBot.Pokemon.Dodo
@@ -154,3 +155,18 @@
  
 
 ----------
+
+# Thanks
+
+## Microsoft
+
+感谢 [Microsoft](https://visualstudio.microsoft.com/) 对于项目提供的支持！这正是开源项目发展的动力！
+
+[![Microsoft](https://raw.githubusercontent.com/Haisyer/pic/2583814b88dbc367ee8bf15e24f2a5622cd2227e/pic/Microsoft_Visual_Studio_2022.svg)](https://visualstudio.microsoft.com/)
+
+## JetBrains 
+
+感谢 [JetBrains](https://www.jetbrains.com/) 对于项目提供的支持！这正是开源项目发展的动力！
+
+[![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)]([https://www.jetbrains.com/?from=dinky](https://visualstudio.microsoft.com/))
+
