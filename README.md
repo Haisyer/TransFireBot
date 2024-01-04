@@ -38,7 +38,7 @@
 - [Bilibili](#sysbotpokemonbilibili)
     + [Bilibili直播弹幕配送](#bilibili------)
     + [使用方法](#----)
-- [Thanks](------)
+- [Thanks](#thanks)
 
 
 # SysBot.Pokemon.Dodo
