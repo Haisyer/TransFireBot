@@ -1,5 +1,31 @@
 # TransFireBot
-
+ ## 提示-Tip
+ #### 如果你任何疑问，请在issues板块提出或者请在QQ等社交软件上联系我，请不要在其他地方留言
+ ------
+ #### If you have any questions, please raise them in the issues section or contact me on social media, such as QQ. 
+ #### Don't leave comments elsewhere
+ ----------
+ ## Declaration-声明
+ ### 一切开发旨在学习，请勿用于非法用途
+ 
+ #### 由于项目被人滥用，造成了一些不良的影响，项目以后的更新计划做出如下变动：
+ * 本项目将闭源部分新功能
+ * 对于小版本的变动，将不会更新
+ * 对于大版本的变动，将不再第一时间同步开源
+ * 会酌情发布release版本
+   * 在未发布的情况下，如有需要最新的release版本，可以联系@[Hasy](https://github.com/Haisyer)
+ ### 特别地，若有同类型的事件再次发生，项目将完全停止更新或删除。
+ ----------
+ #### Due to the project being abused and causing some bad effects, the following changes have been made to the project's future update schedule: 
+ * Some new features will not be open sourced for this project
+ * Minor version changes will not be updated.
+ * For major version changes, it will not be synchronized with open source at the first time.
+ * Will be released at the discretion of the release version
+   * In the case of unreleased versions, if you need the latest release version, you can contact the author of the repository([Hasy](https://github.com/Haisyer)).
+ ### Specifically, if the same type of event occurs again, the project will stop being updated or removed altogether
+ 
+ 
+ ----------
  ## 目录
 - [Dodo](#sysbotpokemondodo)
     + [Introduction-介绍](#introduction---)
@@ -12,6 +38,7 @@
 - [Bilibili](#sysbotpokemonbilibili)
     + [Bilibili直播弹幕配送](#bilibili------)
     + [使用方法](#----)
+- [Thanks](#thanks)
 
 
 # SysBot.Pokemon.Dodo
@@ -36,14 +63,16 @@
 
 * Support [ALM-Showdown-Sets](https://github.com/architdate/PKHeX-Plugins/wiki/ALM-Showdown-Sets)
 * Support PK8 PB8 PA8 PK9 file upload
-* Support Customized Chinese to ALM-Showdown-Sets translation- Support 
-
+* Support Customized Chinese to ALM-Showdown-Sets translation- Support
+* Support Card Message and Picture Message
+* Support Batch Trade
 ----------
 
 * 支持使用 [ALM-Showdown-Sets](https://github.com/architdate/PKHeX-Plugins/wiki/ALM-Showdown-Sets) 进行交换
 * 支持 PK8、PB8、PA8、pk9 文件上传交换
 * 支持自定义的中文模版格式进行交换
-
+* 支持卡片消息和图片消息
+* 支持批量交换
 ----------
 
 
@@ -126,3 +155,18 @@
  
 
 ----------
+
+# Thanks
+
+## Microsoft
+
+感谢 [Microsoft](https://visualstudio.microsoft.com/) 对于项目提供的支持！这正是开源项目发展的动力！
+
+[![Microsoft](https://raw.githubusercontent.com/Haisyer/pic/2583814b88dbc367ee8bf15e24f2a5622cd2227e/pic/Microsoft_Visual_Studio_2022.svg)](https://visualstudio.microsoft.com/)
+
+## JetBrains 
+
+感谢 [JetBrains](https://www.jetbrains.com/) 对于项目提供的支持！这正是开源项目发展的动力！
+
+[![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)]([https://www.jetbrains.com/?from=dinky](https://visualstudio.microsoft.com/))
+

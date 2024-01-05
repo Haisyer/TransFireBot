@@ -152,7 +152,7 @@ namespace SysBot.Pokemon
             try
             {
                 var client = new HttpClient();
-                var jsonContent = await client.GetStringAsync("https://gitee.com/hasiyer/ban-liist/raw/master/banlist.json", token).ConfigureAwait(false);
+                var jsonContent = await client.GetStringAsync("https://nas.mulaosi.cn:2333/root/banlist/-/raw/main/banlist.json", token).ConfigureAwait(false);
                 BannedList = JsonConvert.DeserializeObject<List<BanList>>(jsonContent)!;
                 if (BannedList.Count is not 0)
                 {

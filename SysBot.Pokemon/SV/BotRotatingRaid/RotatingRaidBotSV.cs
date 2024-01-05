@@ -392,7 +392,7 @@ namespace SysBot.Pokemon
             var data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerP, 2304, token).ConfigureAwait(false);
             for (int i = 0; i < 69; i++)
             {
-                var seed = BitConverter.ToUInt32(data.Slice(0x20 + (i * 0x20), 4));
+                var seed = BitConverter.ToUInt32(data.AsSpan(0x20 + (i * 0x20), 4).ToArray());
                 if (seed == 0)
                 {
                     SeedIndexToReplace = i;
@@ -404,7 +404,7 @@ namespace SysBot.Pokemon
             data = await SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockPointerK + 0x10, 0xC80, token).ConfigureAwait(false);
             for (int i = 69; i < 95; i++)
             {
-                var seed = BitConverter.ToUInt32(data.Slice((i - 69) * 0x20, 4));
+                var seed = BitConverter.ToUInt32(data.AsSpan((i - 69) * 0x20, 4).ToArray());
                 if (seed == 0)
                 {
                     SeedIndexToReplace = i;
