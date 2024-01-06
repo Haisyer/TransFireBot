@@ -1,5 +1,5 @@
  # 如果你喜欢我们的开发的传火BOT，欢迎打赏支持我们，最重要的还是要谢谢大家对本项目的支持。我们将一如既往地给大家带来更新
-![未标题-1](https://github.com/RYGUGU/TransFireBot/assets/50143694/c9d9ea58-9ef4-4334-9d98-da5d91b28eb3)
+ ![9f1z083j](https://github.com/RYGUGU/TransFireBot/assets/50143694/128a3dd4-fe16-47da-adc6-1f1b5aa828a1)
 #  赞助的金额会用来维持后期新版本开发更新还有域名服务器等维护
 ----------
 # TransFireBot
