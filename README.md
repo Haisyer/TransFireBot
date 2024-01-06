@@ -1,7 +1,3 @@
- # 如果你喜欢我们的开发的传火BOT，欢迎打赏支持我们，最重要的还是要谢谢大家对本项目的支持。我们将一如既往地给大家带来更新
- ![9f1z083j](https://github.com/RYGUGU/TransFireBot/assets/50143694/128a3dd4-fe16-47da-adc6-1f1b5aa828a1)
-#  赞助的金额会用来维持后期新版本开发更新还有域名服务器等维护
-----------
 # TransFireBot
  ## 提示-Tip
  #### 如果你任何疑问，请在issues板块提出或者请在QQ等社交软件上联系我，请不要在其他地方留言
@@ -43,6 +39,7 @@
     + [Bilibili直播弹幕配送](#bilibili------)
     + [使用方法](#----)
 - [Thanks](#thanks)
+-  [Support](#support)
 
 
 # SysBot.Pokemon.Dodo
@@ -173,4 +170,12 @@
 感谢 [JetBrains](https://www.jetbrains.com/) 对于项目提供的支持！这正是开源项目发展的动力！
 
 [![JetBrains](http://pic.dinky.org.cn/dinky/docs/zh-CN/thanks/jetbrains.svg)]([https://www.jetbrains.com/?from=dinky](https://visualstudio.microsoft.com/))
+
+----------
+
+# Support
+
+  如果你喜欢我们的开发的传火BOT，欢迎支持我们.
+  这赞助将会被用来维护banlist的服务器
+ ![9f1z083j](https://github.com/RYGUGU/TransFireBot/assets/50143694/128a3dd4-fe16-47da-adc6-1f1b5aa828a1)
 
