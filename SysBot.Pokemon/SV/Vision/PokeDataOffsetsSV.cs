@@ -24,13 +24,14 @@ namespace SysBot.Pokemon
 
         public const int BoxFormatSlotSize = 0x158;
         public const ulong LibAppletWeID = 0x010000000000100a; // One of the process IDs for the news.
-        public IReadOnlyList<long> TeraRaidCodePointer { get; } = new long[] { 0x46404B8, 0x10, 0x78, 0x10, 0x1A9 };
-        public IReadOnlyList<long> RaidBlockPointerP { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0x40 };
-        public IReadOnlyList<long> RaidBlockPointerK { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0xCD8 };
-        public IReadOnlyList<long> BlockKeyPointer = new long[] { 0x4617648, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        public IReadOnlyList<long> TeraRaidCodePointer { get; } = new long[] { 0x475EA28, 0x10, 0x78, 0x10, 0x1A9 };
+        public IReadOnlyList<long> RaidBlockPointerP { get; } = new long[] { 0x47350D8, 0x1C0, 0x88, 0x40 };
+        public IReadOnlyList<long> RaidBlockPointerK { get; } = new long[] { 0x47350D8, 0x1C0, 0x88, 0xCD8 };
+        public IReadOnlyList<long> RaidBlockPointerB { get; } = new long[] { 0x47350D8, 0x1C0, 0x88, 0x1958 };
+        public IReadOnlyList<long> BlockKeyPointer { get; } = new long[] { 0x47350D8, 0xD8, 0x0, 0x0, 0x30, 0x0 };
 
-        public ulong TeraLobbyIsConnected { get; } = 0x042CB430;
-        public ulong LoadedIntoDesiredState { get; } = 0x046B4020;
-        public ulong MyNIDPointer { get; } = 0x046403C8; // MyNid
+        public ulong TeraLobbyIsConnected { get; } = 0x043DF430;
+        public ulong LoadedIntoDesiredState { get; } = 0x047D2020;
+        public ulong MyNIDPointer { get; } = 0x0475E938; // MyNid
     }
 }
