@@ -16,7 +16,6 @@ namespace SysBot.Pokemon
         private readonly EncounterSettings Settings;
         private readonly int[] DesiredMinIVs;
         private readonly int[] DesiredMaxIVs;
-        protected readonly byte[] BattleMenuReady = { 0, 0, 0, 255 };
         public ICountSettings Counts => Settings;
         public readonly IReadOnlyList<string> UnwantedMarks;
 

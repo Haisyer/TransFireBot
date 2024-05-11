@@ -94,8 +94,8 @@ namespace SysBot.Pokemon.Dodo
                  $"我收到精灵的种类:{ShowdownTranslator<T>.GameStringsZh.Species[result.Species]}\n" +
                  $"PID:{result.PID:X}\n" +
                  $"加密常数:{result.EncryptionConstant:X}\n" +
-                 $"训练家姓名:{result.OT_Name}\n" +
-                 $"训练家性别:{(result.OT_Gender == 0 ? "男" : "女")}\n" +
+             $"训练家姓名:{result.OriginalTrainerName}\n" +
+             $"训练家性别:{(result.OriginalTrainerGender == 0 ? "男" : "女")}\n" +
                  $"训练家表ID:{result.TrainerTID7}\n" +
                  $"训练家里ID:{result.TrainerSID7}";
             LogUtil.LogText(message);

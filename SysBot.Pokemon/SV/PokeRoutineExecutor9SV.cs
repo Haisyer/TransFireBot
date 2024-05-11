@@ -55,7 +55,7 @@ namespace SysBot.Pokemon
             if (sav != null)
             {
                 // Update PKM to the current save's handler data
-                pkm.Trade(sav);
+                pkm.UpdateHandler(sav);
                 pkm.RefreshChecksum();
             }
 
@@ -108,7 +108,7 @@ namespace SysBot.Pokemon
             var sav = new SAV9SV();
             var info = sav.MyStatus;
             var read = await SwitchConnection.PointerPeek(info.Data.Length, Offsets.MyStatusPointer, token).ConfigureAwait(false);
-            read.CopyTo(info.Data, 0);
+            read.CopyTo(info.Data);
             return sav;
         }
 
