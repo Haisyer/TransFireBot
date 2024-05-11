@@ -453,7 +453,6 @@ namespace SysBot.Pokemon.Helpers
 
 
                 var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
-                GenerationFix(sav);
                 var pkm = sav.GetLegal(template, out var result);
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
                     TradeExtensions<T>.EggTrade(pkm, template);
@@ -470,14 +469,6 @@ namespace SysBot.Pokemon.Helpers
             }
 
             return false;
-        }
-        /// <summary>
-        /// 修正世代信息
-        /// </summary>
-        /// <param name="sav">存档信息</param>
-        private static void GenerationFix(ITrainerInfo sav)
-        {
-            if (typeof(T) == typeof(PK8) || typeof(T) == typeof(PB8) || typeof(T) == typeof(PA8)) sav.GetType().GetProperty("Generation")?.SetValue(sav, 8);
         }
         /// <summary>
         /// 检测宝可梦实例
@@ -647,7 +638,7 @@ namespace SysBot.Pokemon.Helpers
             var power3 = ShowdownTranslator<T>.GameStringsZh.Move[move3].ToString();
             var power4 = ShowdownTranslator<T>.GameStringsZh.Move[move4].ToString();
             var abilityName = GameInfo.GetStrings("zh").Ability[ability];
-            var natureName = GameInfo.GetStrings("zh").Natures[natureNumber];
+            var natureName = GameInfo.GetStrings("zh").Natures[(int)natureNumber];
             try
             {
                ballurl = BallPkImg.ballUrlMapping[pokeball];

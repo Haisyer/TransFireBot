@@ -429,8 +429,8 @@ namespace SysBot.Pokemon
                 //}
 
                 //软件外置添加模板ban人，后加
-                var entry = AbuseSettings.BanFile.List.Find(z => z.Name.Equals(toSend.OT_Name));
-                Log($"Current OT is: " + toSend.OT_Name);
+                var entry = AbuseSettings.BanFile.List.Find(z => z.Name.Equals(toSend.OriginalTrainerName));
+                Log($"Current OT is: " + toSend.OriginalTrainerName);
                 if (entry != null)
                 {
                     Log($"该模板ID被禁止");
@@ -442,11 +442,11 @@ namespace SysBot.Pokemon
                 }
                 //内置ban人，数组内加名字
                 string[] wretchName = { "大队长", "DDZ", "Ddz", "DDz", "dDz", "dDZ", "ddz", "ddZ", "叫我大队长", "我是大队长", "忘世麒麟", "叫我大隊長", "我是大隊長", "大隊長" };
-                Log($"Current OT is: " + toSend.OT_Name);
+                Log($"Current OT is: " + toSend.OriginalTrainerName);
 
                 foreach (var itemName in wretchName)
                 {
-                    if (string.Equals(toSend.OT_Name, itemName))
+                    if (string.Equals(toSend.OriginalTrainerName, itemName))
                     {
                         Log($"有狗");
                         poke.SendNotification(this, itemName);
@@ -1084,27 +1084,27 @@ namespace SysBot.Pokemon
                 return false;
             }
             var cln = toSend.Clone();
-            cln.OT_Gender = tradePartner.Gender;
+            cln.OriginalTrainerGender = (byte)tradePartner.Gender;
             cln.TrainerTID7 = (uint)Math.Abs(tradePartner.DisplayTID);
             cln.TrainerSID7 = (uint)Math.Abs(tradePartner.DisplaySID);
             cln.Language = tradePartner.Language;
-            cln.OT_Name = tradePartner.OT;
+            cln.OriginalTrainerName = tradePartner.OT;
             if (toSend.IsEgg == false)
             {
                 if (toSend.Species == (ushort)Species.Koraidon || toSend.Species == (ushort)Species.GougingFire || toSend.Species == (ushort)Species.RagingBolt)
                 {
-                    cln.Version = (int)GameVersion.SL;
+                    cln.Version = GameVersion.SL;
                     Log($"朱版本限定宝可梦，强制修改版本为朱");
 
                 }
                 else if (toSend.Species == (ushort)Species.Miraidon || toSend.Species == (ushort)Species.IronCrown || toSend.Species == (ushort)Species.IronBoulder)
                 {
-                    cln.Version = (int)GameVersion.VL;
+                    cln.Version = GameVersion.VL;
                     Log($"紫版本限定宝可梦，强制修改版本为紫");
                 }
                 else
                 {
-                    cln.Version = tradePartner.Game;
+                    cln.Version = (GameVersion)tradePartner.Game;
                 }
                 cln.ClearNickname();
             }
@@ -1124,7 +1124,7 @@ namespace SysBot.Pokemon
                 };
                 Log($"是蛋,修改昵称");
             }
-            if (toSend.Met_Location == Locations.TeraCavern9 && toSend.IsShiny)
+            if (toSend.MetLocation == Locations.TeraCavern9 && toSend.IsShiny)
             {
                 cln.PID = (((uint)(cln.TID16 ^ cln.SID16) ^ (cln.PID & 0xFFFF) ^ 1u) << 16) | (cln.PID & 0xFFFF);
             }

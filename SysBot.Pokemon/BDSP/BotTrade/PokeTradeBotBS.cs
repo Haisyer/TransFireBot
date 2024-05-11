@@ -859,11 +859,11 @@ namespace SysBot.Pokemon
         private async Task<bool> SetBoxPkmWithSwappedIDDetailsBDSP(PB8 toSend, PB8 offered, SAV8BS sav, string tradePartner, CancellationToken token)
         {
             var cln = toSend.Clone();
-            cln.OT_Gender = offered.OT_Gender;
+            cln.OriginalTrainerGender = offered.OriginalTrainerGender;
             cln.TrainerTID7 = offered.TrainerTID7;
             cln.TrainerSID7 = offered.TrainerSID7;
             cln.Language = offered.Language;
-            cln.OT_Name = tradePartner;
+            cln.OriginalTrainerName = tradePartner;
             cln.ClearNickname();
 
             if (toSend.IsShiny)

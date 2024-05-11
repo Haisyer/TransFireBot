@@ -38,6 +38,13 @@ namespace SysBot.Pokemon
         [Category(TradeConfig), Description("当启用后，在正常的机器人操作循环中，屏幕将被关闭，以节省电力。")]
         public bool ScreenOff { get; set; } = false;
 
+        [Category(TradeConfig), Description("When enabled, disallows requesting Pokémon from outside of their original context.")]
+        public bool DisallowNonNatives { get; set; } = true;
+
+        [Category(TradeConfig), Description("When enabled, disallows requesting Pokémon if they have a HOME Tracker.")]
+        public bool DisallowTracked { get; set; } = true;
+
+
         /// <summary>
         /// Gets a random trade code based on the range settings.
         /// </summary>

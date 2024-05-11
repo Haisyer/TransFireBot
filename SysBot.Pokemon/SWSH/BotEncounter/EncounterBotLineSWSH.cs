@@ -35,9 +35,9 @@ namespace SysBot.Pokemon
                     continue;
                 }
 
-                // Offsets are flickery so make sure we see it 3 times.
-                for (int i = 0; i < 3; i++)
-                    await ReadUntilChanged(BattleMenuOffset, BattleMenuReady, 5_000, 0_100, true, token).ConfigureAwait(false);
+                while (!await IsOnBattleMenu(token).ConfigureAwait(false))
+                    await Task.Delay(0_100, token).ConfigureAwait(false);
+                await Task.Delay(0_100, token).ConfigureAwait(false);
 
                 if (await HandleEncounter(pk, token).ConfigureAwait(false))
                     return;

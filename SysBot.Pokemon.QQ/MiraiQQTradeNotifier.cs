@@ -70,7 +70,7 @@ namespace SysBot.Pokemon.QQ
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
         {
             OnFinish?.Invoke(routine);
-            var gender = result.OT_Gender == 0 ? "男" : "女";
+            var gender = result.OriginalTrainerGender == 0 ? "男" : "女";
             var tradedToUser = Data.Species;
             //日志
             var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0
@@ -80,7 +80,7 @@ namespace SysBot.Pokemon.QQ
             var backMethod = MiraiQQBot<T>.Info.Hub.Config.QQ.TidAndSidMethod;
             var message_finish = $" 完成\n";
             var message_info = $"收到了：{result.Nickname}\n" +
-                           $"原训练家：{result.OT_Name}\n" +
+                           $"原训练家：{result.OriginalTrainerName}\n" +
                            $"性别：{gender}\n" +
                            $"Trainer ID：{result.DisplayTID.ToString().PadLeft(6, '0')}\n" +
                            $" Secret ID：{result.DisplaySID.ToString().PadLeft(4, '0')}";

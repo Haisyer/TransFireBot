@@ -62,11 +62,12 @@ namespace SysBot.Pokemon
         [Category(Generate), Description("如果合法，则强制使用指定的球。")]
         public bool ForceSpecifiedBall { get; set; } = true;
 
+        [Category(Generate), Description("Requires HOME tracker when trading Pokémon that had to have traveled between the Switch games.")]
+        public bool EnableHOMETrackerCheck { get; set; }
+
         [Category(Generate), Description("强制设置精灵为50级到100级。")]
         public bool ForceLevel100for50 { get; set; }
 
-        [Category(Generate), Description("禁用此选项将强制ALM不生成需要HOME跟踪的宝可梦。")]
-        public bool AllowHOMETransferGeneration { get; set; } = true;
 
         [Category(Generate), Description("尝试宝可梦遭遇类型的顺序.")]
         public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } = new List<EncounterTypeGroup>() { EncounterTypeGroup.Egg, EncounterTypeGroup.Slot, EncounterTypeGroup.Static, EncounterTypeGroup.Mystery, EncounterTypeGroup.Trade };

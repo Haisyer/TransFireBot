@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.2.7" />
+    <PackageReference Include="NLog" Version="5.2.8" />
     <PackageReference Include="LibUsbDotNet" Version="2.2.29" />
   </ItemGroup>
 </Project>
