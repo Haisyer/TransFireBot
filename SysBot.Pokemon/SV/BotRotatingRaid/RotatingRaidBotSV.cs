@@ -189,6 +189,7 @@ namespace SysBot.Pokemon
                 var montent = div[2];
                 TeraCrystalType type = montent switch
                 {
+                    "活动" => TeraCrystalType.Distribution,
                     "6" => TeraCrystalType.Black,
                     "7" => TeraCrystalType.Might,
                     _ => TeraCrystalType.Base,
