@@ -73,9 +73,9 @@ namespace SysBot.Pokemon
 
             // Seed the Trainer Database with enough fake save files so that we return a generation sensitive format when needed.
             var fallback = GetDefaultTrainer(cfg);
-            for (byte generation = 1; generation <= PKX.Generation; generation++)
+            for (byte generation = 1; generation <= Latest.Generation; generation++)
             {
-                var versions = GameUtil.GetVersionsInGeneration(generation, PKX.Version);
+                var versions = GameUtil.GetVersionsInGeneration(generation, Latest.Version);
                 foreach (var version in versions)
                     RegisterIfNoneExist(fallback, generation, version);
             }
