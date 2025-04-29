@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net8.0</TargetFrameworks>
-    <LangVersion>11</LangVersion>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+    <LangVersion>13</LangVersion>
     <Nullable>enable</Nullable>
     <Platforms>x64</Platforms>
     <StartupObject>SysBot.Pokemon.ConsoleApp.Program</StartupObject>

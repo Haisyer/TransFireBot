@@ -64,7 +64,12 @@ namespace SysBot.Pokemon
             }
 
             var clone = pk.Clone();
-            var legalBalls = BallApplicator.GetLegalBalls(pk).ToList();
+            Ball[] ballArray = new Ball[1000];
+            Span<Ball> ballSpan = ballArray;
+
+            int ballCount = BallApplicator.GetLegalBalls(ballSpan, pk, (IEncounterTemplate)templ);
+
+            Ball[] legalBalls = ballSpan.Slice(0, ballCount).ToArray();
             if (!legalBalls.Contains(Ball.Master))
             {
                 showdownList.Insert(1, "Ball: Master");
@@ -72,7 +77,12 @@ namespace SysBot.Pokemon
                 templ = AutoLegalityWrapper.GetTemplate(set);
                 pk = (T)sav.GetLegal(templ, out res);
                 if (res == "Regenerated" && pk.Species == clone.Species)
-                    legalBalls.Add(Ball.Master);
+                {
+                    Ball[] newBallArray = new Ball[ballArray.Length + 1];
+                    Span<Ball> newBallSpan = newBallArray;
+                    ballCount = BallApplicator.GetLegalBalls(newBallSpan, pk, (IEncounterTemplate)templ);
+                    legalBalls = newBallSpan.Slice(0, ballCount).ToArray();
+                }
             }
             return legalBalls.ToArray();
         }
@@ -116,7 +126,6 @@ namespace SysBot.Pokemon
 
             pkm.Ball = 21;
             pkm.IVs = new int[] { 31, nickname.Contains(dittoStats[0]) ? 0 : 31, 31, nickname.Contains(dittoStats[1]) ? 0 : 31, nickname.Contains(dittoStats[2]) ? 0 : 31, 31 };
-            pkm.ClearHyperTraining();
             TrashBytes(pkm, new LegalityAnalysis(pkm));
         }
 
