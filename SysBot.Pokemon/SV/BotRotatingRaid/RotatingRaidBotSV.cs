@@ -30,7 +30,6 @@ namespace SysBot.Pokemon
             Settings = hub.Config.RotatingRaidSV;
         }
 
-
         private int LobbyError;
         private int RaidCount;
         private int RaidsAtStart;
@@ -293,9 +292,9 @@ namespace SysBot.Pokemon
                                 await Click(B, 1_000, token).ConfigureAwait(false);
                                 await Click(B, 1_000, token).ConfigureAwait(false);
                                 await Task.Delay(1_000, token).ConfigureAwait(false);
-
                             }
-                        };
+                        }
+                        ;
                         await Task.Delay(0_050, token).ConfigureAwait(false);
                         if (denFound)
                         {
@@ -534,7 +533,6 @@ namespace SysBot.Pokemon
             await CloseGame(Hub.Config, token).ConfigureAwait(false);
             if (ready)
                 await StartGameRaid(Hub.Config, token).ConfigureAwait(false);
-
             else if (!ready)
             {
                 if (Settings.RaidEmbedParameters.Count > 1)
@@ -614,7 +612,6 @@ namespace SysBot.Pokemon
             var currcrystal = await SwitchConnection.PointerPeek(1, ptr2, token).ConfigureAwait(false);
             if (currcrystal != crystal)
                 await SwitchConnection.PointerPoke(crystal, ptr2, token).ConfigureAwait(false);
-
         }
 
         private async Task<bool> DenStatus(int index, CancellationToken token)
@@ -960,7 +957,8 @@ namespace SysBot.Pokemon
             for (int i = 0; i < 2; i++)
                 await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
             await Click(DDOWN, 0_150, token).ConfigureAwait(false);
-            await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
+            for (int i = 0; i < 2; i++)
+                await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
             await Click(A, 1_250, token).ConfigureAwait(false); // Enter settings
 
             await PressAndHold(DDOWN, 2_000, 0_250, token).ConfigureAwait(false); // Scroll to system settings
@@ -1018,8 +1016,9 @@ namespace SysBot.Pokemon
             }
             Log("缓存偏移完成！");
         }
+
         //需要修改一下
-       private async Task EnqueueEmbed(List<string>? names, string message, bool hatTrick, bool disband, bool upnext, bool raidstart, CancellationToken token)
+        private async Task EnqueueEmbed(List<string>? names, string message, bool hatTrick, bool disband, bool upnext, bool raidstart, CancellationToken token)
         {
             // Title can only be up to 256 characters.
             var title = hatTrick && names is not null ? $"**🪄🎩✨ {names[0]} with the Hat Trick! ✨🎩🪄**" : Settings.RaidEmbedParameters[RotationCount].Title.Length > 0 ? Settings.RaidEmbedParameters[RotationCount].Title : "Tera Raid Notification";
@@ -1041,7 +1040,7 @@ namespace SysBot.Pokemon
             if (disband) // Wait for trainer to load before disband
                 await Task.Delay(5_000, token).ConfigureAwait(false);
 
-                byte[]? bytes = Array.Empty<byte>();
+            byte[]? bytes = Array.Empty<byte>();
             if (Settings.TakeScreenshot)
             {
                 if (Hub.Config.Dodo.DodoUploadFileUrl.Contains("Bot"))
@@ -1053,20 +1052,20 @@ namespace SysBot.Pokemon
                 else Log("授权为空，请检查Dodo\\DodoUploadFileUrl路径下的授权是否写入，DoDo机器人发送图片失败！");
             }
             if (!disband && names is not null && !upnext && raidstart)
+            {
+                var players = string.Empty;
+                if (names.Count == 0)
+                    players = "Though our party did not make it :(";
+                else
                 {
-                    var players = string.Empty;
-                    if (names.Count == 0)
-                        players = "Though our party did not make it :(";
-                    else
+                    int i = 2;
+                    names.ForEach(x =>
                     {
-                        int i = 2;
-                        names.ForEach(x =>
-                        {
-                            players += $"Player {i} - **{x}**\n";
-                            i++;
-                        });
-                    }
+                        players += $"Player {i} - **{x}**\n";
+                        i++;
+                    });
                 }
+            }
             var turl = string.Empty;
             var form = string.Empty;
 
@@ -1261,9 +1260,11 @@ namespace SysBot.Pokemon
             }
             return true;
         }
+
         //End of additions
 
         #region RaidCrawler
+
         // via RaidCrawler modified for this proj
         private async Task ReadRaids(bool init, CancellationToken token)
         {
@@ -1442,7 +1443,6 @@ namespace SysBot.Pokemon
                                     Settings.RaidEmbedParameters[a].Description = raidDescription.ToArray();
                             }
                         }
-
                         else if (!Settings.UsePresetFile)
                         {
                             Settings.RaidEmbedParameters[a].Description = new[] { "\n**Raid Info:**", pkinfo, "\n**Moveset:**", movestr, extramoves, BaseDescription, res };
@@ -1470,7 +1470,8 @@ namespace SysBot.Pokemon
                 }
             }
         }
-        #endregion
+
+        #endregion RaidCrawler
 
         private string GetDodoURL(byte[] bytes)
         {
@@ -1487,7 +1488,5 @@ namespace SysBot.Pokemon
                 return c;
             }
         }
-
-
     }
 }

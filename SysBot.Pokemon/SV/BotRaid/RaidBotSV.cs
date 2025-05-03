@@ -44,7 +44,7 @@ namespace SysBot.Pokemon
         private ulong RaidBlockPointerP;
         private ulong RaidBlockPointerK;
         private readonly ulong[] TeraNIDOffsets = new ulong[3];
-        private string TeraRaidCode { get; set; } = string.Empty;    
+        private string TeraRaidCode { get; set; } = string.Empty;
         private string BaseDescription = string.Empty;
         private string[] PresetDescription = Array.Empty<string>();
         private string[] ModDescription = Array.Empty<string>();
@@ -52,7 +52,7 @@ namespace SysBot.Pokemon
         private List<BanList> GlobalBanList = new();
         private SAV9SV HostSAV = new();
         private DateTime StartTime = DateTime.Now;
-        private RaidContainer? container; 
+        private RaidContainer? container;
 
         public override async Task MainLoop(CancellationToken token)
         {
@@ -534,7 +534,7 @@ namespace SysBot.Pokemon
         private async Task<bool> CheckIfTrainerBanned(TradeMyStatus trainer, ulong nid, int player, bool updateBanList, CancellationToken token)
         {
             Log($"玩家 {player}: {trainer.OT} | TID: {trainer.DisplayTID} | NID: {nid}");
-            EchoUtil.Echo($"玩家{player}:{ trainer.OT}加入团战");
+            EchoUtil.Echo($"玩家{player}:{trainer.OT}加入团战");
             if (!RaidTracker.ContainsKey(nid))
                 RaidTracker.Add(nid, 0);
 
@@ -702,7 +702,8 @@ namespace SysBot.Pokemon
             for (int i = 0; i < 2; i++)
                 await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
             await Click(DDOWN, 0_150, token).ConfigureAwait(false);
-            await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
+            for (int i = 0; i < 2; i++)
+                await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
             await Click(A, 1_250, token).ConfigureAwait(false); // Enter settings
 
             await PressAndHold(DDOWN, 2_000, 0_250, token).ConfigureAwait(false); // Scroll to system settings
@@ -760,8 +761,9 @@ namespace SysBot.Pokemon
             }
             Log("缓存偏移完成！");
         }
+
         //需要修改一下
-       private async Task EnqueueEmbed(List<string>? names, string message, bool hatTrick, bool disband, bool upnext, bool raidstart, CancellationToken token)
+        private async Task EnqueueEmbed(List<string>? names, string message, bool hatTrick, bool disband, bool upnext, bool raidstart, CancellationToken token)
         {
             // Title can only be up to 256 characters.
             var title = hatTrick && names is not null ? $"**🪄🎩✨ {names[0]} with the Hat Trick! ✨🎩🪄**" : Settings.RaidEmbedFilters.Title.Length > 0 ? Settings.RaidEmbedFilters.Title : "Tera Raid Notification";
@@ -783,10 +785,10 @@ namespace SysBot.Pokemon
             if (disband) // Wait for trainer to load before disband
                 await Task.Delay(5_000, token).ConfigureAwait(false);
 
-                byte[]? bytes = Array.Empty<byte>();
+            byte[]? bytes = Array.Empty<byte>();
             if (Settings.TakeScreenshot)
             {
-                if(Hub.Config.Dodo.DodoUploadFileUrl.Contains("Bot"))
+                if (Hub.Config.Dodo.DodoUploadFileUrl.Contains("Bot"))
                 {
                     bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
                     var result = GetDodoURL(bytes);
@@ -795,20 +797,20 @@ namespace SysBot.Pokemon
                 else Log("授权为空，请检查Dodo\\DodoUploadFileUrl路径下的授权是否写入，DoDo机器人发送图片失败！");
             }
             if (!disband && names is not null && !upnext && raidstart)
+            {
+                var players = string.Empty;
+                if (names.Count == 0)
+                    players = "Though our party did not make it :(";
+                else
                 {
-                    var players = string.Empty;
-                    if (names.Count == 0)
-                        players = "Though our party did not make it :(";
-                    else
+                    int i = 2;
+                    names.ForEach(x =>
                     {
-                        int i = 2;
-                        names.ForEach(x =>
-                        {
-                            players += $"Player {i} - **{x}**\n";
-                            i++;
-                        });
-                    }
+                        players += $"Player {i} - **{x}**\n";
+                        i++;
+                    });
                 }
+            }
             var turl = string.Empty;
             var form = string.Empty;
 
@@ -910,6 +912,7 @@ namespace SysBot.Pokemon
         }
 
         #region RaidCrawler
+
         // via RaidCrawler modified for this proj
         private async Task ReadRaids(bool init, CancellationToken token)
         {
@@ -1079,7 +1082,6 @@ namespace SysBot.Pokemon
                                 Settings.RaidEmbedFilters.Description = raidDescription.ToArray();
                         }
                     }
-
                     else if (!Settings.UsePresetFile)
                     {
                         Settings.RaidEmbedFilters.Description = new[] { "\n**Raid Info:**", pkinfo, "\n**Moveset:**", movestr, extramoves, BaseDescription, res };
@@ -1091,7 +1093,8 @@ namespace SysBot.Pokemon
                 }
             }
         }
-        #endregion
+
+        #endregion RaidCrawler
 
         private string GetDodoURL(byte[] bytes)
         {
@@ -1108,6 +1111,5 @@ namespace SysBot.Pokemon
                 return c;
             }
         }
-
     }
 }
