@@ -254,11 +254,11 @@ namespace SysBot.Pokemon.Helpers
                         else
                             SendCardBatchMessage(cardmsg, pokeurl, itemurl, ballurl, shinyurl);
                     }
-                    LogUtil.LogInfo($"批量第{i + 1}只:{GameInfo.GetStrings("zh").Species[rawPkms[i].Species]}", nameof(PokemonTradeHelper<T>));
+                    LogUtil.LogInfo($"批量第{i + 1}只:{GameInfo.GetStrings("zh-Hans").Species[rawPkms[i].Species]}", nameof(PokemonTradeHelper<T>));
                     File.WriteAllBytes(userpath + @"\" + $"第{i + 1:000}只{version}", rawPkms[i].Data);
                     if (!cardflag)
                     {
-                        pokeMessage += $"\n第{i + 1}只,{GameInfo.GetStrings("zh").Species[rawPkms[i].Species]},合法";
+                        pokeMessage += $"\n第{i + 1}只,{GameInfo.GetStrings("zh-Hans").Species[rawPkms[i].Species]},合法";
                     }
 
                     if (pokeMessage.Length > 1000)
@@ -637,8 +637,8 @@ namespace SysBot.Pokemon.Helpers
             var power2 = ShowdownTranslator<T>.GameStringsZh.Move[move2].ToString();
             var power3 = ShowdownTranslator<T>.GameStringsZh.Move[move3].ToString();
             var power4 = ShowdownTranslator<T>.GameStringsZh.Move[move4].ToString();
-            var abilityName = GameInfo.GetStrings("zh").Ability[ability];
-            var natureName = GameInfo.GetStrings("zh").Natures[(int)natureNumber];
+            var abilityName = GameInfo.GetStrings("zh-Hans").Ability[ability];
+            var natureName = GameInfo.GetStrings("zh-Hans").Natures[(int)natureNumber];
             try
             {
                ballurl = BallPkImg.ballUrlMapping[pokeball];
@@ -777,7 +777,7 @@ namespace SysBot.Pokemon.Helpers
             //LogUtil.LogInfo($"itemimage:{itemurl}", nameof(PokemonTradeHelper<T>));
             //LogUtil.LogInfo($"pkimage:{pokeurl}", nameof(PokemonTradeHelper<T>));
             //LogUtil.LogInfo($"ballimage:{ballurl}", nameof(PokemonTradeHelper<T>));
-            pmsg = $"**昵称：{GameInfo.GetStrings("zh").Species[species]}**\n" +
+            pmsg = $"**昵称：{GameInfo.GetStrings("zh-Hans").Species[species]}**\n" +
                 $"性别：{GameInfo.GenderSymbolUnicode[pk.Gender]}\n" +
                 $"性格:{natureName}\n" +
                 $"特性:{abilityName}\n" +
